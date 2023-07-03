@@ -18,13 +18,17 @@ export const actions: Actions = {
             );
             const user = await userResponse.json();
 
+            
+        const responseSession = await fetch("/api/session/current?userId=" + user.id);
+        const workoutSession = (await responseSession.json()) as Session;
+
 			const workout: Workout = {
                 userId: user.id,
                 name: workoutName
             };
     
             await fetch(
-                "/api/workout",
+                "/api/session/" + workoutSession.id,
                 {
                     method: "POST",
                     body: JSON.stringify({ workout: workout }),

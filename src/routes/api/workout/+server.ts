@@ -15,8 +15,12 @@ export async function GET({ url }: RequestEvent) {
 export async function POST({ request }) {
     const { workout } = await request.json();
 
-    const newWorkout = await prisma.workout.create({
-        data: { ...workout }
+    const newWorkout = await prisma.session.update({
+        where: {
+            id: workout.sessionId
+        },
+        data: { name: workout.name }
+        
     });
 
     return json(newWorkout);

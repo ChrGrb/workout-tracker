@@ -19,7 +19,7 @@ import { GITHUB_ID, GITHUB_SECRET } from "$env/static/private";
 import { redirect, type Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 
-const unprotectedRoutes = ['/', '/auth'];
+const unprotectedRoutes = ['/auth'];
 async function authorization({ event, resolve }) {
   // Protect any routes under /authenticated
   if (!unprotectedRoutes.includes(event.url.pathname)) {

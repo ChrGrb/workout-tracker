@@ -3,7 +3,6 @@
   import Container from "$lib/base/Container.svelte";
   import type { PageData } from "./$types";
   import Button from "$lib/base/Button.svelte";
-  import CheckboxInput from "$lib/base/input/CheckboxInput.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
 

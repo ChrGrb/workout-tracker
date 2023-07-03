@@ -15,6 +15,16 @@ model User {
   email     String    @unique
   workouts  Workout[]
   createdAt DateTime  @default(now())
+  Session   Session[]
+}
+
+model Session {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  workouts  Workout[]
+  finished  Boolean   @default(false)
+  createdAt DateTime  @default(now())
 }
 
 model Workout {
@@ -22,6 +32,8 @@ model Workout {
   userId    Int
   user      User         @relation(fields: [userId], references: [id])
   name      String
+  sessionId Int
+  session   Session      @relation(fields: [sessionId], references: [id])
   sets      WorkoutSet[]
   createdAt DateTime     @default(now())
 }
