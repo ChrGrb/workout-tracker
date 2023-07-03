@@ -15,8 +15,6 @@ export async function GET({ url }: RequestEvent) {
 export async function POST({ request }) {
     const { workout } = await request.json();
 
-    console.log(workout);
-
     const newWorkout = await prisma.workout.create({
         data: { ...workout }
     });

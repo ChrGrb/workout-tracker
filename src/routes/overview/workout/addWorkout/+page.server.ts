@@ -5,19 +5,25 @@ import { redirect } from "@sveltejs/kit";
 import { Actions } from './$types';
 
 export const actions: Actions = {
-    default: async ({ request, cookies, fetch, params }: RequestEvent) => {
-            const userId = Number(cookies.get('user_id'));
+    default: async ({ request, fetch, params, locals }: RequestEvent) => {
+        const session = await locals.getSession();
+
+        if(session) {
+            const email = session.user.email;
 			const form = await request.formData();
 			const workoutName = form.get('workoutName');
 
+            const userResponse = await fetch(
+                "/api/user?email=" + email,
+            );
+            const user = await userResponse.json();
+
 			const workout: Workout = {
-                userId: userId,
+                userId: user.id,
                 name: workoutName
             };
-
-            console.log(workout);
     
-            const response = await fetch(
+            await fetch(
                 "/api/workout",
                 {
                     method: "POST",
@@ -29,5 +35,6 @@ export const actions: Actions = {
             );
 
 			throw redirect(303, '/overview');
+        }
     }
 }

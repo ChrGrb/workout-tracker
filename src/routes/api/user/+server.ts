@@ -6,9 +6,9 @@ const prisma = new PrismaClient();
 
 /** @type {import('./$types').RequestHandler} */
 export async function GET({ url }) {
-    const userId = Number(url.searchParams.get('userId') ?? 0);
+    const email = url.searchParams.get('email') ?? "";
 
-    const user = await prisma.user.findUnique({where: { id: userId }});
+    const user = await prisma.user.findUnique({where: { email: email }});
 
     return json(user);
 }

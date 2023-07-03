@@ -4,25 +4,14 @@
   import type { PageData } from "./$types";
   import WorkoutCard from "$lib/components/WorkoutCard.svelte";
   import { goto, invalidate } from "$app/navigation";
-  import { UserIcon } from "svelte-feather-icons";
+  import { LogOutIcon, UserIcon } from "svelte-feather-icons";
+  import { signOut } from "@auth/sveltekit/client";
+  import Button from "$lib/base/Button.svelte";
+  import AddWorkoutCard from "$lib/components/AddWorkoutCard.svelte";
 
   export let data: PageData;
 
   async function addWorkout() {
-    // const workout = {
-    //   userId: data.user.id,
-    //   name: "Test Workout",
-    // };
-
-    // const response = await fetch("/api/workout", {
-    //   method: "POST",
-    //   body: JSON.stringify({ workout: workout }),
-    //   headers: {
-    //     "content-type": "application/json",
-    //   },
-    // });
-
-    // invalidate("app:workouts");
     goto("/overview/workout/addWorkout");
   }
 </script>
@@ -31,9 +20,12 @@
   <div class="flex flex-col gap-12">
     <div class="flex flex-col gap-4">
       <Headline style="large">Overview</Headline>
-      <div class="flex flex-row gap-2">
-        <UserIcon size="24" />
-        <p>{data.user.email}</p>
+      <div class="flex flex-row justify-between">
+        <div class="flex flex-row gap-2">
+          <UserIcon size="24" />
+          <p>{data.user.email}</p>
+        </div>
+        <Button action={signOut} icon={true}><LogOutIcon size="24" /></Button>
       </div>
     </div>
 
@@ -44,6 +36,7 @@
         {#each data.workouts as workout}
           <WorkoutCard {workout} />
         {/each}
+        <AddWorkoutCard addAction={addWorkout} />
       </div>
     </div>
 

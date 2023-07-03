@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Workout } from "@prisma/client";
+  import { PlusIcon } from "svelte-feather-icons";
   import { svelteTime } from "svelte-time";
 
   export let workout: Workout;
