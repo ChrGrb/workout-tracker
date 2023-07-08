@@ -7,9 +7,12 @@ const prisma = new PrismaClient();
 export async function GET({ params }: RequestEvent) {
     const workoutId = Number(params.workoutId);
 
-    const workout = await prisma.workout.findFirst({ where: { id: workoutId }, include: {
-        sets: true,
-    } });
+    const workout = await prisma.workout.findFirst({
+        where: { id: workoutId }, include: {
+            sets: true,
+            workoutType: true,
+        }
+    });
 
     return json(workout);
 }

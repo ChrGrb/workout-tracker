@@ -10,11 +10,12 @@ export async function load({ fetch, cookies, depends, locals }: PageServerLoadEv
         throw error(400, 'User not defined');
     }
 
-    const sessionWithWorkouts = Prisma.validator<Prisma.SessionArgs>()({
-        include: { workouts: true },
-    });
+    const sessionWithWorkoutsWithType = Prisma.validator<Prisma.SessionArgs>()({
+        include: { workouts: { include: { workoutType: true } } }
+    },
+    );
 
-    type SessionWithWorkouts = Prisma.SessionGetPayload<typeof sessionWithWorkouts>
+    type SessionWithWorkoutsWithType = Prisma.SessionGetPayload<typeof sessionWithWorkoutsWithType>
 
 
     depends('app:user');
@@ -34,7 +35,7 @@ export async function load({ fetch, cookies, depends, locals }: PageServerLoadEv
     if (currentSession !== null) {
         depends('app:workouts');
         const responseWorkouts = await fetch("/api/session/" + currentSession.id + "/workouts");
-        workouts = (await responseWorkouts.json()) as SessionWithWorkouts;
+        workouts = (await responseWorkouts.json()) as SessionWithWorkoutsWithType;
     }
 
 

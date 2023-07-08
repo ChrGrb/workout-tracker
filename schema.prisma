@@ -11,11 +11,12 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  workouts  Workout[]
-  createdAt DateTime  @default(now())
-  Session   Session[]
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  workouts     Workout[]
+  createdAt    DateTime      @default(now())
+  sessions     Session[]
+  workoutTypes WorkoutType[]
 }
 
 model Session {
@@ -28,14 +29,23 @@ model Session {
 }
 
 model Workout {
-  id        Int          @id @default(autoincrement())
-  userId    Int
-  user      User         @relation(fields: [userId], references: [id])
-  name      String
-  sessionId Int
-  session   Session      @relation(fields: [sessionId], references: [id])
-  sets      WorkoutSet[]
-  createdAt DateTime     @default(now())
+  id            Int          @id @default(autoincrement())
+  userId        Int
+  user          User         @relation(fields: [userId], references: [id])
+  workoutTypeId Int
+  workoutType   WorkoutType  @relation(fields: [workoutTypeId], references: [id])
+  sessionId     Int
+  session       Session      @relation(fields: [sessionId], references: [id])
+  sets          WorkoutSet[]
+  createdAt     DateTime     @default(now())
+}
+
+model WorkoutType {
+  id      Int       @id @default(autoincrement())
+  userId  Int
+  user    User      @relation(fields: [userId], references: [id])
+  name    String
+  workout Workout[]
 }
 
 model WorkoutSet {

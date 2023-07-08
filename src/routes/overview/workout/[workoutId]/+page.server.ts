@@ -9,14 +9,14 @@ export async function load({ params, fetch, depends }: PageServerLoadEvent) {
 
     depends(params.workoutId + ':sets');
 
-    const workoutWithSets = Prisma.validator<Prisma.WorkoutArgs>()({
-        include: { sets: true },
+    const workoutWithSetsAndType = Prisma.validator<Prisma.WorkoutArgs>()({
+        include: { sets: true, workoutType: true },
     });
 
-    type WorkoutWithSets = Prisma.WorkoutGetPayload<typeof workoutWithSets>
+    type WorkoutWithSetsAndType = Prisma.WorkoutGetPayload<typeof workoutWithSetsAndType>
 
     const responseWorkout = await fetch("/api/workout/" + params.workoutId);
-    const workout = (await responseWorkout.json()) as WorkoutWithSets;
+    const workout = (await responseWorkout.json()) as WorkoutWithSetsAndType;
 
     return {
         workout: workout,

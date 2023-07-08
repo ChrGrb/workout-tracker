@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export async function GET({ url }: RequestEvent) {
     const userId = Number(url.searchParams.get('userId') ?? 0);
 
-    const workouts = await prisma.workout.findMany({ where: { userId: userId } });
+    const workouts = await prisma.workout.findMany({ where: { userId: userId }, include: { workoutType: true } });
 
     return json(workouts);
 }

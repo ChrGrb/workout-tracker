@@ -8,7 +8,8 @@ export async function load({ fetch, cookies, locals }: PageServerLoadEvent) {
     const session = await locals.getSession();
 
     if (!session || !session.user) {
-        throw error(400, 'No user provided');
+        //throw error(400, 'No user provided');
+        return;
     }
 
     try {

@@ -20,7 +20,7 @@
   <ExitButton exitPath={"/overview"} />
   <div class="flex flex-col gap-12">
     <div class="flex flex-col gap-4 pr-24">
-      <Headline>{data.workout.name}</Headline>
+      <Headline>{data.workout.workoutType.name}</Headline>
       <time
         use:svelteTime={{
           timestamp: data.workout.createdAt,
