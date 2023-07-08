@@ -3,7 +3,7 @@
   import Container from "$lib/base/Container.svelte";
   import type { PageData } from "./$types";
   import WorkoutCard from "$lib/components/WorkoutCard.svelte";
-  import { goto, invalidate } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import {
     ChevronRightIcon,
     LogOutIcon,

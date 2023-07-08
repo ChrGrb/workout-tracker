@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit'
 import type { PageServerLoadEvent } from './$types';
-import { Prisma, Workout } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 export async function load({ params, fetch, depends }: PageServerLoadEvent) {
     if (!params.workoutId) {
@@ -10,7 +10,7 @@ export async function load({ params, fetch, depends }: PageServerLoadEvent) {
     depends(params.workoutId + ':sets');
 
     const workoutWithSets = Prisma.validator<Prisma.WorkoutArgs>()({
-        include: {sets: true},
+        include: { sets: true },
     });
 
     type WorkoutWithSets = Prisma.WorkoutGetPayload<typeof workoutWithSets>

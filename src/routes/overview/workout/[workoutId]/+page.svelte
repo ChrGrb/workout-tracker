@@ -8,7 +8,6 @@
   import WorkoutSetCard from "$lib/components/WorkoutSetCard.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
   import { PlusIcon } from "svelte-feather-icons";
-  import { navigating } from "$app/stores";
 
   export let data: PageData;
 

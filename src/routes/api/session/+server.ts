@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';
 import { PrismaClient } from '@prisma/client';
 import type { RequestEvent } from './$types';
 
@@ -15,11 +15,13 @@ export async function GET({ url }: RequestEvent) {
 export async function POST({ request }: RequestEvent) {
     const { session } = await request.json();
 
-    const newSession = await prisma.session.create({
-        data: {
-            ...session
-        }
-    });
-
-    return json(newSession);
+    try {
+        await prisma.session.create({
+            data: {
+                ...session
+            }
+        });
+    } catch (responseError) {
+        throw error(400, (responseError as Error).message);
+    }
 }

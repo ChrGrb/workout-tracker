@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import { PrismaClient } from '@prisma/client';
+import { json, error } from '@sveltejs/kit';
+import { PrismaClient, type Workout } from '@prisma/client';
 import type { RequestEvent } from './$types';
 
 const prisma = new PrismaClient();
@@ -12,16 +12,17 @@ export async function GET({ url }: RequestEvent) {
     return json(workouts);
 }
 
-export async function POST({ request }) {
-    const { workout } = await request.json();
+export async function POST({ request }: RequestEvent) {
+    const { workout } = (await request.json()) as { workout: Workout };
 
-    const newWorkout = await prisma.session.update({
-        where: {
-            id: workout.sessionId
-        },
-        data: { name: workout.name }
-        
-    });
-
-    return json(newWorkout);
+    try {
+        await prisma.session.update({
+            where: {
+                id: workout.sessionId
+            },
+            data: { workouts: { create: workout } }
+        });
+    } catch (responseError) {
+        throw error(400, (responseError as Error).message);
+    }
 }

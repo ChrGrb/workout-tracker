@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit'
 import type { PageServerLoadEvent } from './$types';
-import { Prisma, Workout } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 export async function load({ params, fetch, depends }: PageServerLoadEvent) {
     if (!params.sessionId) {
@@ -14,7 +14,8 @@ export async function load({ params, fetch, depends }: PageServerLoadEvent) {
     type SessionWithWorkouts = Prisma.SessionGetPayload<typeof sessionWithWorkouts>
 
     const responseSession = await fetch("/api/session/" + params.sessionId + "/workouts");
-    const workoutSession = (await responseSession.json()) as WorkoutWithSets;
+
+    const workoutSession = (await responseSession.json()) as SessionWithWorkouts;
 
     return {
         session: workoutSession,

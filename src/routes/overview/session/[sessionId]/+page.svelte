@@ -3,11 +3,8 @@
   import Container from "$lib/base/Container.svelte";
   import { svelteTime } from "svelte-time";
   import type { PageData } from "./$types";
-  import Button from "$lib/base/Button.svelte";
-  import { goto } from "$app/navigation";
   import WorkoutCard from "$lib/components/WorkoutCard.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
-  import { PlusIcon } from "svelte-feather-icons";
 
   export let data: PageData;
 </script>

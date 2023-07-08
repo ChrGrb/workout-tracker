@@ -1,9 +1,14 @@
-import type { PageServerLoadEvent } from './$types';
+import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
 import type { User, Workout, Session } from '@prisma/client';
 import { Prisma } from '@prisma/client';
+import { error } from '@sveltejs/kit';
 
 export async function load({ fetch, cookies, depends, locals }: PageServerLoadEvent) {
     const session = await locals.getSession();
+
+    if (!session || !session.user) {
+        throw error(400, 'User not defined');
+    }
 
     const sessionWithWorkouts = Prisma.validator<Prisma.SessionArgs>()({
         include: { workouts: true },
@@ -47,32 +52,38 @@ export const actions: Actions = {
         const userId = Number(form.get("userId"));
         const session = { userId: userId };
 
-        const response = await fetch(
-            "/api/session",
-            {
-                method: "POST",
-                body: JSON.stringify({ session: session }),
-                headers: {
-                    "content-type": "application/json",
-                },
-            }
-        );
-
-        const responseJson = await response.json();
+        try {
+            await fetch(
+                "/api/session",
+                {
+                    method: "POST",
+                    body: JSON.stringify({ session: session }),
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                }
+            );
+        } catch (responseError) {
+            throw error(400, 'Could not create a new session');
+        }
     },
     finishCurrentSession: async ({ request, fetch }: RequestEvent) => {
         const form = await request.formData();
         const sessionId = Number(form.get("sessionId"));
 
-        await fetch(
-            "/api/session/" + sessionId + "/finish",
-            {
-                method: "POST",
-                body: JSON.stringify({ sessionId: sessionId }),
-                headers: {
-                    "content-type": "application/json",
-                },
-            }
-        );
+        try {
+            await fetch(
+                "/api/session/" + sessionId + "/finish",
+                {
+                    method: "POST",
+                    body: JSON.stringify({ sessionId: sessionId }),
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                }
+            );
+        } catch (responseError) {
+            throw error(400, 'Could not finish current session');
+        }
     }
 }
