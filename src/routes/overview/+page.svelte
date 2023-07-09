@@ -27,7 +27,7 @@
   <div class="flex flex-col gap-12">
     <div class="flex flex-col gap-4">
       <Headline style="large">Overview</Headline>
-      <div class="flex flex-row justify-between">
+      <div class="flex flex-row justify-between items-center">
         <div class="flex flex-row gap-2">
           <UserIcon size="24" />
           <p>{data.user.email}</p>
@@ -84,7 +84,7 @@
           {#each data.sessionsPrevious as session}
             <a href={"/overview/session/" + session.id}>
               <div
-                class="p-4 flex flex-row items-center justify-between gap-2 bg-slate-400 text-white rounded-md"
+                class="card variant-filled p-4 flex flex-row items-center justify-between gap-2"
               >
                 <div class="flex flex-col">
                   <Headline style="small">Session</Headline>

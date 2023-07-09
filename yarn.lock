@@ -327,6 +327,13 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
+"@skeletonlabs/skeleton@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.npmjs.org/@skeletonlabs/skeleton/-/skeleton-1.9.0.tgz#0b297af954b35c011feca9347c2d1e5fa24585a6"
+  integrity sha512-8dPp2l4d7p07FD4PXejY4p4my8SpurHwGPw2SCMvKPVde49js13BTvZ26dWo7pfPuPozrXsOzEF2mZxpSv2W+A==
+  dependencies:
+    esm-env "1.0.0"
+
 "@sveltejs/adapter-auto@^2.0.0":
   version "2.1.0"
   resolved "https://registry.npmjs.org/@sveltejs/adapter-auto/-/adapter-auto-2.1.0.tgz"
@@ -651,6 +658,11 @@ chownr@^2.0.0:
   resolved "https://registry.npmjs.org/chownr/-/chownr-2.0.0.tgz"
   integrity sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==
 
+clsx@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.npmjs.org/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
+  integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
+
 code-red@^1.0.3:
   version "1.0.3"
   resolved "https://registry.npmjs.org/code-red/-/code-red-1.0.3.tgz"
@@ -913,7 +925,7 @@ eslint@^8.28.0:
     strip-json-comments "^3.1.0"
     text-table "^0.2.0"
 
-esm-env@^1.0.0:
+esm-env@1.0.0, esm-env@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/esm-env/-/esm-env-1.0.0.tgz"
   integrity sha512-Cf6VksWPsTuW01vU9Mk/3vRue91Zevka5SjyNf3nEpokFRuqt/KjUQoGAwq9qMmhpLTHmXzSIrFRw8zxWzmFBA==

@@ -20,7 +20,7 @@
     </div>
     <form method="POST" use:enhance>
       <div class="flex flex-col gap-8">
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           {#each data.workoutTypes as workoutType}
             <WorkoutTypeRadioButton
               name={workoutType.name}
@@ -33,7 +33,7 @@
               goto("/overview/workout/addWorkoutType", { invalidateAll: true })}
           />
         </div>
-        <Button type="submit">Add</Button>
+        <Button type="submit" highlight={true}>Add</Button>
       </div>
     </form>
   </div>
