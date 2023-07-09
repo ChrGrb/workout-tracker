@@ -12,6 +12,7 @@
 		"postinstall": "prisma generate"
 	},
 	"devDependencies": {
+		"@skeletonlabs/skeleton": "^1.9.0",
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.20.4",
 		"autoprefixer": "^10.4.14",
@@ -33,6 +34,7 @@
 		"@prisma/client": "^4.16.1",
 		"@sveltejs/adapter-vercel": "^3.0.1",
 		"@vercel/postgres": "^0.4.0",
+		"clsx": "^1.2.1",
 		"prisma": "^4.16.1"
 	}
 }

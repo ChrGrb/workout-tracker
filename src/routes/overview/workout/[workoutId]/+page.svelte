@@ -31,9 +31,11 @@
     <div class="flex flex-col w-full gap-4">
       <div class="flex flex-row justify-between">
         <Headline style="small">Sets</Headline>
-        <Button action={addSet} icon={true}><PlusIcon size="24" /></Button>
+        <Button action={addSet} icon={true} classes="variant-filled-primary"
+          ><PlusIcon size="24" /></Button
+        >
       </div>
-      <div class="flex flex-col gap-2">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
         {#if data.workout.sets}
           {#each data.workout.sets as set}
             <WorkoutSetCard workoutSet={set} />

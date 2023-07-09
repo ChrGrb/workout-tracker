@@ -5,7 +5,7 @@
 </script>
 
 <button
-  class="flex flex-col gap-4 justify-center items-center bg-slate-300 rounded-md p-4 aspect-square text-white text-center"
+  class="card variant-ghost-primary flex flex-col gap-4 justify-center items-center p-4 aspect-square text-center"
   on:click={addAction}
   type="reset"
 >

@@ -17,7 +17,7 @@
   />
   <label
     for={name}
-    class="flex flex-col justify-center rounded-md p-4 aspect-square text-white text-center peer-checked:bg-slate-700 bg-slate-400"
+    class="card flex flex-col justify-center p-4 aspect-square text-center variant-ringed-primary peer-checked:variant-filled-primary"
   >
     <Headline style="small">{name}</Headline>
   </label>

@@ -1,6 +1,6 @@
 <script lang="ts">
+  import Headline from "$lib/base/Headline.svelte";
   import { Prisma, type Workout } from "@prisma/client";
-  import { PlusIcon } from "svelte-feather-icons";
   import { svelteTime } from "svelte-time";
 
   const workoutWithType = Prisma.validator<Prisma.WorkoutArgs>()({
@@ -12,10 +12,10 @@
 </script>
 
 <a
-  class="flex flex-col justify-center bg-slate-400 rounded-md p-4 aspect-square text-white text-center"
+  class="card variant-filled-primary flex flex-col justify-center p-4 aspect-square text-center"
   href={"/overview/workout/" + workout.id}
 >
-  <p class="text-center font-medium text-lg">{workout.workoutType.name}</p>
+  <Headline style="small">{workout.workoutType.name}</Headline>
   <time
     use:svelteTime={{
       timestamp: workout.createdAt,

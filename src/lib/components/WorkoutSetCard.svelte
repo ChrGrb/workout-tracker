@@ -1,12 +1,16 @@
 <script lang="ts">
   import Headline from "$lib/base/Headline.svelte";
   import type { WorkoutSet } from "@prisma/client";
+  import clsx from "clsx";
 
   export let workoutSet: WorkoutSet;
 </script>
 
 <div
-  class="flex flex-col gap-4 justify-center bg-slate-400 rounded-md px-4 py-6 text-white"
+  class={clsx("card flex flex-col gap-4 justify-center px-4 py-6", {
+    "variant-filled-primary": !workoutSet.warmup,
+    "variant-soft-primary": workoutSet.warmup,
+  })}
 >
   <Headline style="small">{workoutSet.warmup ? "Warmup" : "Workout"}</Headline>
   <div class="flex flex-row justify-between">
