@@ -1,20 +1,7 @@
 import { error } from '@sveltejs/kit'
-import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
-import type { Workout, WorkoutSet } from "@prisma/client";
+import type { Actions, RequestEvent } from './$types';
+import type { WorkoutSet } from "@prisma/client";
 import { redirect } from "@sveltejs/kit";
-
-export async function load({ params, fetch }: PageServerLoadEvent) {
-	if (!params.workoutId) {
-		throw error(404, 'Workout not found');
-	}
-
-	const responseWorkout = await fetch("/api/workout/" + params.workoutId);
-	const workout = (await responseWorkout.json()) as Workout;
-
-	return {
-		workout: workout,
-	}
-}
 
 export const actions: Actions = {
 	default: async ({ request, cookies, fetch, params }: RequestEvent) => {

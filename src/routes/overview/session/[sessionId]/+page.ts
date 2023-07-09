@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit'
-import type { PageServerLoadEvent } from './$types';
+import type { PageLoadEvent } from './$types';
 import { Prisma } from '@prisma/client';
 
-export async function load({ params, fetch, depends }: PageServerLoadEvent) {
+export async function load({ params, fetch }: PageLoadEvent) {
     if (!params.sessionId) {
         throw error(404, 'Session not found');
     }

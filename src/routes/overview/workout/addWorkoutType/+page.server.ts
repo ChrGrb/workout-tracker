@@ -19,14 +19,14 @@ export const actions: Actions = {
             throw error(400, 'Workout type name not defined');
         }
 
+        const workoutType: WorkoutType = {
+            name: workoutTypeName
+        } as WorkoutType;
+
         const userResponse = await fetch(
             "/api/user?email=" + email,
         );
         const user = await userResponse.json();
-
-        const workoutType: WorkoutType = {
-            name: workoutTypeName
-        } as WorkoutType;
 
         try {
             await fetch(

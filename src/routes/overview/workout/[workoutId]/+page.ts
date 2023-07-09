@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit'
-import type { PageServerLoadEvent } from './$types';
+import type { PageLoadEvent } from './$types';
 import { Prisma } from '@prisma/client';
 
-export async function load({ params, fetch, depends }: PageServerLoadEvent) {
+export async function load({ params, fetch, depends }: PageLoadEvent) {
     if (!params.workoutId) {
         throw error(404, 'Workout not found');
     }
@@ -12,7 +12,6 @@ export async function load({ params, fetch, depends }: PageServerLoadEvent) {
     const workoutWithSetsAndType = Prisma.validator<Prisma.WorkoutArgs>()({
         include: { sets: true, workoutType: true },
     });
-
     type WorkoutWithSetsAndType = Prisma.WorkoutGetPayload<typeof workoutWithSetsAndType>
 
     const responseWorkout = await fetch("/api/workout/" + params.workoutId);

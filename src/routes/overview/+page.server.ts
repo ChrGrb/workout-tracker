@@ -17,32 +17,36 @@ export async function load({ fetch, cookies, depends, locals }: PageServerLoadEv
 
     type SessionWithWorkoutsWithType = Prisma.SessionGetPayload<typeof sessionWithWorkoutsWithType>
 
-
     depends('app:user');
     const responseUser = await fetch("/api/user?email=" + session.user.email);
     const user = (await responseUser.json()) as User;
 
     depends('app:previousSessions');
-    const responsePreviousSessions = await fetch("/api/session/previous?userId=" + user.id);
-    const previousSessions = (await responsePreviousSessions.json()) as Session[];
-
-    depends('app:currentSession');
-    const responseCurrentSession = await fetch("/api/session/current?userId=" + user.id);
-    const currentSession = (await responseCurrentSession.json()) as Session;
-
-    let workouts;
-
-    if (currentSession !== null) {
-        depends('app:workouts');
-        const responseWorkouts = await fetch("/api/session/" + currentSession.id + "/workouts");
-        workouts = (await responseWorkouts.json()) as SessionWithWorkoutsWithType;
+    const previousSessions = async () => {
+        const responsePreviousSessions = await fetch("/api/session/previous?userId=" + user.id);
+        return (await responsePreviousSessions.json()) as Session[];
     }
 
+    depends('app:currentSession');
+    const currentSessionWorkouts = async () => {
+        const responseCurrentSession = await fetch("/api/session/current?userId=" + user.id);
+        const currentSession = (await responseCurrentSession.json()) as Session;
+
+        if (currentSession !== null) {
+            depends('app:workouts');
+            const responseWorkouts = await fetch("/api/session/" + currentSession.id + "/workouts");
+            return (await responseWorkouts.json()) as SessionWithWorkoutsWithType ?? null;
+        }
+
+        return null;
+    }
 
     return {
-        user: user,
-        sessionCurrent: workouts !== undefined ? workouts : null,
-        sessionsPrevious: previousSessions
+        user,
+        streamed: {
+            currentSessionWorkouts: currentSessionWorkouts(),
+            previousSessions: previousSessions()
+        }
     };
 }
 
