@@ -4,7 +4,7 @@ import type { Session, User, Workout, WorkoutType } from "@prisma/client";
 import { redirect } from "@sveltejs/kit";
 
 
-export async function load({ params, fetch, depends, locals }: PageServerLoadEvent) {
+export async function load({ fetch, depends, locals }: PageServerLoadEvent) {
     const session = await locals.getSession();
 
     if (!session || !session.user) {

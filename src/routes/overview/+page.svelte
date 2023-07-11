@@ -5,7 +5,6 @@
   import WorkoutCard from "$lib/components/WorkoutCard.svelte";
   import { goto } from "$app/navigation";
   import {
-    ChevronRightIcon,
     LogOutIcon,
     PauseIcon,
     PlayIcon,
@@ -14,7 +13,7 @@
   import { signOut } from "@auth/sveltekit/client";
   import Button from "$lib/base/Button.svelte";
   import AddWorkoutCard from "$lib/components/AddWorkoutCard.svelte";
-  import { svelteTime } from "svelte-time";
+  import PreviousSessions from "./components/session/PreviousSessions.svelte";
 
   export let data: PageData;
 
@@ -36,72 +35,57 @@
       </div>
     </div>
 
-    {#if data.sessionCurrent !== null}
-      <div class="flex flex-col gap-8">
-        <Headline style="medium">Current Session</Headline>
+    {#await data.streamed.currentSessionWorkouts then currentSessionWorkouts}
+      {#if currentSessionWorkouts !== null}
+        <div class="flex flex-col gap-8">
+          <Headline style="medium">Current Session</Headline>
 
-        <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {#if data.sessionCurrent.workouts}
-            {#each data.sessionCurrent.workouts as workout}
-              <WorkoutCard {workout} />
-            {/each}
-          {/if}
-          <AddWorkoutCard addAction={addWorkout} />
-        </div>
-      </div>
-
-      <form method="POST" action="?/finishCurrentSession" class="w-full">
-        <input
-          type="text"
-          name="sessionId"
-          value={data.sessionCurrent.id}
-          class="hidden"
-        />
-        <Button type="submit" classes="w-full">
-          <div class="flex flex-row gap-2 justify-center items-center">
-            <p>Finish Session</p>
-            <PauseIcon size="14" />
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {#if currentSessionWorkouts.workouts}
+              {#each currentSessionWorkouts.workouts as workout}
+                <WorkoutCard {workout} />
+              {/each}
+            {/if}
+            <AddWorkoutCard addAction={addWorkout} />
           </div>
-        </Button>
-      </form>
-    {:else}
-      <form method="POST" action="?/createSession">
-        <input type="text" name="userId" value={data.user.id} class="hidden" />
-        <Button type="submit" classes="w-full">
-          <div class="flex flex-row gap-2 justify-center items-center">
-            <p>Start session</p>
-            <PlayIcon size="14" />
-          </div>
-        </Button>
-      </form>
-    {/if}
-
-    {#if data.sessionsPrevious}
-      <div class="flex flex-col gap-8">
-        <Headline style="medium">Previous Sessions</Headline>
-
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {#each data.sessionsPrevious as session}
-            <a href={"/overview/session/" + session.id}>
-              <div
-                class="card variant-filled p-4 flex flex-row items-center justify-between gap-2"
-              >
-                <div class="flex flex-col">
-                  <Headline style="small">Session</Headline>
-                  <time
-                    use:svelteTime={{
-                      timestamp: session.createdAt,
-                      format: "hh:mm · MMMM D",
-                    }}
-                    class="font-light text-sm"
-                  />
-                </div>
-                <ChevronRightIcon size="24" />
-              </div>
-            </a>
-          {/each}
         </div>
-      </div>
-    {/if}
+
+        <form method="POST" action="?/finishCurrentSession" class="w-full">
+          <input
+            type="text"
+            name="sessionId"
+            value={currentSessionWorkouts.id}
+            class="hidden"
+          />
+          <Button type="submit" classes="w-full">
+            <div class="flex flex-row gap-4 justify-center items-center">
+              <p>Finish Session</p>
+              <PauseIcon size="14" />
+            </div>
+          </Button>
+        </form>
+      {:else}
+        <form method="POST" action="?/createSession">
+          <input
+            type="text"
+            name="userId"
+            value={data.user.id}
+            class="hidden"
+          />
+          <Button type="submit" classes="w-full">
+            <div class="flex flex-row gap-4 justify-center items-center">
+              <p>Start session</p>
+              <PlayIcon size="14" />
+            </div>
+          </Button>
+        </form>
+      {/if}
+    {/await}
+
+    {#await data.streamed.previousSessions}
+      <PreviousSessions loading={true} />
+    {:then previousSessions}
+      <PreviousSessions {previousSessions} />
+    {/await}
   </div>
 </Container>
