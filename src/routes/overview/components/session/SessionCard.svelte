@@ -1,10 +1,10 @@
 <script lang="ts">
   import Headline from "$lib/base/Headline.svelte";
-  import type { Session } from "@prisma/client";
+  import type { Session, WorkoutSession } from "@prisma/client";
   import { ChevronRightIcon } from "svelte-feather-icons";
   import { svelteTime } from "svelte-time";
 
-  export let session: Session;
+  export let session: WorkoutSession;
 </script>
 
 <a href={"/overview/session/" + session.id}>
