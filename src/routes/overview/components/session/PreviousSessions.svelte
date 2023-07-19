@@ -1,10 +1,10 @@
 <script lang="ts">
   import Headline from "$lib/base/Headline.svelte";
-  import type { Session } from "@prisma/client";
+  import type { Session, WorkoutSession } from "@prisma/client";
   import SessionCard from "./SessionCard.svelte";
   import SessionCardSkeleton from "./SessionCardSkeleton.svelte";
 
-  export let previousSessions: Session[] = [];
+  export let previousSessions: WorkoutSession[] = [];
   export let loading: boolean = false;
 </script>
 
