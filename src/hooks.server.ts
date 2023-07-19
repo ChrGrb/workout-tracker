@@ -4,11 +4,11 @@ import { GITHUB_ID, GITHUB_SECRET } from "$env/static/private";
 import { redirect, type Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 import type { Provider } from "@auth/core/providers";
+import prismaClient from '$lib/db.server';
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
 
 const unprotectedRoutes = ['/auth'];
-const prisma = new PrismaClient();
+
 
 export const authorization: Handle = (async ({ event, resolve }) => {
   // Protect any routes under /authenticated
@@ -26,7 +26,7 @@ export const authorization: Handle = (async ({ event, resolve }) => {
 const handleAuth: Handle = (async (...args) => {
   const [{ event }] = args;
   return SvelteKitAuth({
-    adapter: PrismaAdapter(prisma),
+    adapter: PrismaAdapter(prismaClient),
     providers: [GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET })],
 
     callbacks: {

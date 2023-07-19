@@ -1,5 +1,5 @@
 import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
-import type { User, Workout, Session } from '@prisma/client';
+import type { User, Workout, Session, WorkoutSession } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 import { error } from '@sveltejs/kit';
 
@@ -24,14 +24,14 @@ export async function load({ fetch, cookies, depends, locals }: PageServerLoadEv
 
     depends('app:previousSessions');
     const previousSessions = async () => {
-        const responsePreviousSessions = await fetch("/api/session/previous?userId=" + user.id);
-        return (await responsePreviousSessions.json()) as Session[];
+        const responsePreviousSessions = await fetch("/api/session/previous?userId=" + session.user?.id);
+        return (await responsePreviousSessions.json()) as WorkoutSession[];
     }
 
     depends('app:currentSession');
     const currentSessionWorkouts = async () => {
         const responseCurrentSession = await fetch("/api/session/current?userId=" + user.id);
-        const currentSession = (await responseCurrentSession.json()) as Session;
+        const currentSession = (await responseCurrentSession.json()) as WorkoutSession;
 
         if (currentSession !== null) {
             const responseWorkouts = await fetch("/api/session/" + currentSession.id + "/workouts");

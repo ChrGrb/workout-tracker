@@ -7,11 +7,11 @@ export async function load({ params, fetch }: PageLoadEvent) {
         throw error(404, 'Session not found');
     }
 
-    const sessionWithWorkoutsWithType = Prisma.validator<Prisma.SessionArgs>()({
+    const sessionWithWorkoutsWithType = Prisma.validator<Prisma.WorkoutSessionArgs>()({
         include: { workouts: { include: { workoutType: true } } },
     });
 
-    type SessionWithWorkoutsWithType = Prisma.SessionGetPayload<typeof sessionWithWorkoutsWithType>
+    type SessionWithWorkoutsWithType = Prisma.WorkoutSessionGetPayload<typeof sessionWithWorkoutsWithType>
 
     const responseSession = await fetch("/api/session/" + params.sessionId + "/workouts");
 

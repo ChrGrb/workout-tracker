@@ -1,12 +1,19 @@
 <script lang="ts">
   import Headline from "$lib/base/Headline.svelte";
-  import { Prisma, type Workout } from "@prisma/client";
   import { svelteTime } from "svelte-time";
 
-  const workoutWithType = Prisma.validator<Prisma.WorkoutArgs>()({
-    include: { workoutType: true },
-  });
-  type WorkoutWithType = Prisma.WorkoutGetPayload<typeof workoutWithType>;
+  type WorkoutWithType = {
+    id: string;
+    userId: string;
+    workoutTypeId: string;
+    sessionId: string;
+    createdAt: Date;
+    workoutType: {
+      id: string;
+      userId: string;
+      name: string;
+    };
+  };
 
   export let workout: WorkoutWithType;
 </script>

@@ -1,6 +1,5 @@
 import type { Session as OGSession, DefaultSession } from '@auth/core/types';
 import { SvelteKitAuthConfig as OGSvelteKitAuthConfig } from '@auth/sveltekit';
-import type { CustomAdapter } from '$lib/prisma/client';
 
 // TODO: revert this when they fix this...
 declare module '@auth/sveltekit/node_modules/@auth/core/types' {
@@ -19,11 +18,5 @@ declare module '@sveltejs/kit' {
     interface HttpError extends Error {
         status: number;
         body: App.Error;
-    }
-}
-
-declare module '@auth/sveltekit' {
-    interface SvelteKitAuthConfig extends OGSvelteKitAuthConfig {
-        adapter: CustomAdapter;
     }
 }
