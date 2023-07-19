@@ -11,7 +11,6 @@ export const actions: Actions = {
             throw error(400, 'User not defined');
         }
 
-        const email = session.user.email;
         const form = await request.formData();
         const workoutTypeName = form.get('workoutTypeName');
 
@@ -23,14 +22,9 @@ export const actions: Actions = {
             name: workoutTypeName
         } as WorkoutType;
 
-        const userResponse = await fetch(
-            "/api/user?email=" + email,
-        );
-        const user = await userResponse.json();
-
         try {
             await fetch(
-                "/api/user/" + user.id + "/workoutTypes",
+                "/api/user/" + session.user.id + "/workoutTypes",
                 {
                     method: "POST",
                     body: JSON.stringify({ workoutType: workoutType }),

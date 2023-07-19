@@ -5,10 +5,10 @@ import type { RequestEvent } from './$types';
 const prisma = new PrismaClient();
 
 export async function POST({ params }: RequestEvent) {
-    const sessionId = Number(params.sessionId);
+    const sessionId = params.sessionId;
 
     try {
-        await prisma.session.update({
+        await prisma.workoutSession.update({
             where: {
                 id: sessionId,
             },

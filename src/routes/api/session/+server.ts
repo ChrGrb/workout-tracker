@@ -5,9 +5,9 @@ import type { RequestEvent } from './$types';
 const prisma = new PrismaClient();
 
 export async function GET({ url }: RequestEvent) {
-    const userId = Number(url.searchParams.get('userId') ?? 0);
+    const userId = url.searchParams.get('userId') ?? "";
 
-    const sessions = await prisma.session.findMany({ where: { userId: userId } });
+    const sessions = await prisma.workoutSession.findMany({ where: { userId: userId } });
 
     return json(sessions);
 }
@@ -16,7 +16,7 @@ export async function POST({ request }: RequestEvent) {
     const { session } = await request.json();
 
     try {
-        await prisma.session.create({
+        await prisma.workoutSession.create({
             data: {
                 ...session
             }

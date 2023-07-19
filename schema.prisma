@@ -1,7 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["jsonProtocol"]
-  output          = "node_modules/@prisma/client/.prisma/client/"
 }
 
 datasource db {
@@ -11,47 +10,88 @@ datasource db {
   shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
 
-model User {
-  id           Int           @id @default(autoincrement())
-  email        String        @unique
-  workouts     Workout[]
-  createdAt    DateTime      @default(now())
-  sessions     Session[]
-  workoutTypes WorkoutType[]
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
-  id        Int       @id @default(autoincrement())
-  userId    Int
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id              String           @id @default(cuid())
+  name            String?
+  email           String?          @unique
+  emailVerified   DateTime?
+  image           String?
+  accounts        Account[]
+  sessions        Session[]
+  workouts        Workout[]
+  workoutSessions WorkoutSession[]
+  workoutTypes    WorkoutType[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model WorkoutSession {
+  id        String    @id @default(cuid())
+  userId    String
   user      User      @relation(fields: [userId], references: [id])
   workouts  Workout[]
   finished  Boolean   @default(false)
   createdAt DateTime  @default(now())
+
+  @@unique([id])
 }
 
 model Workout {
-  id            Int          @id @default(autoincrement())
-  userId        Int
-  user          User         @relation(fields: [userId], references: [id])
-  workoutTypeId Int
-  workoutType   WorkoutType  @relation(fields: [workoutTypeId], references: [id])
-  sessionId     Int
-  session       Session      @relation(fields: [sessionId], references: [id])
+  id            String         @id @default(cuid())
+  userId        String
+  user          User           @relation(fields: [userId], references: [id])
+  workoutTypeId String
+  workoutType   WorkoutType    @relation(fields: [workoutTypeId], references: [id])
+  sessionId     String
+  session       WorkoutSession @relation(fields: [sessionId], references: [id])
   sets          WorkoutSet[]
-  createdAt     DateTime     @default(now())
+  createdAt     DateTime       @default(now())
 }
 
 model WorkoutType {
-  id      Int       @id @default(autoincrement())
-  userId  Int
+  id      String    @id @default(cuid())
+  userId  String
   user    User      @relation(fields: [userId], references: [id])
   name    String
   workout Workout[]
 }
 
 model WorkoutSet {
-  id        Int      @id @default(autoincrement())
-  workoutId Int
+  id        String   @id @default(cuid())
+  workoutId String
   workout   Workout  @relation(fields: [workoutId], references: [id])
   reps      Int
   weight    Float

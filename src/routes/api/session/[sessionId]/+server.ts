@@ -1,15 +1,16 @@
 import { error } from "@sveltejs/kit";
 import type { RequestEvent } from "./$types";
 import { PrismaClient } from "@prisma/client";
+import { json } from "@sveltejs/kit";
 
 const prisma = new PrismaClient();
 
 export async function POST({ request, params }: RequestEvent) {
-    const sessionId = Number(params.sessionId);
+    const sessionId = params.sessionId;
     const { workout } = await request.json();
 
     try {
-        await prisma.session.update({
+        await prisma.workoutSession.update({
             where: {
                 id: sessionId
             },
@@ -22,4 +23,6 @@ export async function POST({ request, params }: RequestEvent) {
     } catch (responseError) {
         throw error(400, (responseError as Error).message);
     }
+
+    return json(workout);
 }
