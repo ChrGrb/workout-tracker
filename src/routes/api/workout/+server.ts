@@ -5,7 +5,7 @@ import type { RequestEvent } from './$types';
 const prisma = new PrismaClient();
 
 export async function GET({ url }: RequestEvent) {
-    const userId = Number(url.searchParams.get('userId') ?? 0);
+    const userId = url.searchParams.get('userId') ?? "";
 
     const workouts = await prisma.workout.findMany({ where: { userId: userId }, include: { workoutType: true } });
 
@@ -16,7 +16,7 @@ export async function POST({ request }: RequestEvent) {
     const { workout } = (await request.json()) as { workout: Workout };
 
     try {
-        await prisma.session.update({
+        await prisma.workoutSession.update({
             where: {
                 id: workout.sessionId
             },

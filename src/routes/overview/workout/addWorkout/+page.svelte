@@ -25,7 +25,6 @@
             <WorkoutTypeRadioButton
               name={workoutType.name}
               id={workoutType.id}
-              isSelected={false}
             />
           {/each}
           <AddWorkoutTypeButton

@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit'
 import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
-import type { Session, User, Workout, WorkoutType } from "@prisma/client";
+import type { Workout, WorkoutSession, WorkoutType } from "@prisma/client";
 import { redirect } from "@sveltejs/kit";
 
 
@@ -11,13 +11,8 @@ export async function load({ fetch, depends, locals }: PageServerLoadEvent) {
         throw error(400, 'User not defined');
     }
 
-    depends('app:user');
-    const responseUser = await fetch("/api/user?email=" + session.user.email);
-    const user = (await responseUser.json()) as User;
-
-
     depends('app:workoutTypes');
-    const responseWorkoutTypes = await fetch("/api/user/" + user.id + "/workoutTypes");
+    const responseWorkoutTypes = await fetch("/api/user/" + session.user.id + "/workoutTypes");
     const workoutTypes = (await responseWorkoutTypes.json()) as WorkoutType[];
 
     return {
@@ -33,25 +28,18 @@ export const actions: Actions = {
             throw error(400, 'User not defined');
         }
 
-        const email = session.user.email;
         const form = await request.formData();
-        const workoutTypeId = Number(form.get('workout-type-id'));
+        const workoutTypeId = form.get('workout-type-id');
 
         if (!workoutTypeId) {
             throw error(400, 'Workout type not defined');
         }
 
-        const userResponse = await fetch(
-            "/api/user?email=" + email,
-        );
-        const user = await userResponse.json();
-
-
-        const responseSession = await fetch("/api/session/current?userId=" + user.id);
-        const workoutSession = (await responseSession.json()) as Session;
+        const responseWorkoutSession = await fetch("/api/session/current?userId=" + session.user.id);
+        const workoutSession = (await responseWorkoutSession.json()) as WorkoutSession;
 
         const workout: Workout = {
-            userId: user.id,
+            userId: session.user.id,
             workoutTypeId: workoutTypeId
         } as Workout;
 

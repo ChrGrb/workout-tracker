@@ -10,15 +10,16 @@ export async function load({ fetch, cookies, depends, locals }: PageServerLoadEv
         throw error(400, 'User not defined');
     }
 
-    const sessionWithWorkoutsWithType = Prisma.validator<Prisma.SessionArgs>()({
+    const workoutSessionWithWorkoutsWithType = Prisma.validator<Prisma.WorkoutSessionArgs>()({
         include: { workouts: { include: { workoutType: true } } }
     },
     );
 
-    type SessionWithWorkoutsWithType = Prisma.SessionGetPayload<typeof sessionWithWorkoutsWithType>
+    type WorkoutSessionWithWorkoutsWithType = Prisma.WorkoutSessionGetPayload<typeof workoutSessionWithWorkoutsWithType>
+
 
     depends('app:user');
-    const responseUser = await fetch("/api/user?email=" + session.user.email);
+    const responseUser = await fetch("/api/user?id=" + session.user.id);
     const user = (await responseUser.json()) as User;
 
     depends('app:previousSessions');
@@ -33,9 +34,8 @@ export async function load({ fetch, cookies, depends, locals }: PageServerLoadEv
         const currentSession = (await responseCurrentSession.json()) as Session;
 
         if (currentSession !== null) {
-            depends('app:workouts');
             const responseWorkouts = await fetch("/api/session/" + currentSession.id + "/workouts");
-            return (await responseWorkouts.json()) as SessionWithWorkoutsWithType ?? null;
+            return (await responseWorkouts.json()) as WorkoutSessionWithWorkoutsWithType ?? null;
         }
 
         return null;
@@ -52,17 +52,21 @@ export async function load({ fetch, cookies, depends, locals }: PageServerLoadEv
 
 
 export const actions: Actions = {
-    createSession: async ({ request, fetch }: RequestEvent) => {
-        const form = await request.formData();
-        const userId = Number(form.get("userId"));
-        const session = { userId: userId };
+    createSession: async ({ request, fetch, locals }: RequestEvent) => {
+        const session = await locals.getSession();
+
+        if (!session || !session.user) {
+            throw error(400, 'User not defined');
+        }
+
+        const workoutSession = { userId: session.user.id };
 
         try {
             await fetch(
                 "/api/session",
                 {
                     method: "POST",
-                    body: JSON.stringify({ session: session }),
+                    body: JSON.stringify({ session: workoutSession }),
                     headers: {
                         "content-type": "application/json",
                     },
@@ -74,7 +78,7 @@ export const actions: Actions = {
     },
     finishCurrentSession: async ({ request, fetch }: RequestEvent) => {
         const form = await request.formData();
-        const sessionId = Number(form.get("sessionId"));
+        const sessionId = form.get("sessionId");
 
         try {
             await fetch(

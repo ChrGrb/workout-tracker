@@ -2,8 +2,7 @@
   import Headline from "$lib/base/Headline.svelte";
 
   export let name: string;
-  export let id: number;
-  export let isSelected: boolean;
+  export let id: string;
 </script>
 
 <div>
