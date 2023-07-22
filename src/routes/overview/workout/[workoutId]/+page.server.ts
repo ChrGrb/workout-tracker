@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit'
-import type { PageLoadEvent } from './$types';
+import type { PageServerLoadEvent } from './$types';
 import { Prisma } from '@prisma/client';
 
-export async function load({ params, fetch }: PageLoadEvent) {
+export async function load({ params, fetch }: PageServerLoadEvent) {
     if (!params.workoutId) {
         throw error(404, 'Workout not found');
     }
