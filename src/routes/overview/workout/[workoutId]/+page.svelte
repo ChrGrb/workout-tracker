@@ -34,6 +34,27 @@
         }}
       />
     </div>
+    {#if data.recommendations}
+      <div class="flex flex-col gap-2 card variant-soft-success p-4">
+        <Headline style="small">Recommendation</Headline>
+        <div class="flex flex-row w-full basis-1/2">
+          <div class="flex flex-row basis-1/2">
+            <p>
+              <span class="font-semibold">Reps </span>
+              {data.recommendations.recommendedReps}
+            </p>
+            <p />
+          </div>
+          <div class="flex flex-row basis-1/2">
+            <p>
+              <span class="font-semibold">Weight </span>
+              {data.recommendations.recommendedWeight} kg
+            </p>
+            <p />
+          </div>
+        </div>
+      </div>
+    {/if}
     <div class="flex flex-col w-full gap-4">
       <div class="flex flex-row justify-between items-center">
         <Headline style="small">Sets</Headline>
