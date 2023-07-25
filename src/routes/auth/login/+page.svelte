@@ -4,6 +4,8 @@
   import Headline from "$lib/base/Headline.svelte";
   import Button from "$lib/base/Button.svelte";
   import Container from "$lib/base/Container.svelte";
+  import SocialButton from "./components/SocialButton.svelte";
+  import { ConfiguredProviders } from "$lib/types/provider";
 </script>
 
 <Container>
@@ -22,9 +24,17 @@
       </span>
       <Button action={() => signOut()}>Sign out</Button>
     {:else}
-      <Headline style="small">You are not signed in</Headline>
-      <br />
-      <Button action={() => signIn("github")}>Sign In with GitHub</Button>
+      <Headline style="small">Please sign in</Headline>
+      <div class="flex flex-col gap-5">
+        <SocialButton
+          provider={ConfiguredProviders.github}
+          providerName="GitHub"
+        />
+        <SocialButton
+          provider={ConfiguredProviders.google}
+          providerName="Google"
+        />
+      </div>
     {/if}
   </div>
 </Container>
