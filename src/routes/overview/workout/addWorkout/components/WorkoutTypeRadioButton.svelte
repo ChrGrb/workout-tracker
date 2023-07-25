@@ -3,12 +3,15 @@
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import { Trash2Icon } from "svelte-feather-icons";
+  import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
 
   export let name: string;
   export let id: string;
   export let required = false;
   export let group = "";
   export let userId: string;
+
+  let form: HTMLFormElement;
 </script>
 
 <div>
@@ -32,11 +35,12 @@
       action="?/deleteWorkoutType"
       class="absolute top-2 right-2"
       use:enhance
+      bind:this={form}
     >
       <input type="text" name="workoutTypeId" value={id} class="hidden" />
       <input type="text" name="userId" value={userId} class="hidden" />
       <Button
-        type="submit"
+        action={() => confirmDelete(form, "workout type")}
         classes="variant-soft-error bg-transparent text-inherit transition-all"
         icon={true}
       >

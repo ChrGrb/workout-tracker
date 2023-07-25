@@ -23,6 +23,7 @@
     type ModalComponent,
     type ModalSettings,
   } from "@skeletonlabs/skeleton";
+  import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
 
   export let data: PageData;
 
@@ -30,7 +31,7 @@
     goto("/overview/workout/addWorkout");
   }
 
-  const modalComponent: ModalComponent = {
+  const modalSettingsComponent: ModalComponent = {
     // Pass a reference to your custom component
     ref: SettingsDrawer,
     // Add the component properties as key/value pairs
@@ -39,22 +40,24 @@
     slot: "<p>Skeleton</p>",
   };
 
-  function triggerModal() {
+  function openSettings() {
     console.log("modal trigger");
     const modal: ModalSettings = {
       type: "component",
       // Pass the component directly:
-      component: modalComponent,
+      component: modalSettingsComponent,
     };
     modalStore.trigger(modal);
   }
+
+  let form: HTMLFormElement;
 </script>
 
 <Container>
   <div class="flex flex-col gap-12">
     <div class="flex flex-row gap-4 justify-between">
       <Headline style="large">Overview</Headline>
-      <Button action={triggerModal} icon={true}>
+      <Button action={openSettings} icon={true}>
         <SettingsIcon size="24" />
       </Button>
     </div>
@@ -95,14 +98,23 @@
             </Button>
           </form>
 
-          <form method="POST" action="?/deleteCurrentSession" use:enhance>
+          <form
+            method="POST"
+            action="?/deleteCurrentSession"
+            use:enhance
+            bind:this={form}
+          >
             <input
               type="text"
               name="sessionId"
               value={currentSessionWorkouts.id}
               class="hidden"
             />
-            <Button type="submit" classes="variant-soft-error" icon={true}>
+            <Button
+              action={() => confirmDelete(form, "session")}
+              classes="variant-soft-error"
+              icon={true}
+            >
               <div class="flex flex-row gap-4 justify-center items-center">
                 <Trash2Icon size="18" />
               </div>

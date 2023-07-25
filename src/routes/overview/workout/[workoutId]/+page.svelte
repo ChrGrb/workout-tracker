@@ -11,12 +11,15 @@
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
   import { enhance } from "$app/forms";
+  import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
 
   export let data: PageData;
 
   async function addSet() {
     goto("/overview/workout/" + data.workout.id + "/addSet");
   }
+
+  let form: HTMLFormElement;
 </script>
 
 <Container>
@@ -57,6 +60,7 @@
         action="?/deleteCurrentWorkout"
         class="w-full grow"
         use:enhance
+        bind:this={form}
       >
         <input
           type="text"
@@ -64,7 +68,10 @@
           value={data.workout.id}
           class="hidden"
         />
-        <Button type="submit" classes="w-full variant-soft-error">
+        <Button
+          action={() => confirmDelete(form, "workout")}
+          classes="w-full variant-soft-error"
+        >
           <div class="flex flex-row gap-4 justify-center items-center">
             <p>Delete Workout</p>
             <Trash2Icon size="14" />

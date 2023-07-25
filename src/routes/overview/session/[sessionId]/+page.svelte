@@ -10,8 +10,11 @@
   import { Trash2Icon } from "svelte-feather-icons";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
+  import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
 
   export let data: PageData;
+
+  let form: HTMLFormElement;
 </script>
 
 <Container>
@@ -50,6 +53,7 @@
       action="?/deleteCurrentSession"
       class="w-full grow"
       use:enhance
+      bind:this={form}
     >
       <input
         type="text"
@@ -57,7 +61,10 @@
         value={data.session.id}
         class="hidden"
       />
-      <Button type="submit" classes="w-full variant-soft-error">
+      <Button
+        action={() => confirmDelete(form, "session")}
+        classes="w-full variant-soft-error"
+      >
         <div class="flex flex-row gap-4 justify-center items-center">
           <p>Delete Session</p>
           <Trash2Icon size="14" />
