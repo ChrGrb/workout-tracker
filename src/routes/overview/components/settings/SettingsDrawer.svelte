@@ -1,13 +1,7 @@
 <script lang="ts">
   import Button from "$lib/base/Button.svelte";
   import { signOut } from "@auth/sveltekit/client";
-  import {
-    AtSignIcon,
-    LogOutIcon,
-    SettingsIcon,
-    UserIcon,
-    XIcon,
-  } from "svelte-feather-icons";
+  import { LogOutIcon, XIcon } from "svelte-feather-icons";
   import { Avatar, LightSwitch, modalStore } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
   import type { User } from "@prisma/client";
@@ -21,7 +15,6 @@
     .map((word) => word.at(0))
     .join("")
     .slice(0, 2);
-  console.log(initials);
 </script>
 
 {#if $modalStore[0]}
