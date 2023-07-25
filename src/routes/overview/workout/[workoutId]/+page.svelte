@@ -29,7 +29,7 @@
       />
     </div>
     <div class="flex flex-col w-full gap-4">
-      <div class="flex flex-row justify-between">
+      <div class="flex flex-row justify-between items-center">
         <Headline style="small">Sets</Headline>
         <Button action={addSet} icon={true} classes="variant-filled-primary"
           ><PlusIcon size="24" /></Button
