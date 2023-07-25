@@ -1,12 +1,13 @@
 <script lang="ts">
   import Headline from "$lib/base/Headline.svelte";
   import Container from "$lib/base/Container.svelte";
-  import type { PageData } from "./$types";
   import Button from "$lib/base/Button.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
+  import { enhance } from "$app/forms";
 
-  export let data: PageData;
+  let workoutTypeName = "";
+  $: isInvalid = workoutTypeName.length === 0;
 </script>
 
 <Container>
@@ -15,7 +16,7 @@
     <div class="flex flex-col gap-4">
       <Headline>Add <br /> Workout Type</Headline>
     </div>
-    <form method="POST">
+    <form method="POST" use:enhance>
       <div class="flex flex-col gap-8">
         <div class="flex flex-col gap-4">
           <TextInput
@@ -23,10 +24,12 @@
             id="workoutTypeName"
             type="text"
             label="Name"
+            required={true}
+            bind:input={workoutTypeName}
           />
         </div>
 
-        <Button type="submit">Add</Button>
+        <Button type="submit" disabled={isInvalid}>Add</Button>
       </div>
     </form>
   </div>

@@ -6,6 +6,7 @@
   export let icon = false;
   export let highlight = false;
   export let classes = "";
+  export let disabled = false;
 </script>
 
 <button
@@ -15,5 +16,8 @@
     "variant-filled-primary": highlight,
   })}
   on:click={action}
-  {type}><slot /></button
+  {disabled}
+  {type}
 >
+  <slot />
+</button>

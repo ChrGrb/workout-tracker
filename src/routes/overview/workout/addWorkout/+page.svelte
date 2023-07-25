@@ -10,6 +10,9 @@
   import { enhance } from "$app/forms";
 
   export let data: PageData;
+
+  let workoutTypeSelection = "";
+  $: isInvalid = workoutTypeSelection.length === 0;
 </script>
 
 <Container>
@@ -25,6 +28,8 @@
             <WorkoutTypeRadioButton
               name={workoutType.name}
               id={workoutType.id}
+              bind:group={workoutTypeSelection}
+              required={true}
             />
           {/each}
           <AddWorkoutTypeButton
@@ -32,7 +37,7 @@
               goto("/overview/workout/addWorkoutType", { invalidateAll: true })}
           />
         </div>
-        <Button type="submit" highlight={true}>Add</Button>
+        <Button type="submit" disabled={isInvalid}>Add</Button>
       </div>
     </form>
   </div>
