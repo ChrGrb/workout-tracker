@@ -7,7 +7,7 @@
 
 <button
   class={clsx(
-    "card variant-ghost-primary flex flex-col gap-4 justify-center items-center p-4 aspect-square text-center"
+    "card variant-soft-primary flex flex-col gap-4 justify-center items-center p-4 aspect-square text-center text-primary-700"
   )}
   on:click={addAction}
 >

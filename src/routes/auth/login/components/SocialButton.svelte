@@ -1,0 +1,23 @@
+<script lang="ts">
+  import { signIn } from "@auth/sveltekit/client";
+  import clsx from "clsx";
+  import SocialIcon from "./SocialIcon.svelte";
+  import { ConfiguredProviders } from "$lib/types/provider";
+
+  export let provider: ConfiguredProviders;
+  export let providerName: string;
+</script>
+
+<button
+  type="button"
+  on:click={() => signIn(provider)}
+  class={clsx("btn variant-filled pl-1 items-start justify-start py-1", {
+    "bg-[#333] text-white": provider === ConfiguredProviders.github,
+    "bg-white text-black": provider === ConfiguredProviders.google,
+  })}
+>
+  <div class="flex flex-row gap-4 justify-start items-center">
+    <SocialIcon {provider} />
+    <p>Continue with {providerName}</p>
+  </div>
+</button>
