@@ -19,9 +19,13 @@ export async function load({ params, fetch }: PageServerLoadEvent) {
     const responseWorkoutActive = await fetch("/api/workout/" + params.workoutId + "/isActive");
     const { active } = (await responseWorkoutActive.json()) as { active: boolean };
 
+    const responseWorkoutRecommendations = await fetch("/api/workout/" + params.workoutId + "/recommendations");
+    const recommendations = (await responseWorkoutRecommendations.json()) as { recommendedWeight: number, recommendedReps: number } | null;
+
     return {
         workout: workout,
-        workoutActive: active
+        workoutActive: active,
+        recommendations: recommendations
     }
 };
 
