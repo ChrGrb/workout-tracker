@@ -94,5 +94,23 @@ export const actions: Actions = {
         } catch (responseError) {
             throw error(400, 'Could not finish current session');
         }
+    },
+    deleteCurrentSession: async ({ request, fetch }: RequestEvent) => {
+        const form = await request.formData();
+        const sessionId = form.get("sessionId");
+
+        try {
+            await fetch(
+                "/api/session/" + sessionId,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                }
+            );
+        } catch (responseError) {
+            throw error(400, 'Could not finish current session');
+        }
     }
 }

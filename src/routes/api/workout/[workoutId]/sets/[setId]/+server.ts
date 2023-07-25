@@ -5,27 +5,15 @@ import { error } from "@sveltejs/kit";
 
 const prisma = new PrismaClient();
 
-export async function GET({ params }: RequestEvent) {
-    const workoutId = params.workoutId;
-
-    const workout = await prisma.workout.findFirst({
-        where: { id: workoutId }, include: {
-            sets: true,
-            workoutType: true,
-        }
-    });
-
-    return json(workout);
-}
-
 export async function DELETE({ params }: RequestEvent) {
     const workoutId = params.workoutId;
+    const setId = params.setId;
 
-    let deletedWorkout = null;
+    let deletedSet = null;
 
     try {
-        deletedWorkout = await prisma.workout.delete({
-            where: { id: workoutId },
+        deletedSet = await prisma.workoutSet.delete({
+            where: { id: setId },
             select: {
                 id: true,
             }
@@ -34,5 +22,5 @@ export async function DELETE({ params }: RequestEvent) {
         throw error(400, (responseError as Error).message);
     }
 
-    return json(deletedWorkout);
+    return json(deletedSet);
 }

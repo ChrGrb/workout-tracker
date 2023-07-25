@@ -8,12 +8,14 @@
     LogOutIcon,
     PauseIcon,
     PlayIcon,
+    Trash2Icon,
     UserIcon,
   } from "svelte-feather-icons";
   import { signOut } from "@auth/sveltekit/client";
   import Button from "$lib/base/Button.svelte";
   import AddWorkoutCard from "$lib/components/AddWorkoutCard.svelte";
   import PreviousSessions from "./components/session/PreviousSessions.svelte";
+  import { enhance } from "$app/forms";
 
   export let data: PageData;
 
@@ -50,20 +52,41 @@
           </div>
         </div>
 
-        <form method="POST" action="?/finishCurrentSession" class="w-full">
-          <input
-            type="text"
-            name="sessionId"
-            value={currentSessionWorkouts.id}
-            class="hidden"
-          />
-          <Button type="submit" classes="w-full">
-            <div class="flex flex-row gap-4 justify-center items-center">
-              <p>Finish Session</p>
-              <PauseIcon size="14" />
-            </div>
-          </Button>
-        </form>
+        <div class="flex flex-row w-full gap-4">
+          <form
+            method="POST"
+            action="?/finishCurrentSession"
+            class="w-full grow"
+            use:enhance
+          >
+            <input
+              type="text"
+              name="sessionId"
+              value={currentSessionWorkouts.id}
+              class="hidden"
+            />
+            <Button type="submit" classes="w-full">
+              <div class="flex flex-row gap-4 justify-center items-center">
+                <p>Finish Session</p>
+                <PauseIcon size="14" />
+              </div>
+            </Button>
+          </form>
+
+          <form method="POST" action="?/deleteCurrentSession" use:enhance>
+            <input
+              type="text"
+              name="sessionId"
+              value={currentSessionWorkouts.id}
+              class="hidden"
+            />
+            <Button type="submit" classes="variant-soft-error" icon={true}>
+              <div class="flex flex-row gap-4 justify-center items-center">
+                <Trash2Icon size="18" />
+              </div>
+            </Button>
+          </form>
+        </div>
       {:else}
         <form method="POST" action="?/createSession">
           <input

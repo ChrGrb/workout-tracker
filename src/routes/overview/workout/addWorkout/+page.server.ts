@@ -21,7 +21,7 @@ export async function load({ fetch, depends, locals }: PageServerLoadEvent) {
 }
 
 export const actions: Actions = {
-    default: async ({ request, fetch, locals }: RequestEvent) => {
+    addWorkout: async ({ request, fetch, locals }: RequestEvent) => {
         const session = await locals.getSession();
 
         if (!session || !session.user) {
@@ -45,7 +45,7 @@ export const actions: Actions = {
 
         try {
             await fetch(
-                "/api/session/" + workoutSession.id,
+                "/api/session/" + workoutSession.id + "/addWorkout",
                 {
                     method: "POST",
                     body: JSON.stringify({ workout: workout }),
@@ -59,5 +59,24 @@ export const actions: Actions = {
         }
 
         throw redirect(303, '/overview');
+    },
+    deleteWorkoutType: async ({ request, fetch }: RequestEvent) => {
+        const form = await request.formData();
+        const workoutTypeId = form.get("workoutTypeId");
+        const userId = form.get("userId");
+
+        try {
+            await fetch(
+                "/api/user/" + userId + "/workoutTypes/" + workoutTypeId,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                }
+            );
+        } catch (responseError) {
+            throw error(400, 'Could not delete workout type with id: ' + workoutTypeId);
+        }
     }
 }

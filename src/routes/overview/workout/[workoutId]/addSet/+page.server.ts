@@ -11,6 +11,8 @@ export const actions: Actions = {
 		const reps = Number(form.get("reps"));
 		const weight = Number(form.get("weight"));
 
+		console.log(form.get("isWarmup"));
+
 		const workoutSet: WorkoutSet = {
 			reps: reps,
 			weight: weight,

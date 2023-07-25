@@ -14,14 +14,20 @@ export async function GET({ url }: RequestEvent) {
 
 export async function POST({ request }: RequestEvent) {
     const { session } = await request.json();
+    let createdSession = null;
 
     try {
-        await prisma.workoutSession.create({
+        createdSession = await prisma.workoutSession.create({
             data: {
                 ...session
+            },
+            select: {
+                id: true,
             }
         });
     } catch (responseError) {
         throw error(400, (responseError as Error).message);
     }
+
+    return json(createdSession);
 }
