@@ -6,8 +6,17 @@
   import CheckboxInput from "$lib/base/input/CheckboxInput.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
+  import { enhance } from "$app/forms";
 
   export let data: PageData;
+  let repetitions = "";
+  let weight = "";
+
+  $: isInvalid =
+    repetitions.length === 0 ||
+    +repetitions < 0 ||
+    weight.length === 0 ||
+    +weight < 0;
 </script>
 
 <Container>
@@ -16,15 +25,27 @@
     <div class="flex flex-col gap-4">
       <Headline>Add <br /> Set</Headline>
     </div>
-    <form method="POST">
+    <form method="POST" use:enhance>
       <div class="flex flex-col gap-8">
         <div class="flex flex-col gap-4">
           <CheckboxInput name="isWarmup" id="isWarmup" label="Warmup" />
-          <TextInput name="reps" id="reps" type="number" label="Repetitions" />
-          <TextInput name="weight" id="weight" type="number" label="Weight" />
+          <TextInput
+            name="reps"
+            id="reps"
+            type="number"
+            label="Repetitions"
+            bind:input={repetitions}
+          />
+          <TextInput
+            name="weight"
+            id="weight"
+            type="number"
+            label="Weight"
+            bind:input={weight}
+          />
         </div>
 
-        <Button type="submit">Add</Button>
+        <Button type="submit" disabled={isInvalid}>Add</Button>
       </div>
     </form>
   </div>

@@ -3,6 +3,8 @@
 
   export let name: string;
   export let id: string;
+  export let required = false;
+  export let group = "";
 </script>
 
 <div>
@@ -12,7 +14,8 @@
     value={id}
     type="radio"
     class="hidden peer"
-    required
+    bind:group
+    {required}
   />
   <label
     for={name}
