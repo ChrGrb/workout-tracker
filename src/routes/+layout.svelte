@@ -1,7 +1,7 @@
 <script lang="ts">
-  import "@skeletonlabs/skeleton/themes/theme-modern.css";
+  import "../theme.postcss";
   import "@skeletonlabs/skeleton/styles/skeleton.css";
-  import { fade, fly } from "svelte/transition";
+  import { fade } from "svelte/transition";
   import "../app.css";
 
   export let data;
