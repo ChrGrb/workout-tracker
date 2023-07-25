@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["jsonProtocol"]
+  previewFeatures = []
 }
 
 datasource db {
@@ -61,7 +61,7 @@ model VerificationToken {
 model WorkoutSession {
   id        String    @id @default(cuid())
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   workouts  Workout[]
   finished  Boolean   @default(false)
   createdAt DateTime  @default(now())
@@ -76,7 +76,7 @@ model Workout {
   workoutTypeId String
   workoutType   WorkoutType    @relation(fields: [workoutTypeId], references: [id])
   sessionId     String
-  session       WorkoutSession @relation(fields: [sessionId], references: [id])
+  session       WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sets          WorkoutSet[]
   createdAt     DateTime       @default(now())
 }
@@ -92,7 +92,7 @@ model WorkoutType {
 model WorkoutSet {
   id        String   @id @default(cuid())
   workoutId String
-  workout   Workout  @relation(fields: [workoutId], references: [id])
+  workout   Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
   reps      Int
   weight    Float
   warmup    Boolean

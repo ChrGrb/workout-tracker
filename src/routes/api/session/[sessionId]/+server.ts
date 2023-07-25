@@ -1,28 +1,32 @@
-import { error } from "@sveltejs/kit";
-import type { RequestEvent } from "./$types";
-import { PrismaClient } from "@prisma/client";
-import { json } from "@sveltejs/kit";
+import { json } from '@sveltejs/kit';
+import { PrismaClient } from '@prisma/client';
+import type { RequestEvent } from './$types';
+import { error } from '@sveltejs/kit';
 
 const prisma = new PrismaClient();
 
-export async function POST({ request, params }: RequestEvent) {
+export async function GET({ params }: RequestEvent) {
     const sessionId = params.sessionId;
-    const { workout } = await request.json();
+
+    const sessions = await prisma.workoutSession.findFirst({ where: { id: sessionId }, });
+
+    return json(sessions);
+}
+
+export async function DELETE({ params }: RequestEvent) {
+    const sessionId = params.sessionId;
+    let deletedSession = null;
 
     try {
-        await prisma.workoutSession.update({
-            where: {
-                id: sessionId
-            },
-            data: {
-                workouts: {
-                    create: workout,
-                }
+        deletedSession = await prisma.workoutSession.delete({
+            where: { id: sessionId },
+            select: {
+                id: true,
             }
         });
     } catch (responseError) {
         throw error(400, (responseError as Error).message);
     }
 
-    return json(workout);
+    return json(deletedSession);
 }
