@@ -8,6 +8,7 @@
     LogOutIcon,
     PauseIcon,
     PlayIcon,
+    SettingsIcon,
     Trash2Icon,
     UserIcon,
   } from "svelte-feather-icons";
@@ -16,25 +17,46 @@
   import AddWorkoutCard from "$lib/components/AddWorkoutCard.svelte";
   import PreviousSessions from "./components/session/PreviousSessions.svelte";
   import { enhance } from "$app/forms";
+  import SettingsDrawer from "./components/settings/SettingsDrawer.svelte";
+  import {
+    modalStore,
+    type ModalComponent,
+    type ModalSettings,
+  } from "@skeletonlabs/skeleton";
 
   export let data: PageData;
 
   async function addWorkout() {
     goto("/overview/workout/addWorkout");
   }
+
+  const modalComponent: ModalComponent = {
+    // Pass a reference to your custom component
+    ref: SettingsDrawer,
+    // Add the component properties as key/value pairs
+    props: { user: data.user },
+    // Provide a template literal for the default component slot
+    slot: "<p>Skeleton</p>",
+  };
+
+  function triggerModal() {
+    console.log("modal trigger");
+    const modal: ModalSettings = {
+      type: "component",
+      // Pass the component directly:
+      component: modalComponent,
+    };
+    modalStore.trigger(modal);
+  }
 </script>
 
 <Container>
   <div class="flex flex-col gap-12">
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-row gap-4 justify-between">
       <Headline style="large">Overview</Headline>
-      <div class="flex flex-row justify-between items-center">
-        <div class="flex flex-row gap-2">
-          <UserIcon size="24" />
-          <p>{data.user.email}</p>
-        </div>
-        <Button action={signOut} icon={true}><LogOutIcon size="24" /></Button>
-      </div>
+      <Button action={triggerModal} icon={true}>
+        <SettingsIcon size="24" />
+      </Button>
     </div>
 
     {#await data.streamed.currentSessionWorkouts then currentSessionWorkouts}

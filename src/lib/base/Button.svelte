@@ -11,7 +11,7 @@
 
 <button
   class={clsx(classes, "variant-filled-primary", {
-    "btn-icon": icon,
+    "btn-icon bg-transparent text-inherit": icon,
     btn: !icon,
     "variant-filled-secondary": highlight,
   })}
