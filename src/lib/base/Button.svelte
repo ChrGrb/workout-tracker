@@ -9,10 +9,10 @@
 </script>
 
 <button
-  class={clsx(classes, "variant-filled", {
+  class={clsx(classes, "variant-filled-primary", {
     "btn-icon": icon,
     btn: !icon,
-    "variant-filled-primary": highlight,
+    "variant-filled-secondary": highlight,
   })}
   on:click={action}
   {type}><slot /></button

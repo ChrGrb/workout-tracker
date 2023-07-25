@@ -8,6 +8,6 @@
 <div class="sm:col-span-4">
   <label for="reps" class="label">{label}</label>
   <div class="mt-2">
-    <input {type} {name} {id} class="input block" />
+    <input {type} {name} {id} class="input block py-1 px-2" />
   </div>
 </div>
