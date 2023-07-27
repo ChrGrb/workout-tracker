@@ -13,6 +13,10 @@ const unprotectedRoutes = ['/auth/login'];
 
 
 export const authorization: Handle = (async ({ event, resolve }) => {
+  // Redirect to application from base path
+  if (event.url.pathname === '/') {
+    throw redirect(303, "/auth/login");
+  }
   // Protect any routes under /authenticated
   if (!unprotectedRoutes.includes(event.url.pathname)) {
     const session = await event.locals.getSession();
