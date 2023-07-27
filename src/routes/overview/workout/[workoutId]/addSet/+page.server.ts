@@ -10,6 +10,7 @@ export const actions: Actions = {
 		const isWarmup = form.get("isWarmup") === 'on' ? true : false;
 		const reps = Number(form.get("reps"));
 		const weight = Number(form.get("weight"));
+		const notes = form.get("notes");
 
 		console.log(form.get("isWarmup"));
 
@@ -17,6 +18,7 @@ export const actions: Actions = {
 			reps: reps,
 			weight: weight,
 			warmup: isWarmup,
+			notes: notes,
 		} as WorkoutSet;
 
 		try {
