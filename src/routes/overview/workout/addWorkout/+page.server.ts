@@ -43,8 +43,10 @@ export const actions: Actions = {
             workoutTypeId: workoutTypeId
         } as Workout;
 
+        let newWorkoutId = null;
+
         try {
-            await fetch(
+            const workoutResponse = (await fetch(
                 "/api/session/" + workoutSession.id + "/addWorkout",
                 {
                     method: "POST",
@@ -53,12 +55,13 @@ export const actions: Actions = {
                         "content-type": "application/json",
                     },
                 }
-            );
+            ));
+            newWorkoutId = (await workoutResponse.json()) as string;
         } catch (responseError) {
             throw error(400, 'Could not add workout to session');
         }
 
-        throw redirect(303, '/overview');
+        throw redirect(303, newWorkoutId ? '/overview/workout/' + newWorkoutId : '/overview');
     },
     deleteWorkoutType: async ({ request, fetch }: RequestEvent) => {
         const form = await request.formData();
