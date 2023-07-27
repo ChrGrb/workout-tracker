@@ -1,38 +1,27 @@
-# create-svelte
+# Workout Tracker
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Workout Tracker is an open-source fitness application built using SvelteKit. It is designed to help users track their physical fitness activities. The application provides a simple and intuitive user interface, and it leverages the efficiency and flexibility of SvelteKit for a seamless user experience.
 
-## Creating a project
+## Features
+The current version is still in early development. Additional features will be added.
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Workout Logging:** Easily log your workouts with custom exercises and durations.
+- **Workout Recommendations:** Get recommendations on reps and weight for workouts.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+## Usage
+Workout Tracker is designed to be easy to use. For end-users who don't want to set up the environment on their local machine, you can directly use the app by visiting the hosted version at [workout.zack-bumm.com](https://workout.zack-bumm.com).
 
-## Developing
+## Contributing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+We love your input! Feel free to make changes and create pull requests!
 
-```bash
-npm run dev
+## Reporting Bugs & Requesting Features
+If you find a bug or have an idea for a new feature, feel free to open an issue. Please provide as much context as possible so that we can effectively address the problem or consider the feature request.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+## License
 
-## Building
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-To create a production version of your app:
 
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Enjoy using Workout Tracker, and happy coding!
