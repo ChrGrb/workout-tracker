@@ -73,6 +73,8 @@ model Workout {
   id            String         @id @default(cuid())
   userId        String
   user          User           @relation(fields: [userId], references: [id])
+  averageWeight Float?
+  averageReps   Int?
   workoutTypeId String
   workoutType   WorkoutType    @relation(fields: [workoutTypeId], references: [id])
   sessionId     String
