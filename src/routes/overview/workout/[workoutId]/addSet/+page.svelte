@@ -7,10 +7,12 @@
   import TextInput from "$lib/base/input/TextInput.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
   import { enhance } from "$app/forms";
+  import TextArea from "$lib/base/input/TextArea.svelte";
 
   export let data: PageData;
   let repetitions = "";
   let weight = "";
+  let notes = "";
 
   $: isInvalid =
     repetitions.length === 0 ||
@@ -42,6 +44,14 @@
             type="number"
             label="Weight"
             bind:input={weight}
+          />
+          <TextArea
+            name="notes"
+            id="notes"
+            rows={3}
+            label="Notes"
+            placeholder="Enter your notes here"
+            bind:input={notes}
           />
         </div>
 

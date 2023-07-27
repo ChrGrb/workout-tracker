@@ -4,7 +4,7 @@
   import Headline from "$lib/base/Headline.svelte";
   import type { WorkoutSet } from "@prisma/client";
   import clsx from "clsx";
-  import { Trash2Icon } from "svelte-feather-icons";
+  import { InfoIcon, Trash2Icon } from "svelte-feather-icons";
 
   export let workoutSet: WorkoutSet;
   export let deleteAction: string;
@@ -52,4 +52,13 @@
       <p>kg</p>
     </div>
   </div>
+  {#if workoutSet.notes && workoutSet.notes !== ""}
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-row justify-start items-center gap-2">
+        <InfoIcon size="18" />
+        <p class="font-semibold">Notes</p>
+      </div>
+      <p class="break-all">{workoutSet.notes}</p>
+    </div>
+  {/if}
 </div>

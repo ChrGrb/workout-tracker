@@ -96,5 +96,6 @@ model WorkoutSet {
   reps      Int
   weight    Float
   warmup    Boolean
+  notes     String   @default("")
   createdAt DateTime @default(now())
 }
