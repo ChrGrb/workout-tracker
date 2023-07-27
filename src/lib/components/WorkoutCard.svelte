@@ -1,5 +1,7 @@
 <script lang="ts">
   import Headline from "$lib/base/Headline.svelte";
+  import type { WorkoutAverage } from "$lib/types/workoutAverage";
+  import { ChevronRightIcon } from "svelte-feather-icons";
   import { svelteTime } from "svelte-time";
 
   type WorkoutWithType = {
@@ -13,9 +15,13 @@
       userId: string;
       name: string;
     };
+    averageWeight: number | null;
+    averageReps: number | null;
   };
 
   export let workout: WorkoutWithType;
+
+  console.log(workout);
 </script>
 
 <a
@@ -26,8 +32,21 @@
   <time
     use:svelteTime={{
       timestamp: workout.createdAt,
-      format: "hh:mm · MMMM D",
+      format: "HH:mm · MMMM D",
     }}
     class="font-light text-sm"
   />
+  {#if workout.averageWeight && workout.averageReps}
+    <div class="flex flex-row gap-2 justify-center mt-2">
+      <div class="flex flex-row badge variant-ringed-surface pr-2.5">
+        <div class="h-2 w-2 rounded-full bg-white" />
+        <p>{workout.averageReps} reps</p>
+      </div>
+
+      <div class="flex flex-row badge variant-ringed-surface pr-2.5">
+        <div class="h-2 w-2 rounded-full bg-white" />
+        <p>{workout.averageWeight} kg</p>
+      </div>
+    </div>
+  {/if}
 </a>

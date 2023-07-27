@@ -25,7 +25,7 @@
       <time
         use:svelteTime={{
           timestamp: data.session.createdAt,
-          format: "dddd @ h:mm A · MMMM D, YYYY",
+          format: "dddd @ HH:mm · MMMM D, YYYY",
         }}
       />
     </div>
