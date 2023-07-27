@@ -14,7 +14,7 @@
   <ExitButton exitPath="/overview/workout/addWorkout" />
   <div class="flex flex-col gap-12">
     <div class="flex flex-col gap-4">
-      <Headline>Add <br /> Workout Type</Headline>
+      <Headline>Add <br /> Exercise Type</Headline>
     </div>
     <form method="POST" use:enhance>
       <div class="flex flex-col gap-8">
