@@ -5,6 +5,7 @@
   export let id: string | null | undefined;
   export let required: boolean = false;
   export let input: string = "";
+  export let step = 1;
 
   function typeAction(node: HTMLInputElement) {
     node.type = type;
@@ -20,6 +21,7 @@
       {id}
       {required}
       bind:value={input}
+      {step}
       class="input block py-1 px-2"
     />
   </div>
