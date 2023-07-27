@@ -5,18 +5,14 @@
   import WorkoutCard from "$lib/components/WorkoutCard.svelte";
   import { goto } from "$app/navigation";
   import {
-    LogOutIcon,
     PauseIcon,
     PlayIcon,
     SettingsIcon,
     Trash2Icon,
-    UserIcon,
   } from "svelte-feather-icons";
-  import { signOut } from "@auth/sveltekit/client";
   import Button from "$lib/base/Button.svelte";
   import AddWorkoutCard from "$lib/components/AddWorkoutCard.svelte";
   import PreviousSessions from "./components/session/PreviousSessions.svelte";
-  import { enhance } from "$app/forms";
   import SettingsDrawer from "./components/settings/SettingsDrawer.svelte";
   import {
     modalStore,
@@ -24,6 +20,8 @@
     type ModalSettings,
   } from "@skeletonlabs/skeleton";
   import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
+  import type { Workout } from "@prisma/client";
+  import SessionButton from "./components/SessionButton.svelte";
 
   export let data: PageData;
 
@@ -32,11 +30,8 @@
   }
 
   const modalSettingsComponent: ModalComponent = {
-    // Pass a reference to your custom component
     ref: SettingsDrawer,
-    // Add the component properties as key/value pairs
     props: { user: data.user },
-    // Provide a template literal for the default component slot
     slot: "<p>Skeleton</p>",
   };
 
@@ -44,13 +39,16 @@
     console.log("modal trigger");
     const modal: ModalSettings = {
       type: "component",
-      // Pass the component directly:
       component: modalSettingsComponent,
     };
     modalStore.trigger(modal);
   }
 
   let form: HTMLFormElement;
+
+  $: isFinishButtonActive = (workouts: Workout[]) => {
+    return workouts.length > 0;
+  };
 </script>
 
 <Container>
@@ -78,48 +76,29 @@
         </div>
 
         <div class="flex flex-row w-full gap-4">
-          <form
-            method="POST"
-            action="?/finishCurrentSession"
-            class="w-full grow"
-            use:enhance
+          <SessionButton
+            sessionId={currentSessionWorkouts.id}
+            formAction="?/finishCurrentSession"
+            buttonDisabled={!isFinishButtonActive(
+              currentSessionWorkouts.workouts
+            )}
+            classes="w-full grow"
+            buttonClasses="w-full"
           >
-            <input
-              type="text"
-              name="sessionId"
-              value={currentSessionWorkouts.id}
-              class="hidden"
-            />
-            <Button type="submit" classes="w-full">
-              <div class="flex flex-row gap-4 justify-center items-center">
-                <p>Finish Session</p>
-                <PauseIcon size="14" />
-              </div>
-            </Button>
-          </form>
+            <p>Finish Session</p>
+            <PauseIcon size="14" />
+          </SessionButton>
 
-          <form
-            method="POST"
-            action="?/deleteCurrentSession"
-            use:enhance
-            bind:this={form}
+          <SessionButton
+            sessionId={currentSessionWorkouts.id}
+            formAction="?/deleteCurrentSession"
+            bind:form
+            buttonAction={() => confirmDelete(form, "session")}
+            buttonClasses="variant-soft-error"
+            buttonIcon={true}
           >
-            <input
-              type="text"
-              name="sessionId"
-              value={currentSessionWorkouts.id}
-              class="hidden"
-            />
-            <Button
-              action={() => confirmDelete(form, "session")}
-              classes="variant-soft-error"
-              icon={true}
-            >
-              <div class="flex flex-row gap-4 justify-center items-center">
-                <Trash2Icon size="18" />
-              </div>
-            </Button>
-          </form>
+            <Trash2Icon size="18" />
+          </SessionButton>
         </div>
       {:else}
         <form method="POST" action="?/createSession">
