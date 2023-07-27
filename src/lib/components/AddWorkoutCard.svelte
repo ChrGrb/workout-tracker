@@ -12,5 +12,5 @@
   on:click={addAction}
 >
   <PlusIcon size="36" />
-  <p class="text-center font-medium text-lg">Add workout</p>
+  <p class="text-center font-medium text-lg">Add exercise</p>
 </button>

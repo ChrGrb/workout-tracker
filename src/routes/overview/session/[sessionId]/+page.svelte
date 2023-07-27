@@ -31,7 +31,7 @@
     </div>
     <div class="flex flex-col w-full gap-4">
       <div class="flex flex-row justify-start">
-        <Headline style="small">Workouts</Headline>
+        <Headline style="small">Exercises</Headline>
       </div>
       <div class="flex flex-col gap-2">
         {#if data.session.workouts && data.session.workouts.length > 0}
@@ -43,7 +43,7 @@
             {/each}
           </div>
         {:else}
-          <Headline style="small">No workouts in session</Headline>
+          <Headline style="small">No exercises in session</Headline>
         {/if}
       </div>
     </div>

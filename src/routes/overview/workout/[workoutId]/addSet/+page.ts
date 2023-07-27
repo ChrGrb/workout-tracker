@@ -1,5 +1,5 @@
 import { error } from "@sveltejs/kit";
-import type { PageLoadEvent } from "../$types";
+import type { PageLoadEvent } from "./$types";
 import type { Workout } from "@prisma/client";
 
 export async function load({ params, fetch }: PageLoadEvent) {
