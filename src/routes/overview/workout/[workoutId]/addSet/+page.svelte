@@ -43,6 +43,7 @@
             id="weight"
             type="number"
             label="Weight"
+            step={0.01}
             bind:input={weight}
           />
           <TextArea
