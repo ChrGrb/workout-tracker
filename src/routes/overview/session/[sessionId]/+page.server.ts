@@ -8,14 +8,15 @@ export async function load({ params, fetch }: PageServerLoadEvent) {
         throw error(404, 'Session not found');
     }
 
-    const sessionWithWorkoutsWithType = Prisma.validator<Prisma.WorkoutSessionArgs>()({
-        include: { workouts: { include: { workoutType: true } } },
-    });
-    type SessionWithWorkoutsWithType = Prisma.WorkoutSessionGetPayload<typeof sessionWithWorkoutsWithType>
+    const workoutSessionWithExercisesWithType = Prisma.validator<Prisma.WorkoutSessionArgs>()({
+        include: { exercises: { include: { type: true } } }
+    },);
 
-    const responseSession = await fetch("/api/session/" + params.sessionId + "/workouts");
+    type WorkoutSessionWithExercisesWithType = Prisma.WorkoutSessionGetPayload<typeof workoutSessionWithExercisesWithType>
 
-    const workoutSession = (await responseSession.json()) as SessionWithWorkoutsWithType;
+    const responseSession = await fetch("/api/session/" + params.sessionId + "/exercises");
+
+    const workoutSession = (await responseSession.json()) as WorkoutSessionWithExercisesWithType;
 
     return {
         session: workoutSession,

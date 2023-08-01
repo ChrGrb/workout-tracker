@@ -3,7 +3,7 @@
   import Container from "$lib/base/Container.svelte";
   import { svelteTime } from "svelte-time";
   import type { PageData } from "./$types";
-  import WorkoutCard from "$lib/components/WorkoutCard.svelte";
+  import WorkoutCard from "$lib/components/ExerciseCard.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
   import { enhance } from "$app/forms";
   import Button from "$lib/base/Button.svelte";
@@ -34,11 +34,11 @@
         <Headline style="small">Exercises</Headline>
       </div>
       <div class="flex flex-col gap-2">
-        {#if data.session.workouts && data.session.workouts.length > 0}
+        {#if data.session.exercises && data.session.exercises.length > 0}
           <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {#each data.session.workouts as workout (workout.id)}
+            {#each data.session.exercises as exercise (exercise.id)}
               <div animate:flip={{ duration: 100, easing: sineInOut }}>
-                <WorkoutCard {workout} />
+                <WorkoutCard {exercise} />
               </div>
             {/each}
           </div>
