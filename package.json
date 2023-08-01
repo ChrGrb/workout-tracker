@@ -32,9 +32,9 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@auth/core": "^0.9.0",
+		"@auth/core": "npm:auth-apple-fix-core",
 		"@auth/prisma-adapter": "^1.0.1",
-		"@auth/sveltekit": "^0.3.3",
+		"@auth/sveltekit": "npm:auth-sveltekit-apple-fix",
 		"@prisma/client": "^5",
 		"@sveltejs/adapter-vercel": "^3.0.1",
 		"@vercel/postgres": "^0.4.0",

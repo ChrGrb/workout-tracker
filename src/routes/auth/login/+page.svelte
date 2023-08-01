@@ -34,6 +34,10 @@
           provider={ConfiguredProviders.google}
           providerName="Google"
         />
+        <SocialButton
+          provider={ConfiguredProviders.apple}
+          providerName="Apple"
+        />
       </div>
     {/if}
   </div>

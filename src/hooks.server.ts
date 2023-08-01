@@ -1,7 +1,8 @@
 import { SvelteKitAuth } from "@auth/sveltekit";
 import GitHub from "@auth/core/providers/github";
 import Google from "@auth/core/providers/google";
-import { GITHUB_ID, GITHUB_SECRET } from "$env/static/private";
+import Apple from "@auth/core/providers/apple";
+import { APPLE_ID, APPLE_SECRET, AUTH_SECRET, GITHUB_ID, GITHUB_SECRET } from "$env/static/private";
 import { GOOGLE_ID, GOOGLE_SECRET } from "$env/static/private";
 import { redirect, type Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
@@ -33,8 +34,14 @@ const handleAuth: Handle = (async (...args) => {
   const [{ event }] = args;
   return SvelteKitAuth({
     adapter: PrismaAdapter(prismaClient),
-    providers: [GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET }), Google({ clientId: GOOGLE_ID, clientSecret: GOOGLE_SECRET })],
-
+    providers: [
+      GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET }),
+      Google({ clientId: GOOGLE_ID, clientSecret: GOOGLE_SECRET }),
+      Apple({
+        clientId: APPLE_ID,
+        clientSecret: APPLE_SECRET,
+      })
+    ],
     callbacks: {
       async session({ session, user }) {
         session.user = {
@@ -48,8 +55,21 @@ const handleAuth: Handle = (async (...args) => {
       },
     },
     pages: {
-      signIn: '/auth/login'
-    }
+      signIn: '/auth/login',
+      error: '/auth/login',
+    },
+    cookies: {
+      pkceCodeVerifier: {
+        name: "next-auth.pkce.code_verifier",
+        options: {
+          httpOnly: true,
+          sameSite: "none",
+          path: "/",
+          secure: true,
+        },
+      },
+    },
+    secret: AUTH_SECRET
   })(...args);
 }) satisfies Handle;
 
