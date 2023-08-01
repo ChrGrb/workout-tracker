@@ -2,7 +2,7 @@ import type { Session as OGSession, DefaultSession } from '@auth/core/types';
 import { SvelteKitAuthConfig as OGSvelteKitAuthConfig } from '@auth/sveltekit';
 
 // TODO: revert this when they fix this...
-declare module '@auth/sveltekit/node_modules/@auth/core/types' {
+declare module '@auth/core/types' {
     interface Session extends OGSession {
         user?: {
             id: string;

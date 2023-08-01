@@ -45,9 +45,9 @@ model User {
   image           String?
   accounts        Account[]
   sessions        Session[]
-  workouts        Workout[]
+  exercises       Exercise[]
   workoutSessions WorkoutSession[]
-  workoutTypes    WorkoutType[]
+  exerciseTypes   ExerciseType[]
 }
 
 model VerificationToken {
@@ -59,45 +59,51 @@ model VerificationToken {
 }
 
 model WorkoutSession {
-  id        String    @id @default(cuid())
+  id        String     @id @default(cuid())
   userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  workouts  Workout[]
-  finished  Boolean   @default(false)
-  createdAt DateTime  @default(now())
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercises Exercise[]
+  finished  Boolean    @default(false)
+  createdAt DateTime   @default(now())
 
   @@unique([id])
 }
 
-model Workout {
+model Exercise {
   id            String         @id @default(cuid())
   userId        String
   user          User           @relation(fields: [userId], references: [id])
   averageWeight Float?
   averageReps   Int?
-  workoutTypeId String
-  workoutType   WorkoutType    @relation(fields: [workoutTypeId], references: [id])
+  typeId        String
+  type          ExerciseType   @relation(fields: [typeId], references: [id])
   sessionId     String
   session       WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  sets          WorkoutSet[]
+  sets          ExerciseSet[]
   createdAt     DateTime       @default(now())
 }
 
-model WorkoutType {
-  id      String    @id @default(cuid())
-  userId  String
-  user    User      @relation(fields: [userId], references: [id])
-  name    String
-  workout Workout[]
+model ExerciseType {
+  id       String     @id @default(cuid())
+  userId   String
+  user     User       @relation(fields: [userId], references: [id])
+  name     String
+  exercise Exercise[]
 }
 
-model WorkoutSet {
-  id        String   @id @default(cuid())
-  workoutId String
-  workout   Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
-  reps      Int
-  weight    Float
-  warmup    Boolean
-  notes     String   @default("")
-  createdAt DateTime @default(now())
+enum ExerciseSetType {
+  WARMUP
+  WORKOUT
+  COOLDOWN
+}
+
+model ExerciseSet {
+  id              String          @id @default(cuid())
+  exerciseId      String
+  exercise        Exercise        @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseSetType ExerciseSetType @default(WORKOUT)
+  reps            Int
+  weight          Float
+  notes           String          @default("")
+  createdAt       DateTime        @default(now())
 }

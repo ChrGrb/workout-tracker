@@ -1,5 +1,5 @@
 import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
-import type { User, Workout, Session, WorkoutSession } from '@prisma/client';
+import type { User, WorkoutSession } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 import { error } from '@sveltejs/kit';
 
@@ -10,32 +10,28 @@ export async function load({ fetch, cookies, depends, locals }: PageServerLoadEv
         throw error(400, 'User not defined');
     }
 
-    const workoutSessionWithWorkoutsWithType = Prisma.validator<Prisma.WorkoutSessionArgs>()({
-        include: { workouts: { include: { workoutType: true } } }
+    const workoutSessionWithExercisesWithType = Prisma.validator<Prisma.WorkoutSessionArgs>()({
+        include: { exercises: { include: { type: true } } }
     },
     );
 
-    type WorkoutSessionWithWorkoutsWithType = Prisma.WorkoutSessionGetPayload<typeof workoutSessionWithWorkoutsWithType>
+    type WorkoutSessionWithExercisesWithType = Prisma.WorkoutSessionGetPayload<typeof workoutSessionWithExercisesWithType>
 
-
-    depends('app:user');
-    const responseUser = await fetch("/api/user?id=" + session.user.id);
+    const responseUser = await fetch("/api/user?id=" + (session.user as User).id);
     const user = (await responseUser.json()) as User;
 
-    depends('app:previousSessions');
     const previousSessions = async () => {
-        const responsePreviousSessions = await fetch("/api/session/previous?userId=" + session.user?.id);
+        const responsePreviousSessions = await fetch("/api/session/previous?userId=" + (session.user as User)?.id);
         return (await responsePreviousSessions.json()) as WorkoutSession[];
     }
 
-    depends('app:currentSession');
-    const currentSessionWorkouts = async () => {
+    const currentSessionExercises = async () => {
         const responseCurrentSession = await fetch("/api/session/current?userId=" + user.id);
         const currentSession = (await responseCurrentSession.json()) as WorkoutSession;
 
         if (currentSession !== null) {
-            const responseWorkouts = await fetch("/api/session/" + currentSession.id + "/workouts");
-            return (await responseWorkouts.json()) as WorkoutSessionWithWorkoutsWithType ?? null;
+            const responseExercises = await fetch("/api/session/" + currentSession.id + "/exercises");
+            return (await responseExercises.json()) as WorkoutSessionWithExercisesWithType ?? null;
         }
 
         return null;
@@ -44,7 +40,7 @@ export async function load({ fetch, cookies, depends, locals }: PageServerLoadEv
     return {
         user,
         streamed: {
-            currentSessionWorkouts: currentSessionWorkouts(),
+            currentSessionExercises: currentSessionExercises(),
             previousSessions: previousSessions()
         }
     };
@@ -55,11 +51,13 @@ export const actions: Actions = {
     createSession: async ({ request, fetch, locals }: RequestEvent) => {
         const session = await locals.getSession();
 
+        console.log(session);
+
         if (!session || !session.user) {
             throw error(400, 'User not defined');
         }
 
-        const workoutSession = { userId: session.user.id };
+        const workoutSession = { userId: (session.user as User).id };
 
         try {
             await fetch(
