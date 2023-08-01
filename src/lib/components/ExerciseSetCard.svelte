@@ -2,23 +2,31 @@
   import { enhance } from "$app/forms";
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
-  import type { ExerciseSet } from "@prisma/client";
+  import { ExerciseSetType, type ExerciseSet } from "@prisma/client";
   import clsx from "clsx";
   import { InfoIcon, Trash2Icon } from "svelte-feather-icons";
 
   export let exerciseSet: ExerciseSet;
   export let deleteAction: string;
+
+  $: exerciseSetTypeString =
+    exerciseSet.exerciseSetType.charAt(0).toUpperCase() +
+    exerciseSet.exerciseSetType.slice(1).toLowerCase();
 </script>
 
 <div
   class={clsx("card flex flex-col gap-8 justify-center p-6", {
-    "variant-filled-primary": exerciseSet.exerciseSetType !== "WORKOUT",
-    "variant-soft-primary": exerciseSet.exerciseSetType === "WORKOUT",
+    "variant-filled-primary":
+      exerciseSet.exerciseSetType === ExerciseSetType.WORKOUT,
+    "variant-soft-primary":
+      exerciseSet.exerciseSetType === ExerciseSetType.WARMUP,
+    "variant-soft-secondary":
+      exerciseSet.exerciseSetType === ExerciseSetType.COOLDOWN,
   })}
 >
   <div class="flex flex-row items-start justify-between">
     <Headline style="small">
-      {exerciseSet.exerciseSetType !== "WORKOUT" ? "Warmup" : "Workout"}
+      {exerciseSetTypeString}
     </Headline>
     <form method="POST" action={deleteAction} use:enhance>
       <input
@@ -32,8 +40,10 @@
         type="submit"
         icon={true}
         classes={clsx({
-          "variant-soft-error": exerciseSet.exerciseSetType !== "WORKOUT",
-          "variant-filled-primary": exerciseSet.exerciseSetType === "WORKOUT",
+          "variant-soft-error":
+            exerciseSet.exerciseSetType !== ExerciseSetType.WORKOUT,
+          "variant-filled-primary":
+            exerciseSet.exerciseSetType == ExerciseSetType.WORKOUT,
         })}
       >
         <div class="flex flex-row gap-4 justify-center items-center">

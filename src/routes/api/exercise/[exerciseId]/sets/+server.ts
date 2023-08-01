@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export async function GET({ params }: RequestEvent) {
     const exerciseId = params.exerciseId;
 
-    const exerciseSets = await prisma.exerciseSet.findMany({ where: { exerciseId: exerciseId } });
+    const exerciseSets = await prisma.exerciseSet.findMany({ where: { exerciseId: exerciseId }, orderBy: { exerciseSetType: 'asc' } });
 
     return json(exerciseSets);
 }

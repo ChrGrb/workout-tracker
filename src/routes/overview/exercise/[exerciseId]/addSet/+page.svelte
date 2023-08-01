@@ -8,11 +8,13 @@
   import ExitButton from "$lib/base/ExitButton.svelte";
   import { enhance } from "$app/forms";
   import TextArea from "$lib/base/input/TextArea.svelte";
+  import RadioSelect from "$lib/base/input/RadioSelect.svelte";
 
   export let data: PageData;
   let repetitions = "";
   let weight = "";
   let notes = "";
+  let exerciseSetType = "WORKOUT";
 
   $: isInvalid =
     repetitions.length === 0 ||
@@ -30,13 +32,25 @@
     <form method="POST" use:enhance>
       <div class="flex flex-col gap-8">
         <div class="flex flex-col gap-4">
-          <CheckboxInput name="isWarmup" id="isWarmup" label="Warmup" />
+          <RadioSelect
+            items={[
+              { name: "Warmup", value: "WARMUP" },
+              { name: "Workout", value: "WORKOUT" },
+              { name: "Cooldown", value: "COOLDOWN" },
+            ]}
+            name="exerciseSetType"
+            id="exerciseSetType"
+            label="Type"
+            group={exerciseSetType}
+          />
           <TextInput
             name="reps"
             id="reps"
             type="number"
             label="Repetitions"
             bind:input={repetitions}
+            required={true}
+            metric="reps"
           />
           <TextInput
             name="weight"
@@ -45,6 +59,8 @@
             label="Weight"
             step={0.01}
             bind:input={weight}
+            required={true}
+            metric="kg"
           />
           <TextArea
             name="notes"

@@ -1,13 +1,13 @@
 import { error } from '@sveltejs/kit'
 import type { Actions, RequestEvent } from './$types';
-import type { ExerciseSet } from "@prisma/client";
+import type { ExerciseSet, ExerciseSetType } from "@prisma/client";
 import { redirect } from "@sveltejs/kit";
 
 export const actions: Actions = {
 	default: async ({ request, cookies, fetch, params }: RequestEvent) => {
 		const exerciseId = params.exerciseId;
 		const form = await request.formData();
-		const isWarmup = form.get("isWarmup") === 'on' ? true : false;
+		const exerciseSetType = form.get("exerciseSetType") as ExerciseSetType;
 		const reps = Number(form.get("reps"));
 		const weight = Number(form.get("weight"));
 		const notes = form.get("notes");
@@ -15,9 +15,11 @@ export const actions: Actions = {
 		const exerciseSet: ExerciseSet = {
 			reps: reps,
 			weight: weight,
-			exerciseSetType: isWarmup ? 'WARMUP' : 'WORKOUT',
+			exerciseSetType: exerciseSetType,
 			notes: notes,
 		} as ExerciseSet;
+
+		console.log(exerciseSet);
 
 		try {
 			await fetch(
