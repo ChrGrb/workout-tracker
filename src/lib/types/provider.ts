@@ -1,4 +1,5 @@
 export enum ConfiguredProviders {
     github = 'github',
-    google = 'google'
+    google = 'google',
+    apple = 'apple'
 }

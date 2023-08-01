@@ -20,10 +20,10 @@
     "@jridgewell/gen-mapping" "^0.3.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@auth/core@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.npmjs.org/@auth/core/-/core-0.10.0.tgz#a9544d25f5cff2bacd662e502a798705c667766c"
-  integrity sha512-mmvAzFUcDHG0m6avQ6/sYI3wtQtt3Tjbk4wCr27OlCeNnlzqK8lDQJIDFbJOTXEu/dNUx8sUQ0xMp7A6GAaHQw==
+"@auth/core@0.9.0":
+  version "0.9.0"
+  resolved "https://registry.npmjs.org/@auth/core/-/core-0.9.0.tgz#7a5d66eea0bc059cef072734698547ae2a0c86a6"
+  integrity sha512-W2WO0WCBg1T3P8+yjQPzurTQhPv6ecBYfJ2oE3uvXPAX5ZLWAMSjKFAIa9oLZy5pwrB+YehJZPnlIxVilhrVcg==
   dependencies:
     "@panva/hkdf" "^1.0.4"
     cookie "0.5.0"
@@ -32,10 +32,10 @@
     preact "10.11.3"
     preact-render-to-string "5.2.3"
 
-"@auth/core@0.9.0", "@auth/core@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.npmjs.org/@auth/core/-/core-0.9.0.tgz#7a5d66eea0bc059cef072734698547ae2a0c86a6"
-  integrity sha512-W2WO0WCBg1T3P8+yjQPzurTQhPv6ecBYfJ2oE3uvXPAX5ZLWAMSjKFAIa9oLZy5pwrB+YehJZPnlIxVilhrVcg==
+"@auth/core@npm:auth-apple-fix-core":
+  version "0.10.2"
+  resolved "https://registry.npmjs.org/auth-apple-fix-core/-/auth-apple-fix-core-0.10.2.tgz#0c8c7e4713be1a2d4a14d89718d2a06726fd5b71"
+  integrity sha512-gepE2YZfQdCndiDXbGaUs9SiejXPrW7td9nrnxo4dZ9Vxy5L2ogu4IcEeHl6F5IuBZODWDwxRma+KFfUpB42Xg==
   dependencies:
     "@panva/hkdf" "^1.0.4"
     cookie "0.5.0"
@@ -51,12 +51,12 @@
   dependencies:
     "@auth/core" "0.9.0"
 
-"@auth/sveltekit@^0.3.3":
+"@auth/sveltekit@npm:auth-sveltekit-apple-fix":
   version "0.3.6"
-  resolved "https://registry.npmjs.org/@auth/sveltekit/-/sveltekit-0.3.6.tgz#68d3f1dd324b77456cb4267c4e474a511c5fcd1c"
-  integrity sha512-wL9YR8raosHR+iPDvIBExqvYiaOsseM681eYLjfU+ELmkjlKtGk+B4VxiLYMxlPfjqNagrzLNyS58PYXy2oh7A==
+  resolved "https://registry.npmjs.org/auth-sveltekit-apple-fix/-/auth-sveltekit-apple-fix-0.3.6.tgz#ead54823230c40e2d58d0f5516a7efbbc804a13c"
+  integrity sha512-ACHFvq0Dv0uRoa6ozoSeWSBt6Tlf7cNhaiB45XjhEvpWIwmdIn5eTgu9G6i2j0hAunHUoypMDk8EDXzLGXSvFQ==
   dependencies:
-    "@auth/core" "0.10.0"
+    "@auth/core" "npm:auth-apple-fix-core"
 
 "@esbuild/android-arm64@0.18.14":
   version "0.18.14"

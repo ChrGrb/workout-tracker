@@ -1,8 +1,7 @@
 import type { PageServerLoadEvent } from './$types';
-import { error, redirect } from "@sveltejs/kit";
-import { signOut } from "@auth/sveltekit/client";
+import { redirect } from "@sveltejs/kit";
 
-export async function load({ fetch, cookies, locals }: PageServerLoadEvent) {
+export async function load({ locals }: PageServerLoadEvent) {
     const session = await locals.getSession();
 
     if (!session || !session.user) {
