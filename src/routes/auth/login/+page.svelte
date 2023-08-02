@@ -6,6 +6,18 @@
   import Container from "$lib/base/Container.svelte";
   import SocialButton from "./components/SocialButton.svelte";
   import { ConfiguredProviders } from "$lib/types/provider";
+  import type { PageData } from "./$types";
+  import { toastStore, type ToastSettings } from "@skeletonlabs/skeleton";
+
+  export let data: PageData;
+
+  if (data.error) {
+    const errorToast: ToastSettings = {
+      message: `An error occured during login. Please try again.`,
+      background: "variant-filled-error",
+    };
+    toastStore.trigger(errorToast);
+  }
 </script>
 
 <Container>
