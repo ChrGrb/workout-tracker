@@ -12,6 +12,7 @@
   export let input: string = "";
   export let step = 1;
   export let metric = "";
+  export let inputClasses = "";
 
   function typeAction(node: HTMLInputElement) {
     node.type = type;
@@ -30,7 +31,7 @@
       {required}
       bind:value={input}
       {step}
-      class="input block py-1 px-2"
+      class={"input block py-1 px-2 " + inputClasses}
     />
     {#if metric}
       <div
