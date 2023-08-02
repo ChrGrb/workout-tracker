@@ -82,5 +82,26 @@ export const actions: Actions = {
         } catch (responseError) {
             throw error(400, 'Could not delete exercise type with id: ' + exerciseTypeId);
         }
+    },
+    updateExerciseType: async ({ request, fetch }: RequestEvent) => {
+        const form = await request.formData();
+        const exerciseTypeId = form.get("exerciseTypeId");
+        const exerciseTypeName = form.get("exerciseTypeName");
+        const userId = form.get("userId");
+
+        try {
+            await fetch(
+                "/api/user/" + userId + "/exerciseTypes/" + exerciseTypeId + "/updateName",
+                {
+                    method: "PUT",
+                    body: JSON.stringify({ exerciseTypeName: exerciseTypeName }),
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                }
+            );
+        } catch (responseError) {
+            throw error(400, 'Could not update name of exercise type with id: ' + exerciseTypeId);
+        }
     }
 }
