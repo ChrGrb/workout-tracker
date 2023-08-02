@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit'
 import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
-import { Prisma, type WorkoutSession } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { redirect } from '@sveltejs/kit';
 
 export async function load({ params, fetch }: PageServerLoadEvent) {
