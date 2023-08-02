@@ -3,12 +3,13 @@
   import "@skeletonlabs/skeleton/styles/skeleton.css";
   import { fade } from "svelte/transition";
   import "../app.css";
-  import { AppShell, Modal } from "@skeletonlabs/skeleton";
+  import { AppShell, Modal, Toast } from "@skeletonlabs/skeleton";
 
   export let data;
 </script>
 
 <Modal />
+<Toast />
 
 <AppShell>
   {#key data.url}
