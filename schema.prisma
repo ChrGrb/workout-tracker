@@ -84,11 +84,12 @@ model Exercise {
 }
 
 model ExerciseType {
-  id       String     @id @default(cuid())
-  userId   String
-  user     User       @relation(fields: [userId], references: [id])
-  name     String
-  exercise Exercise[]
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+  name        String
+  description String?
+  exercise    Exercise[]
 }
 
 enum ExerciseSetType {

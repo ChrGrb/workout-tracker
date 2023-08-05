@@ -7,11 +7,12 @@
   import { goto } from "$app/navigation";
   import ExerciseSetCard from "$lib/components/ExerciseSetCard.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
-  import { PlusIcon, Trash2Icon } from "svelte-feather-icons";
+  import { InfoIcon, PlusIcon, Trash2Icon } from "svelte-feather-icons";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
   import { enhance } from "$app/forms";
   import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
+  import { Accordion, AccordionItem } from "@skeletonlabs/skeleton";
 
   export let data: PageData;
 
@@ -34,27 +35,44 @@
         }}
       />
     </div>
-    {#if data.recommendations}
-      <div class="flex flex-col gap-2 card variant-soft-success p-4">
-        <Headline style="small">Recommendation</Headline>
-        <div class="flex flex-row w-full basis-1/2">
-          <div class="flex flex-row basis-1/2">
-            <p>
-              <span class="font-semibold">Reps </span>
-              {data.recommendations.recommendedReps}
-            </p>
-            <p />
-          </div>
-          <div class="flex flex-row basis-1/2">
-            <p>
-              <span class="font-semibold">Weight </span>
-              {data.recommendations.recommendedWeight} kg
-            </p>
-            <p />
-          </div>
-        </div>
-      </div>
-    {/if}
+
+    <Accordion autocollapse>
+      {#if data.exercise.type.description}
+        <AccordionItem regionControl="variant-soft-primary">
+          <svelte:fragment slot="lead"><InfoIcon size="18" /></svelte:fragment>
+          <svelte:fragment slot="summary">Description</svelte:fragment>
+          <svelte:fragment slot="content"
+            ><article class="whitespace-pre-line">
+              {data.exercise.type.description}
+            </article></svelte:fragment
+          >
+        </AccordionItem>
+      {/if}
+      {#if data.recommendations}
+        <AccordionItem regionControl="variant-soft-primary" open>
+          <svelte:fragment slot="lead"><InfoIcon size="18" /></svelte:fragment>
+          <svelte:fragment slot="summary">Recommendations</svelte:fragment>
+          <svelte:fragment slot="content">
+            <div class="flex flex-row w-full basis-1/2">
+              <div class="flex flex-row basis-1/2">
+                <p>
+                  <span class="font-semibold">Reps </span>
+                  {data.recommendations.recommendedReps}
+                </p>
+                <p />
+              </div>
+              <div class="flex flex-row basis-1/2">
+                <p>
+                  <span class="font-semibold">Weight </span>
+                  {data.recommendations.recommendedWeight} kg
+                </p>
+                <p />
+              </div>
+            </div>
+          </svelte:fragment>
+        </AccordionItem>
+      {/if}
+    </Accordion>
     <div class="flex flex-col w-full gap-4">
       <div class="flex flex-row justify-between items-center">
         <Headline style="small">Sets</Headline>

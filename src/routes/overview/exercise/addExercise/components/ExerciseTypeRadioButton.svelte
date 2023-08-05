@@ -2,20 +2,46 @@
   import { enhance } from "$app/forms";
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
-  import { CheckIcon, EditIcon, Trash2Icon, XIcon } from "svelte-feather-icons";
+  import {
+    CheckIcon,
+    EditIcon,
+    InfoIcon,
+    Trash2Icon,
+    XIcon,
+  } from "svelte-feather-icons";
   import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
   import TextInput from "$lib/base/input/TextInput.svelte";
   import { fade } from "svelte/transition";
   import { sineIn, sineOut } from "svelte/easing";
+  import {
+    modalStore,
+    type ModalSettings,
+    type ModalComponent,
+  } from "@skeletonlabs/skeleton";
+  import WorkoutDescriptionModal from "$lib/modals/WorkoutDescriptionModal.svelte";
 
   export let name: string;
   export let id: string;
   export let required = false;
   export let group = "";
   export let userId: string;
+  export let description: string | null = null;
 
   let form: HTMLFormElement;
   let editMode = false;
+
+  const workoutDescriptionModal: ModalComponent = {
+    ref: WorkoutDescriptionModal,
+    props: {},
+  };
+
+  const workoutDescriptionModalSettings: ModalSettings = {
+    type: "component",
+    component: workoutDescriptionModal,
+    title: name,
+    body: description ?? "",
+    buttonTextCancel: "Close",
+  };
 </script>
 
 <div>
@@ -73,6 +99,20 @@
             </div>
           </Button>
         </div>
+
+        {#if description}
+          <div class="absolute top-2 left-2">
+            <Button
+              action={() => modalStore.trigger(workoutDescriptionModalSettings)}
+              classes="variant-filled-surface transition-all"
+              icon={true}
+            >
+              <div class="btn-icon flex flex-row justify-center items-center">
+                <InfoIcon size="18" />
+              </div>
+            </Button>
+          </div>
+        {/if}
       </div>
     {:else}
       <div

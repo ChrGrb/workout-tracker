@@ -34,6 +34,7 @@
                 bind:group={exerciseTypeSelection}
                 required={true}
                 userId={exerciseType.userId}
+                description={exerciseType.description}
               />
             </div>
           {/each}
