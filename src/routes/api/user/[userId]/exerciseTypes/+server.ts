@@ -1,6 +1,7 @@
 import { json, error } from '@sveltejs/kit';
 import { PrismaClient, type ExerciseType } from '@prisma/client';
 import type { RequestEvent } from './$types';
+import { getExerciseDescription } from '$lib/utils/chatgpt/ExerciseDescription';
 
 const prisma = new PrismaClient();
 
@@ -19,6 +20,8 @@ export async function GET({ params }: RequestEvent) {
 export async function POST({ params, request }: RequestEvent) {
     const userId = params.userId;
     const { exerciseType } = (await request.json()) as { exerciseType: ExerciseType };
+
+    exerciseType.description = await getExerciseDescription(exerciseType.name);
 
     try {
         await prisma.user.update({

@@ -1,18 +1,7 @@
 <script lang="ts">
   import Button from "$lib/base/Button.svelte";
-  import { signOut } from "@auth/sveltekit/client";
-  import {
-    AtSignIcon,
-    LogOutIcon,
-    SettingsIcon,
-    Trash2Icon,
-    UserIcon,
-    XIcon,
-  } from "svelte-feather-icons";
-  import { Avatar, LightSwitch, modalStore } from "@skeletonlabs/skeleton";
+  import { modalStore } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
-  import type { User } from "@prisma/client";
-  import { setResponse } from "@sveltejs/kit/node";
 
   // Props
   export let parent: any;
