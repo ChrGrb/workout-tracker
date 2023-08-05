@@ -36,7 +36,7 @@
       />
     </div>
 
-    <Accordion autocollapse>
+    <Accordion>
       {#if data.exercise.type.description}
         <AccordionItem regionControl="variant-soft-primary">
           <svelte:fragment slot="lead"><InfoIcon size="18" /></svelte:fragment>
