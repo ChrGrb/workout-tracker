@@ -22,7 +22,7 @@
     meter="stroke-primary-900"
   />
   <PlusIcon size="48" />
-  <p class="text-center font-medium text-lg drop-shadow-none absolute bottom-4">
+  <p class="text-center text-md drop-shadow-none absolute bottom-4">
     <slot />
   </p>
 </Button>

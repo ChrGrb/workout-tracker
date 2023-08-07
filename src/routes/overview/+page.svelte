@@ -21,10 +21,10 @@
   } from "@skeletonlabs/skeleton";
   import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
   import type { Exercise } from "@prisma/client";
-  import SessionButton from "./components/SessionButton.svelte";
+  import SessionButton from "./components/session/SessionButton.svelte";
   import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
   import { fade } from "svelte/transition";
-  import SessionSkeleton from "./components/SessionSkeleton.svelte";
+  import SessionSkeleton from "./components/session/SessionSkeleton.svelte";
 
   export let data: PageData;
 
@@ -35,7 +35,6 @@
   const modalSettingsComponent: ModalComponent = {
     ref: SettingsDrawer,
     props: { user: data.user },
-    slot: "<p>Skeleton</p>",
   };
 
   function openSettings() {
@@ -109,7 +108,6 @@
                 confirmDelete(form, "session", () => {
                   isDeleteLoading = false;
                 })}
-              buttonClasses="variant-soft-error"
               buttonIcon={true}
               bind:isLoading={isDeleteLoading}
             >

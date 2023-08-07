@@ -97,8 +97,9 @@
         {#if exercise.type.description}
           <AccordionItem
             class="card variant-soft-primary"
-            regionControl="variant-filled-primary"
+            regionControl="variant-soft-primary"
             regionPanel="pt-4 pb-6"
+            hover=""
           >
             <svelte:fragment slot="lead"><InfoIcon size="18" /></svelte:fragment
             >
@@ -119,8 +120,9 @@
             <div in:fade={{ duration: 100, delay: 120 }}>
               <AccordionItem
                 class="card variant-soft-primary"
-                regionControl="variant-filled-primary"
+                regionControl="variant-soft-primary"
                 regionPanel="py-4"
+                hover=""
                 open
               >
                 <svelte:fragment slot="lead"
@@ -149,6 +151,9 @@
           {/if}
         {/await}
       </Accordion>
+
+      <hr />
+
       {#await data.streamed.exerciseActive}
         <div transition:fade={{ duration: 100 }}>
           <ExerciseOverviewSetSkeleton />
@@ -188,9 +193,9 @@
             loadingOnClick={true}
             classes="w-full variant-filled-primary"
           >
-            <div class="flex flex-row gap-4">
+            <div class="flex flex-row gap-4 items-center">
               <p>Add set</p>
-              <PlusIcon size="24" />
+              <PlusIcon size="18" />
             </div>
           </Button>
         {/if}

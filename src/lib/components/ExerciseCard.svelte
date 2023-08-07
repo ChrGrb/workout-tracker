@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
+  import { ProgressRadial } from "@skeletonlabs/skeleton";
   import { svelteTime } from "svelte-time";
 
   type ExerciseWithType = {
@@ -28,6 +29,13 @@
   }}
   loadingOnClick={true}
 >
+  <svelte:component
+    this={ProgressRadial}
+    slot="spinner"
+    width="w-[48px]"
+    stroke={100}
+    meter="stroke-primary-50"
+  />
   <Headline style="small">{exercise.type.name}</Headline>
   {#if exercise.averageWeight && exercise.averageReps}
     <div class="flex flex-row gap-2 justify-center mb-2">
