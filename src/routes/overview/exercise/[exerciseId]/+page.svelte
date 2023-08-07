@@ -194,8 +194,7 @@
             classes="w-full variant-filled-primary"
           >
             <div class="flex flex-row gap-4 items-center">
-              <p>Add set</p>
-              <PlusIcon size="18" />
+              <p class="text-bold">Add set</p>
             </div>
           </Button>
         {/if}
