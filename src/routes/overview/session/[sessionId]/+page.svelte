@@ -5,16 +5,15 @@
   import type { PageData } from "./$types";
   import WorkoutCard from "$lib/components/ExerciseCard.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
-  import { enhance } from "$app/forms";
-  import Button from "$lib/base/Button.svelte";
-  import { Trash2Icon } from "svelte-feather-icons";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
-  import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
+  import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
+  import DeleteButton from "$lib/base/DeleteButton.svelte";
 
   export let data: PageData;
 
   let form: HTMLFormElement;
+  let isDeleteLoading = false;
 </script>
 
 <Container>
@@ -48,28 +47,26 @@
       </div>
     </div>
 
-    <form
-      method="POST"
+    <SubmitFormWrapper
       action="?/deleteCurrentSession"
-      class="w-full grow"
-      use:enhance
-      bind:this={form}
+      formClasses="w-full grow"
+      bind:form
     >
       <input
         type="text"
         name="sessionId"
         value={data.session.id}
         class="hidden"
+        slot="form-content"
       />
-      <Button
-        action={() => confirmDelete(form, "session")}
+      <DeleteButton
+        bind:form
+        toDeleteName="session"
         classes="w-full variant-soft-error"
+        slot="button"
       >
-        <div class="flex flex-row gap-4 justify-center items-center">
-          <p>Delete Session</p>
-          <Trash2Icon size="14" />
-        </div>
-      </Button>
-    </form>
+        <p slot="title">Delete Session</p>
+      </DeleteButton>
+    </SubmitFormWrapper>
   </div>
 </Container>

@@ -16,7 +16,7 @@
 <div class="flex flex-col gap-3">
   <p class="label">{label}</p>
 
-  <div class="flex flex-row w-full justify-center">
+  <div class="flex flex-row w-full justify-center drop-shadow-lg">
     {#each items as item, index (item.value)}
       <div class="grow">
         <input

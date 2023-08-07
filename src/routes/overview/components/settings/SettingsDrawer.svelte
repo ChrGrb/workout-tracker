@@ -2,9 +2,19 @@
   import Button from "$lib/base/Button.svelte";
   import { signOut } from "@auth/sveltekit/client";
   import { LogOutIcon, XIcon } from "svelte-feather-icons";
-  import { Avatar, LightSwitch, modalStore } from "@skeletonlabs/skeleton";
+  import {
+    Avatar,
+    LightSwitch,
+    modalStore,
+    modeCurrent,
+    modeUserPrefers,
+    setInitialClassState,
+    setModeCurrent,
+    setModeUserPrefers,
+  } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
   import type { User } from "@prisma/client";
+  import clsx from "clsx";
 
   // Props
   export let parent: any;
@@ -15,6 +25,8 @@
     .map((word) => word.at(0))
     .join("")
     .slice(0, 2);
+
+  let currentLightMode = $modeCurrent;
 </script>
 
 {#if $modalStore[0]}
@@ -30,7 +42,7 @@
     <div style="flex flex-col gap-4">
       <Headline style="medium">User</Headline>
       <div
-        class="flex flex-col justify-start items-start gap-4 card variant-filled-tertiary p-6 mt-4"
+        class="flex flex-col justify-start items-start gap-4 card variant-filled-primary p-6 mt-4"
       >
         <Avatar
           src={user.image ?? ""}
@@ -50,7 +62,46 @@
     </div>
     <div class="flex flex-col gap-4">
       <Headline style="medium">Dark Mode</Headline>
-      <LightSwitch />
+      <div class="flex flex-row w-full justify-center drop-shadow-lg">
+        <button
+          class="grow"
+          on:click={() => {
+            setModeCurrent(true);
+            setModeUserPrefers(true);
+          }}
+        >
+          <label
+            class={clsx(
+              "card rounded-none justify-center p-2 text-center text-sm transition-all relative rounded-tl-token rounded-bl-token",
+              {
+                "variant-filled-primary text-white": $modeCurrent === true,
+                "variant-soft-primary text-primary-500": $modeCurrent !== true,
+              }
+            )}
+          >
+            <p>Light</p>
+          </label>
+        </button>
+        <button
+          class="grow"
+          on:click={() => {
+            setModeCurrent(false);
+            setModeUserPrefers(false);
+          }}
+        >
+          <label
+            class={clsx(
+              "card rounded-none justify-center p-2 text-center text-sm transition-all relative rounded-tr-token rounded-br-token",
+              {
+                "variant-filled-primary text-white": $modeCurrent === false,
+                "variant-soft-primary text-primary-500": $modeCurrent !== false,
+              }
+            )}
+          >
+            <p>Dark</p>
+          </label>
+        </button>
+      </div>
     </div>
     <div class="flex flex-col justify-between items-start gap-4">
       <Button action={signOut} classes="w-full flex flex-row gap-4">

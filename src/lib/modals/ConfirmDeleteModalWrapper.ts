@@ -11,7 +11,7 @@ const modalComponent: ModalComponent = {
   props: {},
 };
 
-export function confirmDelete(form: HTMLFormElement, toDeleteName: string): void {
+export function confirmDelete(form: HTMLFormElement, toDeleteName: string, cancelAction: () => void): void {
   const modal: ModalSettings = {
     type: "component",
     title: "Confirm delete",
@@ -20,6 +20,8 @@ export function confirmDelete(form: HTMLFormElement, toDeleteName: string): void
     response: (response: boolean) => {
       if (response) {
         form.requestSubmit();
+      } else {
+        cancelAction();
       }
     },
   };

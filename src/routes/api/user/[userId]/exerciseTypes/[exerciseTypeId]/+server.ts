@@ -17,12 +17,18 @@ export async function GET({ params }: RequestEvent) {
 
 export async function DELETE({ params }: RequestEvent) {
     const exerciseTypeId = params.exerciseTypeId;
+    const userId = params.userId;
 
     let deletedexerciseType = null;
 
     try {
-        deletedexerciseType = await prisma.exerciseType.delete({
+        deletedexerciseType = await prisma.exerciseType.update({
             where: { id: exerciseTypeId },
+            data: {
+                users: {
+                    disconnect: [{ id: userId }]
+                }
+            },
             select: {
                 id: true,
             }

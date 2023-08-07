@@ -16,6 +16,7 @@ export async function load({ fetch, depends, locals }: PageServerLoadEvent) {
 
     return {
         exerciseTypes: exerciseTypes,
+        userId: (session.user as User).id
     }
 }
 
@@ -59,8 +60,6 @@ export const actions: Actions = {
         } catch (responseError) {
             throw error(400, 'Could not add exercise to session');
         }
-
-        console.log("new exercise id: ", newExerciseId);
 
         throw redirect(303, newExerciseId ? '/overview/exercise/' + newExerciseId : '/overview');
     },

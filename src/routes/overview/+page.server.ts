@@ -51,8 +51,6 @@ export const actions: Actions = {
     createSession: async ({ request, fetch, locals }: RequestEvent) => {
         const session = await locals.getSession();
 
-        console.log(session);
-
         if (!session || !session.user) {
             throw error(400, 'User not defined');
         }

@@ -1,7 +1,15 @@
+import { redis } from "../redis";
 import { openai } from "./Client";
 
 
 export async function getExerciseDescription(exerciseName: string): Promise<string> {
+    const redisKey = exerciseName + "_description";
+    const cached = await redis.get(redisKey);
+
+    if (cached) {
+        return JSON.parse(cached);
+    }
+
     const chat_completion = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
@@ -10,5 +18,9 @@ export async function getExerciseDescription(exerciseName: string): Promise<stri
         ]
     });
 
-    return chat_completion.data.choices[0].message?.content ?? "";
+    const exerciseDescription = chat_completion.data.choices[0].message?.content ?? "";
+
+    redis.set(redisKey, JSON.stringify(exerciseDescription))
+
+    return exerciseDescription;
 }

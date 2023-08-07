@@ -19,8 +19,6 @@ export const actions: Actions = {
 			notes: notes,
 		} as ExerciseSet;
 
-		console.log(exerciseSet);
-
 		try {
 			await fetch(
 				"/api/exercise/" + exerciseId + "/set",

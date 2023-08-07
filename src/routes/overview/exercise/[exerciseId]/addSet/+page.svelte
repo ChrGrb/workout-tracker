@@ -9,6 +9,7 @@
   import { enhance } from "$app/forms";
   import TextArea from "$lib/base/input/TextArea.svelte";
   import RadioSelect from "$lib/base/input/RadioSelect.svelte";
+  import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
 
   export let data: PageData;
   let repetitions = "";
@@ -29,51 +30,47 @@
     <div class="flex flex-col gap-4">
       <Headline>Add <br /> Set</Headline>
     </div>
-    <form method="POST" use:enhance>
-      <div class="flex flex-col gap-8">
-        <div class="flex flex-col gap-4">
-          <RadioSelect
-            items={[
-              { name: "Warmup", value: "WARMUP" },
-              { name: "Workout", value: "WORKOUT" },
-              { name: "Cooldown", value: "COOLDOWN" },
-            ]}
-            name="exerciseSetType"
-            id="exerciseSetType"
-            label="Type"
-            group={exerciseSetType}
-          />
-          <TextInput
-            name="reps"
-            id="reps"
-            type="number"
-            label="Repetitions"
-            bind:input={repetitions}
-            required={true}
-            metric="reps"
-          />
-          <TextInput
-            name="weight"
-            id="weight"
-            type="number"
-            label="Weight"
-            step={0.01}
-            bind:input={weight}
-            required={true}
-            metric="kg"
-          />
-          <TextArea
-            name="notes"
-            id="notes"
-            rows={3}
-            label="Notes"
-            placeholder="Enter your notes here"
-            bind:input={notes}
-          />
-        </div>
-
-        <Button type="submit" disabled={isInvalid}>Add</Button>
+    <SubmitFormWrapper isButtonDisabled={isInvalid}>
+      <div class="flex flex-col gap-4" slot="form-content">
+        <RadioSelect
+          items={[
+            { name: "Warmup", value: "WARMUP" },
+            { name: "Workout", value: "WORKOUT" },
+            { name: "Cooldown", value: "COOLDOWN" },
+          ]}
+          name="exerciseSetType"
+          id="exerciseSetType"
+          label="Type"
+          group={exerciseSetType}
+        />
+        <TextInput
+          name="reps"
+          id="reps"
+          type="number"
+          label="Repetitions"
+          bind:input={repetitions}
+          required={true}
+          metric="reps"
+        />
+        <TextInput
+          name="weight"
+          id="weight"
+          type="number"
+          label="Weight"
+          step={0.01}
+          bind:input={weight}
+          required={true}
+          metric="kg"
+        />
+        <TextArea
+          name="notes"
+          id="notes"
+          rows={3}
+          label="Notes"
+          placeholder="Enter your notes here"
+          bind:input={notes}
+        />
       </div>
-    </form>
+    </SubmitFormWrapper>
   </div>
 </Container>
