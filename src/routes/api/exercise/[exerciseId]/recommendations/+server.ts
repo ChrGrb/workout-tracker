@@ -22,6 +22,9 @@ export async function GET({ params }: RequestEvent) {
                 not: exerciseId
             }
         },
+        orderBy: {
+            createdAt: 'desc'
+        },
         include: {
             sets: true
         },

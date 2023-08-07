@@ -10,7 +10,7 @@
   }
 </script>
 
-<div class="absolute top-5 right-5">
+<div class="absolute top-5 right-5 z-50">
   <Button action={redirect} icon={true} loadingOnClick={true}>
     <XIcon size="24" />
   </Button>

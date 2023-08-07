@@ -5,13 +5,13 @@
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
   import { goto } from "$app/navigation";
   import {
+    MoreVerticalIcon,
     PauseIcon,
     PlayIcon,
-    SettingsIcon,
     Trash2Icon,
   } from "svelte-feather-icons";
   import Button from "$lib/base/Button.svelte";
-  import AddExerciseCard from "$lib/components/AddExerciseCard.svelte";
+  import AddExerciseCard from "$lib/components/AddCard.svelte";
   import PreviousSessions from "./components/session/PreviousSessions.svelte";
   import SettingsDrawer from "./components/settings/SettingsDrawer.svelte";
   import {
@@ -21,9 +21,10 @@
   } from "@skeletonlabs/skeleton";
   import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
   import type { Exercise } from "@prisma/client";
-  import SessionButton from "./components/SessionButton.svelte";
+  import SessionButton from "./components/session/SessionButton.svelte";
   import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
   import { fade } from "svelte/transition";
+  import SessionSkeleton from "./components/session/SessionSkeleton.svelte";
 
   export let data: PageData;
 
@@ -34,7 +35,6 @@
   const modalSettingsComponent: ModalComponent = {
     ref: SettingsDrawer,
     props: { user: data.user },
-    slot: "<p>Skeleton</p>",
   };
 
   function openSettings() {
@@ -59,18 +59,13 @@
     <div class="flex flex-row gap-4 justify-between">
       <Headline style="large">Overview</Headline>
       <Button action={openSettings} icon={true}>
-        <SettingsIcon size="24" />
+        <MoreVerticalIcon size="24" />
       </Button>
     </div>
 
     {#await data.streamed.currentSessionExercises}
       <div class="flex flex-col gap-8" transition:fade={{ duration: 100 }}>
-        <div class="placeholder animate-pulse h-[2.25em] w-1/2" />
-        <div class="placeholder animate-pulse w-full h-32" />
-        <div class="flex flex-row w-full gap-4">
-          <div class="placeholder animate-pulse h-[43px] grow" />
-          <div class="placeholder animate-pulse h-[43px] w-[43px]" />
-        </div>
+        <SessionSkeleton />
       </div>
     {:then currentSessionExercises}
       <div class="flex flex-col gap-12" in:fade={{ duration: 100, delay: 120 }}>
@@ -84,7 +79,9 @@
                   <ExerciseCard {exercise} />
                 {/each}
               {/if}
-              <AddExerciseCard addAction={addExercise} />
+              <AddExerciseCard addAction={addExercise}>
+                Add exercise
+              </AddExerciseCard>
             </div>
           </div>
 
@@ -111,7 +108,6 @@
                 confirmDelete(form, "session", () => {
                   isDeleteLoading = false;
                 })}
-              buttonClasses="variant-soft-error"
               buttonIcon={true}
               bind:isLoading={isDeleteLoading}
             >

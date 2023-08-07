@@ -16,7 +16,7 @@
       isLoading = false;
     })}
   classes={clsx(classes, {
-    "variant-soft-error bg-transparent text-inherit transition-all drop-shadow-none":
+    "btn !bg-transparent text-inherit transition-all drop-shadow-none":
       classes.length === 0,
   })}
   icon={$$slots.title ? false : true}

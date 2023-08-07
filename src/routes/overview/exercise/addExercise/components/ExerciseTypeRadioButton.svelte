@@ -71,7 +71,12 @@
         <input type="text" name="exerciseTypeId" value={id} class="hidden" />
         <input type="text" name="userId" value={userId} class="hidden" />
       </svelte:fragment>
-      <DeleteButton bind:form toDeleteName="exercise type" slot="button">
+      <DeleteButton
+        bind:form
+        toDeleteName="exercise type"
+        slot="button"
+        classes="variant-filled-surface drop-shadow-none"
+      >
         <p slot="title" class="drop-shadow-none">Delete</p>
       </DeleteButton>
     </SubmitFormWrapper>
@@ -128,7 +133,7 @@
 
         <div class="absolute bottom-2 right-2">
           <button
-            class="variant-filled-surface !bg-transparent text-inherit transition-all"
+            class="variant-filled-surface !bg-transparent text-inherit transition-all dark:text-primary-50"
             type="button"
             use:popup={popupFeatured}
           >

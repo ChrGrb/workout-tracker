@@ -5,13 +5,12 @@
   import ExitButton from "$lib/base/ExitButton.svelte";
   import { goto } from "$app/navigation";
   import ExerciseTypeRadioButton from "./components/ExerciseTypeRadioButton.svelte";
-  import AddExerciseTypeButton from "./components/AddExerciseTypeButton.svelte";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
   import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
-  import ExerciseOverviewRecommendationSkeleteon from "../[exerciseId]/components/ExerciseOverviewRecommendationSkeleteon.svelte";
   import ExerciseTypeRadioButtonSkeleteon from "./components/ExerciseTypeRadioButtonSkeleteon.svelte";
   import { fade } from "svelte/transition";
+  import AddCard from "$lib/components/AddCard.svelte";
 
   export let data: PageData;
 
@@ -52,12 +51,14 @@
                 />
               </div>
             {/each}
-            <AddExerciseTypeButton
+            <AddCard
               addAction={() =>
                 goto("/overview/exercise/addExerciseType", {
                   invalidateAll: true,
                 })}
-            />
+            >
+              Add Type
+            </AddCard>
           </div>
         {/await}
       </div>

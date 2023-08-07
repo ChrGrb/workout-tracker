@@ -30,14 +30,16 @@
   {type}
 >
   {#if isLoading}
-    <ProgressRadial
-      width="w-6"
-      stroke={100}
-      meter={clsx({
-        "stroke-white": !icon,
-        "stroke-primary-500": icon,
-      })}
-    />
+    <slot name="spinner">
+      <ProgressRadial
+        width="w-6"
+        stroke={100}
+        meter={clsx({
+          "stroke-white": !icon,
+          "stroke-primary-500": icon,
+        })}
+      />
+    </slot>
   {:else}
     <slot />
   {/if}
