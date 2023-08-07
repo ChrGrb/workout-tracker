@@ -8,24 +8,32 @@ export async function load({ params, fetch }: PageServerLoadEvent) {
         throw error(404, 'Workout not found');
     }
 
-    const exerciseWithSetsAndType = Prisma.validator<Prisma.ExerciseArgs>()({
+    const exerciseWithSetsAndType = Prisma.validator<Prisma.ExerciseDefaultArgs>()({
         include: { sets: true, type: true },
     });
     type ExerciseWithSetsAndType = Prisma.ExerciseGetPayload<typeof exerciseWithSetsAndType>
 
-    const responseExercise = await fetch("/api/exercise/" + params.exerciseId);
-    const exercise = (await responseExercise.json()) as ExerciseWithSetsAndType;
+    const exercise = async () => {
+        const responseExercise = await fetch("/api/exercise/" + params.exerciseId);
+        return (await responseExercise.json()) as ExerciseWithSetsAndType;
+    }
 
-    const responseExerciseActive = await fetch("/api/exercise/" + params.exerciseId + "/isActive");
-    const { active } = (await responseExerciseActive.json()) as { active: boolean };
+    const exerciseActive = async () => {
+        const responseExerciseActive = await fetch("/api/exercise/" + params.exerciseId + "/isActive");
+        return (await responseExerciseActive.json()) as { active: boolean };
+    }
 
-    const responseExerciseRecommendations = await fetch("/api/exercise/" + params.exerciseId + "/recommendations");
-    const recommendations = (await responseExerciseRecommendations.json()) as { recommendedWeight: number, recommendedReps: number } | null;
+    const recommendations = async () => {
+        const responseExerciseRecommendations = await fetch("/api/exercise/" + params.exerciseId + "/recommendations");
+        return (await responseExerciseRecommendations.json()) as { recommendedWeight: number, recommendedReps: number } | null;
+    }
 
     return {
-        exercise: exercise,
-        exerciseActive: active,
-        recommendations: recommendations
+        streamed: {
+            exercise: exercise(),
+            exerciseActive: exerciseActive(),
+            recommendations: recommendations()
+        }
     }
 };
 

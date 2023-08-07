@@ -34,7 +34,6 @@
 
   let form: HTMLFormElement;
   let editMode = false;
-  let isDeleteLoading = false;
 
   const workoutDescriptionModal: ModalComponent = {
     ref: WorkoutDescriptionModal,

@@ -22,7 +22,7 @@
 </script>
 
 <Button
-  classes="card variant-filled-primary flex flex-col gap-2 justify-center p-4 aspect-square text-center relative drop-shadow-lg"
+  classes="card variant-filled-primary w-full flex flex-col gap-2 justify-center p-4 aspect-square text-center relative drop-shadow-lg"
   action={() => {
     goto("/overview/exercise/" + exercise.id);
   }}

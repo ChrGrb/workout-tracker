@@ -9,6 +9,9 @@
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
   import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
+  import ExerciseOverviewRecommendationSkeleteon from "../[exerciseId]/components/ExerciseOverviewRecommendationSkeleteon.svelte";
+  import ExerciseTypeRadioButtonSkeleteon from "./components/ExerciseTypeRadioButtonSkeleteon.svelte";
+  import { fade } from "svelte/transition";
 
   export let data: PageData;
 
@@ -23,25 +26,40 @@
       <Headline>Add <br /> Exercise</Headline>
     </div>
     <SubmitFormWrapper action="?/addExercise" isButtonDisabled={isInvalid}>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4" slot="form-content">
-        {#each data.exerciseTypes as exerciseType (exerciseType.id)}
-          <div animate:flip={{ duration: 100, easing: sineInOut }}>
-            <ExerciseTypeRadioButton
-              name={exerciseType.name}
-              id={exerciseType.id}
-              bind:group={exerciseTypeSelection}
-              required={true}
-              userId={data.userId}
-              description={exerciseType.description}
+      <div slot="form-content">
+        {#await data.streamed.exerciseTypes}
+          <div
+            class="grid grid-cols-2 md:grid-cols-4 gap-4"
+            transition:fade={{ duration: 100 }}
+          >
+            <ExerciseTypeRadioButtonSkeleteon />
+            <ExerciseTypeRadioButtonSkeleteon />
+          </div>
+        {:then exerciseTypes}
+          <div
+            class="grid grid-cols-2 md:grid-cols-4 gap-4"
+            in:fade={{ duration: 100, delay: 120 }}
+          >
+            {#each exerciseTypes as exerciseType (exerciseType.id)}
+              <div animate:flip={{ duration: 100, easing: sineInOut }}>
+                <ExerciseTypeRadioButton
+                  name={exerciseType.name}
+                  id={exerciseType.id}
+                  bind:group={exerciseTypeSelection}
+                  required={true}
+                  userId={data.userId}
+                  description={exerciseType.description}
+                />
+              </div>
+            {/each}
+            <AddExerciseTypeButton
+              addAction={() =>
+                goto("/overview/exercise/addExerciseType", {
+                  invalidateAll: true,
+                })}
             />
           </div>
-        {/each}
-        <AddExerciseTypeButton
-          addAction={() =>
-            goto("/overview/exercise/addExerciseType", {
-              invalidateAll: true,
-            })}
-        />
+        {/await}
       </div>
     </SubmitFormWrapper>
   </div>

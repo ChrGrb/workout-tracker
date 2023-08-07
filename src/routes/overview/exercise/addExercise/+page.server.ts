@@ -11,12 +11,18 @@ export async function load({ fetch, depends, locals }: PageServerLoadEvent) {
         throw error(400, 'User not defined');
     }
 
-    const responseExerciseTypes = await fetch("/api/user/" + (session.user as User).id + "/exerciseTypes");
-    const exerciseTypes = (await responseExerciseTypes.json()) as ExerciseType[];
+    const exerciseTypes = async () => {
+        const responseExerciseTypes = await fetch("/api/user/" + (session.user as User).id + "/exerciseTypes");
+
+        return (await responseExerciseTypes.json()) as ExerciseType[];
+    }
+
 
     return {
-        exerciseTypes: exerciseTypes,
-        userId: (session.user as User).id
+        userId: (session.user as User).id,
+        streamed: {
+            exerciseTypes: exerciseTypes()
+        }
     }
 }
 
