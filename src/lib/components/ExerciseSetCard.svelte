@@ -20,10 +20,10 @@
 
 <div
   class={clsx("card flex flex-col gap-8 justify-center p-6", {
-    "variant-filled-primary":
-      exerciseSet.exerciseSetType == "WORKOUT" ||
+    "variant-filled-primary": exerciseSet.exerciseSetType == "WORKOUT",
+    "variant-soft-primary":
+      exerciseSet.exerciseSetType == "WARMUP" ||
       exerciseSet.exerciseSetType == "COOLDOWN",
-    "variant-soft-primary": exerciseSet.exerciseSetType == "WARMUP",
   })}
 >
   <div class="flex flex-row items-start justify-between">
@@ -50,11 +50,19 @@
     </SubmitFormWrapper>
   </div>
   <div class="flex flex-row justify-between">
-    <div class="flex flex-row gap-1">
+    <div
+      class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
+        "bg-white text-primary-900": exerciseSet.exerciseSetType == "WORKOUT",
+      })}
+    >
       <p class="font-medium">{exerciseSet.reps}</p>
       <p>reps</p>
     </div>
-    <div class="flex flex-row gap-1">
+    <div
+      class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
+        "bg-white text-primary-900": exerciseSet.exerciseSetType == "WORKOUT",
+      })}
+    >
       <p class="font-medium">{exerciseSet.weight}</p>
       <p>kg</p>
     </div>
