@@ -12,7 +12,15 @@ export async function GET({ params }: RequestEvent) {
         throw error(400, 'No user defined');
     }
 
-    const exerciseTypes = await prisma.exerciseType.findMany({ where: { userId: userId } });
+    const exerciseTypes = await prisma.exerciseType.findMany({
+        where: {
+            users: {
+                some: {
+                    id: userId
+                }
+            }
+        }
+    });
 
     return json(exerciseTypes);
 }
@@ -21,14 +29,25 @@ export async function POST({ params, request }: RequestEvent) {
     const userId = params.userId;
     const { exerciseType } = (await request.json()) as { exerciseType: ExerciseType };
 
-    exerciseType.description = await getExerciseDescription(exerciseType.name);
-
     try {
         await prisma.user.update({
             where: {
                 id: userId
             },
-            data: { exerciseTypes: { create: exerciseType } }
+            data: {
+                exerciseTypes: {
+                    connectOrCreate: {
+                        where: {
+                            name: exerciseType.name
+                        },
+                        create: {
+                            name: exerciseType.name,
+                            description: await getExerciseDescription(exerciseType.name)
+                        }
+                    }
+
+                }
+            }
         });
     } catch (responseError) {
         throw error(400, (responseError as Error).message);

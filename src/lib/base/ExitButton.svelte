@@ -11,5 +11,7 @@
 </script>
 
 <div class="absolute top-5 right-5">
-  <Button action={redirect} icon={true}><XIcon size="24" /></Button>
+  <Button action={redirect} icon={true} loadingOnClick={true}>
+    <XIcon size="24" />
+  </Button>
 </div>

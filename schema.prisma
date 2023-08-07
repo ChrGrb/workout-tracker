@@ -85,11 +85,10 @@ model Exercise {
 
 model ExerciseType {
   id          String     @id @default(cuid())
-  userId      String
-  user        User       @relation(fields: [userId], references: [id])
-  name        String
+  name        String     @unique
   description String?
   exercise    Exercise[]
+  users       User[]
 }
 
 enum ExerciseSetType {

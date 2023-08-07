@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
+  import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import { svelteTime } from "svelte-time";
 
@@ -10,7 +12,6 @@
     createdAt: Date;
     type: {
       id: string;
-      userId: string;
       name: string;
     };
     averageWeight: number | null;
@@ -20,9 +21,12 @@
   export let exercise: ExerciseWithType;
 </script>
 
-<a
-  class="card variant-filled-primary flex flex-col gap-2 justify-center p-4 aspect-square text-center relative"
-  href={"/overview/exercise/" + exercise.id}
+<Button
+  classes="card variant-filled-primary flex flex-col gap-2 justify-center p-4 aspect-square text-center relative drop-shadow-lg"
+  action={() => {
+    goto("/overview/exercise/" + exercise.id);
+  }}
+  loadingOnClick={true}
 >
   <Headline style="small">{exercise.type.name}</Headline>
   {#if exercise.averageWeight && exercise.averageReps}
@@ -43,4 +47,4 @@
     }}
     class="font-light text-sm absolute bottom-0 left-0 right-0 pb-3"
   />
-</a>
+</Button>

@@ -3,22 +3,30 @@
   import type { Session, WorkoutSession } from "@prisma/client";
   import SessionCard from "./SessionCard.svelte";
   import SessionCardSkeleton from "./SessionCardSkeleton.svelte";
+  import { Accordion, AccordionItem } from "@skeletonlabs/skeleton";
 
   export let previousSessions: WorkoutSession[] = [];
   export let loading: boolean = false;
 </script>
 
-<div class="flex flex-col gap-8">
-  <Headline style="medium">Previous Sessions</Headline>
+<Accordion
+  padding=""
+  regionControl="px-4 py-4"
+  regionPanel="pt-2 p-4"
+  class="card variant-soft-primary"
+>
+  <AccordionItem>
+    <Headline style="medium" slot="summary">Previous Sessions</Headline>
 
-  <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-    {#if loading}
-      <SessionCardSkeleton />
-      <SessionCardSkeleton />
-    {:else if previousSessions}
-      {#each previousSessions as session}
-        <SessionCard {session} />
-      {/each}
-    {/if}
-  </div>
-</div>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2" slot="content">
+      {#if loading}
+        <SessionCardSkeleton />
+        <SessionCardSkeleton />
+      {:else if previousSessions}
+        {#each previousSessions as session}
+          <SessionCard {session} />
+        {/each}
+      {/if}
+    </div>
+  </AccordionItem>
+</Accordion>

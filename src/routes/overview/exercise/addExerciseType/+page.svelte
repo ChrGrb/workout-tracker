@@ -1,30 +1,22 @@
 <script lang="ts">
   import Headline from "$lib/base/Headline.svelte";
   import Container from "$lib/base/Container.svelte";
-  import Button from "$lib/base/Button.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
-  import { enhance } from "$app/forms";
-  import { ProgressRadial } from "@skeletonlabs/skeleton";
+  import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
 
   let exerciseTypeName = "";
   $: isInvalid = exerciseTypeName.length === 0;
-  let isLoading = false;
 </script>
 
 <Container>
-  <ExitButton exitPath="/overview/workout/addWorkout" />
+  <ExitButton exitPath="/overview/exercise/addExercise" />
   <div class="flex flex-col gap-12">
     <div class="flex flex-col gap-4">
       <Headline>Add <br /> Exercise Type</Headline>
     </div>
-    <form
-      method="POST"
-      use:enhance={() => {
-        isLoading = true;
-      }}
-    >
-      <div class="flex flex-col gap-8">
+    <SubmitFormWrapper isButtonDisabled={isInvalid}>
+      <svelte:fragment slot="form-content">
         <div class="flex flex-col gap-4">
           <TextInput
             name="exerciseTypeName"
@@ -35,17 +27,13 @@
             bind:input={exerciseTypeName}
           />
         </div>
+      </svelte:fragment>
 
-        <Button type="submit" disabled={isInvalid || isLoading}>
-          <div class="flex flex-row gap-4">
-            {#if isLoading}
-              <ProgressRadial width="w-6" stroke={100} meter="stroke-white" />
-            {:else}
-              <Headline style="small">Add</Headline>
-            {/if}
-          </div>
-        </Button>
-      </div>
-    </form>
+      <svelte:fragment slot="button-content">
+        <div class="flex flex-row gap-4">
+          <Headline style="small">Add</Headline>
+        </div>
+      </svelte:fragment>
+    </SubmitFormWrapper>
   </div>
 </Container>

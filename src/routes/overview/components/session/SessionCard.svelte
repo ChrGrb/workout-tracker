@@ -8,9 +8,7 @@
 </script>
 
 <a href={"/overview/session/" + session.id}>
-  <div
-    class="card variant-soft-primary p-4 flex flex-row items-center justify-between gap-2"
-  >
+  <div class="p-4 flex flex-row items-center justify-between gap-2">
     <div class="flex flex-col gap-2">
       <Headline style="small">Session</Headline>
       <time

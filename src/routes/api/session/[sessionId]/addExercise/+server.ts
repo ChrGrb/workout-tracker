@@ -36,7 +36,5 @@ export async function POST({ request, params }: RequestEvent) {
         throw error(400, (responseError as Error).message);
     }
 
-    console.log(newExerciseId);
-
     return json(newExerciseId);
 }

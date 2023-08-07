@@ -10,9 +10,9 @@
   import { InfoIcon, PlusIcon, Trash2Icon } from "svelte-feather-icons";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
-  import { enhance } from "$app/forms";
-  import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
   import { Accordion, AccordionItem } from "@skeletonlabs/skeleton";
+  import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
+  import DeleteButton from "$lib/base/DeleteButton.svelte";
 
   export let data: PageData;
 
@@ -77,9 +77,14 @@
       <div class="flex flex-row justify-between items-center">
         <Headline style="small">Sets</Headline>
         {#if data.exerciseActive}
-          <Button action={addSet} icon={true} classes="variant-filled-primary"
-            ><PlusIcon size="24" /></Button
+          <Button
+            action={addSet}
+            icon={true}
+            loadingOnClick={true}
+            classes="variant-filled-primary"
           >
+            <PlusIcon size="24" />
+          </Button>
         {/if}
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -94,29 +99,27 @@
     </div>
 
     {#if data.exerciseActive}
-      <form
-        method="POST"
+      <SubmitFormWrapper
         action="?/deleteCurrentExercise"
-        class="w-full grow"
-        use:enhance
-        bind:this={form}
+        bind:form
+        formClasses="w-full grow"
       >
         <input
           type="text"
           name="exerciseId"
           value={data.exercise.id}
           class="hidden"
+          slot="form-content"
         />
-        <Button
-          action={() => confirmDelete(form, "exercise")}
+        <DeleteButton
+          toDeleteName="exercise"
+          bind:form
+          slot="button"
           classes="w-full variant-soft-error"
         >
-          <div class="flex flex-row gap-4 justify-center items-center">
-            <p>Delete Exercise</p>
-            <Trash2Icon size="14" />
-          </div>
-        </Button>
-      </form>
+          <p slot="title">Delete Exercise</p>
+        </DeleteButton>
+      </SubmitFormWrapper>
     {/if}
   </div>
 </Container>

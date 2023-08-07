@@ -3,10 +3,31 @@
   import "@skeletonlabs/skeleton/styles/skeleton.css";
   import { fade } from "svelte/transition";
   import "../app.css";
-  import { AppShell, Modal, Toast } from "@skeletonlabs/skeleton";
+  import {
+    AppShell,
+    Modal,
+    Toast,
+    setInitialClassState,
+  } from "@skeletonlabs/skeleton";
+  import {
+    computePosition,
+    autoUpdate,
+    offset,
+    shift,
+    flip,
+    arrow,
+  } from "@floating-ui/dom";
+
+  import { storePopup } from "@skeletonlabs/skeleton";
+  storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
   export let data;
 </script>
+
+<svelte:head>
+  <!-- Workaround for a svelte parsing error: https://github.com/sveltejs/eslint-plugin-svelte/issues/492 -->
+  {@html `<\u{73}cript nonce="%sveltekit.nonce%">(${setInitialClassState.toString()})();</script>`}
+</svelte:head>
 
 <Modal />
 <Toast />

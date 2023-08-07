@@ -6,6 +6,7 @@
     CheckIcon,
     EditIcon,
     InfoIcon,
+    MoreHorizontalIcon,
     Trash2Icon,
     XIcon,
   } from "svelte-feather-icons";
@@ -17,8 +18,12 @@
     modalStore,
     type ModalSettings,
     type ModalComponent,
+    type PopupSettings,
+    popup,
   } from "@skeletonlabs/skeleton";
   import WorkoutDescriptionModal from "$lib/modals/WorkoutDescriptionModal.svelte";
+  import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
+  import DeleteButton from "$lib/base/DeleteButton.svelte";
 
   export let name: string;
   export let id: string;
@@ -29,6 +34,7 @@
 
   let form: HTMLFormElement;
   let editMode = false;
+  let isDeleteLoading = false;
 
   const workoutDescriptionModal: ModalComponent = {
     ref: WorkoutDescriptionModal,
@@ -42,7 +48,59 @@
     body: description ?? "",
     buttonTextCancel: "Close",
   };
+
+  const popupFeatured: PopupSettings = {
+    // Represents the type of event that opens/closed the popup
+    event: "click",
+    // Matches the data-popup value on your popup element
+    target: "popupFeatured",
+    // Defines which side of your trigger the popup will appear
+    placement: "top",
+    middleware: {
+      offset: { crossAxis: -24, mainAxis: -10 },
+    },
+  };
 </script>
+
+<div
+  class="card variant-filled-surface p-2 pr-0 shadow-xl z-50"
+  data-popup="popupFeatured"
+>
+  <div class="flex flex-col items-end">
+    <SubmitFormWrapper action="?/deleteExerciseType" bind:form>
+      <svelte:fragment slot="form-content">
+        <input type="text" name="exerciseTypeId" value={id} class="hidden" />
+        <input type="text" name="userId" value={userId} class="hidden" />
+      </svelte:fragment>
+      <DeleteButton bind:form toDeleteName="exercise type" slot="button">
+        <p slot="title" class="drop-shadow-none">Delete</p>
+      </DeleteButton>
+    </SubmitFormWrapper>
+    <Button
+      action={() => (editMode = true)}
+      type="button"
+      classes="variant-filled-surface transition-all drop-shadow-none"
+    >
+      <div class="flex flex-row gap-4 justify-center items-center">
+        <p>Edit</p>
+        <EditIcon size="18" />
+      </div>
+    </Button>
+
+    {#if description}
+      <Button
+        action={() => modalStore.trigger(workoutDescriptionModalSettings)}
+        classes="variant-filled-surface transition-all drop-shadow-none"
+        type="button"
+      >
+        <div class="flex flex-row gap-4 justify-center items-center">
+          <p>Info</p>
+          <InfoIcon size="18" />
+        </div>
+      </Button>
+    {/if}
+  </div>
+</div>
 
 <div>
   <input
@@ -56,7 +114,7 @@
   />
   <label
     for={name}
-    class="card flex flex-col justify-center aspect-square text-center variant-soft-primary peer-checked:variant-filled-primary text-primary-700 peer-checked:text-white transition-all relative"
+    class="card flex flex-col justify-center aspect-square text-center variant-soft-primary drop-shadow-md peer-checked:drop-shadow-lg peer-checked:variant-filled-primary text-on-surface-token peer-checked:text-on-primary-token transition-all relative"
   >
     {#if !editMode}
       <div
@@ -68,51 +126,18 @@
         class="absolute inset-0 flex flex-col items-center justify-center p-4"
       >
         <Headline style="small">{name}</Headline>
-        <form
-          method="POST"
-          action="?/deleteExerciseType"
-          class="absolute top-2 right-2"
-          use:enhance
-          bind:this={form}
-        >
-          <input type="text" name="exerciseTypeId" value={id} class="hidden" />
-          <input type="text" name="userId" value={userId} class="hidden" />
-          <Button
-            action={() => confirmDelete(form, "exercise type")}
-            classes="variant-soft-error bg-transparent text-inherit transition-all"
-            icon={true}
-          >
-            <div class="flex flex-row gap-4 justify-center items-center">
-              <Trash2Icon size="18" />
-            </div>
-          </Button>
-        </form>
 
         <div class="absolute bottom-2 right-2">
-          <Button
-            action={() => (editMode = true)}
-            classes="variant-filled-surface transition-all"
-            icon={true}
+          <button
+            class="variant-filled-surface !bg-transparent text-inherit transition-all"
+            type="button"
+            use:popup={popupFeatured}
           >
             <div class="btn-icon flex flex-row justify-center items-center">
-              <EditIcon size="18" />
+              <MoreHorizontalIcon size="18" />
             </div>
-          </Button>
+          </button>
         </div>
-
-        {#if description}
-          <div class="absolute top-2 left-2">
-            <Button
-              action={() => modalStore.trigger(workoutDescriptionModalSettings)}
-              classes="variant-filled-surface transition-all"
-              icon={true}
-            >
-              <div class="btn-icon flex flex-row justify-center items-center">
-                <InfoIcon size="18" />
-              </div>
-            </Button>
-          </div>
-        {/if}
       </div>
     {:else}
       <div
@@ -154,7 +179,7 @@
             </Button>
           </div>
         </form>
-        <div class="absolute top-2 right-2">
+        <div class="absolute bottom-2 left-2">
           <Button
             action={() => {
               editMode = false;
