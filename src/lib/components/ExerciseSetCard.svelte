@@ -5,6 +5,8 @@
   import type { ExerciseSet } from "@prisma/client";
   import clsx from "clsx";
   import { InfoIcon, Trash2Icon } from "svelte-feather-icons";
+  import SubmitFormWrapper from "./forms/SubmitFormWrapper.svelte";
+  import DeleteButton from "$lib/base/DeleteButton.svelte";
 
   export let exerciseSet: ExerciseSet;
   export let deleteAction: string;
@@ -12,40 +14,40 @@
   $: exerciseSetTypeString =
     exerciseSet.exerciseSetType.charAt(0).toUpperCase() +
     exerciseSet.exerciseSetType.slice(1).toLowerCase();
+
+  let form: HTMLFormElement;
 </script>
 
 <div
   class={clsx("card flex flex-col gap-8 justify-center p-6", {
-    "variant-filled-primary": exerciseSet.exerciseSetType == "WORKOUT",
+    "variant-filled-primary":
+      exerciseSet.exerciseSetType == "WORKOUT" ||
+      exerciseSet.exerciseSetType == "COOLDOWN",
     "variant-soft-primary": exerciseSet.exerciseSetType == "WARMUP",
-    "variant-soft-secondary": exerciseSet.exerciseSetType == "COOLDOWN",
   })}
 >
   <div class="flex flex-row items-start justify-between">
     <Headline style="small">
       {exerciseSetTypeString}
     </Headline>
-    <form method="POST" action={deleteAction} use:enhance>
-      <input
-        type="text"
-        name="workoutId"
-        value={exerciseSet.exerciseId}
-        class="hidden"
+    <SubmitFormWrapper action={deleteAction} bind:form>
+      <svelte:fragment slot="form-content">
+        <input
+          type="text"
+          name="workoutId"
+          value={exerciseSet.exerciseId}
+          class="hidden"
+        />
+        <input type="text" name="setId" value={exerciseSet.id} class="hidden" />
+      </svelte:fragment>
+
+      <DeleteButton
+        toDeleteName="exercise"
+        bind:form
+        slot="button"
+        classes="w-full variant-soft-error"
       />
-      <input type="text" name="setId" value={exerciseSet.id} class="hidden" />
-      <Button
-        type="submit"
-        icon={true}
-        classes={clsx({
-          "variant-soft-error": exerciseSet.exerciseSetType != "WORKOUT",
-          "variant-filled-primary": exerciseSet.exerciseSetType == "WORKOUT",
-        })}
-      >
-        <div class="flex flex-row gap-4 justify-center items-center">
-          <Trash2Icon size="20" />
-        </div>
-      </Button>
-    </form>
+    </SubmitFormWrapper>
   </div>
   <div class="flex flex-row justify-between">
     <div class="flex flex-row gap-1">
