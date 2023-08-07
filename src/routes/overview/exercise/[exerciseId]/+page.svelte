@@ -7,10 +7,20 @@
   import { goto } from "$app/navigation";
   import ExerciseSetCard from "$lib/components/ExerciseSetCard.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
-  import { InfoIcon, PlusIcon, Trash2Icon } from "svelte-feather-icons";
+  import {
+    InfoIcon,
+    MoreHorizontalIcon,
+    PlusIcon,
+    Trash2Icon,
+  } from "svelte-feather-icons";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
-  import { Accordion, AccordionItem } from "@skeletonlabs/skeleton";
+  import {
+    Accordion,
+    AccordionItem,
+    popup,
+    type PopupSettings,
+  } from "@skeletonlabs/skeleton";
   import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
   import DeleteButton from "$lib/base/DeleteButton.svelte";
   import ExerciseOverviewSkeleton from "./components/ExerciseOverviewSkeleton.svelte";
@@ -25,7 +35,45 @@
   }
 
   let form: HTMLFormElement;
+
+  const popupFeatured: PopupSettings = {
+    // Represents the type of event that opens/closed the popup
+    event: "click",
+    // Matches the data-popup value on your popup element
+    target: "popupFeatured",
+    // Defines which side of your trigger the popup will appear
+    placement: "bottom",
+    middleware: {
+      offset: { crossAxis: -80 },
+    },
+  };
 </script>
+
+{#await data.streamed.exercise then exercise}
+  <div
+    class="card variant-filled-surface p-2 pr-0 shadow-xl z-50"
+    data-popup="popupFeatured"
+  >
+    <div class="flex flex-col items-end">
+      <SubmitFormWrapper
+        action="?/deleteCurrentExercise"
+        bind:form
+        formClasses="w-full grow"
+      >
+        <input
+          type="text"
+          name="exerciseId"
+          value={exercise.id}
+          class="hidden"
+          slot="form-content"
+        />
+        <DeleteButton toDeleteName="exercise" bind:form slot="button">
+          <p slot="title">Delete Exercise</p>
+        </DeleteButton>
+      </SubmitFormWrapper>
+    </div>
+  </div>
+{/await}
 
 <Container>
   <ExitButton exitPath={"/overview"} />
@@ -112,17 +160,10 @@
         >
           <div class="flex flex-row justify-between items-center">
             <Headline style="small">Sets</Headline>
-            {#if exerciseActive}
-              <Button
-                action={() => {
-                  addSet(exercise.id);
-                }}
-                icon={true}
-                loadingOnClick={true}
-                classes="variant-filled-primary"
-              >
-                <PlusIcon size="24" />
-              </Button>
+            {#if exerciseActive.active}
+              <button use:popup={popupFeatured} type="button">
+                <MoreHorizontalIcon size="24" />
+              </button>
             {/if}
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -139,28 +180,19 @@
           </div>
         </div>
 
-        {#if exerciseActive}
-          <SubmitFormWrapper
-            action="?/deleteCurrentExercise"
-            bind:form
-            formClasses="w-full grow"
+        {#if exerciseActive.active}
+          <Button
+            action={() => {
+              addSet(exercise.id);
+            }}
+            loadingOnClick={true}
+            classes="w-full variant-filled-primary"
           >
-            <input
-              type="text"
-              name="exerciseId"
-              value={exercise.id}
-              class="hidden"
-              slot="form-content"
-            />
-            <DeleteButton
-              toDeleteName="exercise"
-              bind:form
-              slot="button"
-              classes="w-full variant-soft-error"
-            >
-              <p slot="title">Delete Exercise</p>
-            </DeleteButton>
-          </SubmitFormWrapper>
+            <div class="flex flex-row gap-4">
+              <p>Add set</p>
+              <PlusIcon size="24" />
+            </div>
+          </Button>
         {/if}
       {/await}
     </div>

@@ -23,7 +23,7 @@
     class="card p-4 w-modal shadow-xl space-y-4 flex flex-col gap-6 relative"
   >
     <div class="absolute top-7 right-5">
-      <Button action={() => modalStore.close()} icon={true}>
+      <Button classes="z-50" action={() => modalStore.close()} icon={true}>
         <XIcon size="24" />
       </Button>
     </div>
