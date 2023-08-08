@@ -1,13 +1,9 @@
 import { json, error } from '@sveltejs/kit';
 import { PrismaClient, type ExerciseType } from '@prisma/client';
 import type { RequestEvent } from './$types';
-import { getExerciseDescription } from '$lib/utils/chatgpt/ExerciseDescription';
+import { getExerciseDescription, setExerciseTypeDescription } from '$lib/utils/chatgpt/ExerciseDescription';
 
 const prisma = new PrismaClient();
-
-export const config = {
-    rungime: 'edge'
-}
 
 export async function GET({ params }: RequestEvent) {
     const userId = params.userId;
@@ -34,7 +30,7 @@ export async function POST({ params, request }: RequestEvent) {
     const { exerciseType } = (await request.json()) as { exerciseType: ExerciseType };
 
     try {
-        await prisma.user.update({
+        const newExerciseTypeId = (await prisma.user.update({
             where: {
                 id: userId
             },
@@ -46,13 +42,25 @@ export async function POST({ params, request }: RequestEvent) {
                         },
                         create: {
                             name: exerciseType.name,
-                            description: await getExerciseDescription(exerciseType.name)
+                            description: ""
                         }
                     }
 
                 }
+            },
+            select: {
+                exerciseTypes: {
+                    where: {
+                        name: exerciseType.name
+                    },
+                    select: {
+                        id: true
+                    }
+                }
             }
-        });
+        })).exerciseTypes[0].id;
+
+        setExerciseTypeDescription(newExerciseTypeId, getExerciseDescription(exerciseType.name))
     } catch (responseError) {
         throw error(400, (responseError as Error).message);
     }
