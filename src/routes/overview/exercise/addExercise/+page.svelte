@@ -11,6 +11,7 @@
   import ExerciseTypeRadioButtonSkeleteon from "./components/ExerciseTypeRadioButtonSkeleteon.svelte";
   import { fade } from "svelte/transition";
   import AddCard from "$lib/components/AddCard.svelte";
+  import Header from "$lib/base/Header.svelte";
 
   export let data: PageData;
 
@@ -21,8 +22,8 @@
 <Container>
   <ExitButton exitPath="/overview" />
   <div class="flex flex-col gap-12">
-    <div class="flex flex-col gap-4">
-      <Headline>Add <br /> Exercise</Headline>
+    <div class="flex flex-col gap-4 items-start w-1/2 md:w-1/4">
+      <Header>Add <br /> Exercise</Header>
     </div>
     <SubmitFormWrapper action="?/addExercise" isButtonDisabled={isInvalid}>
       <div slot="form-content">

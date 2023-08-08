@@ -27,6 +27,8 @@
   import ExerciseOverviewSetSkeleton from "./components/ExerciseOverviewSetSkeleton.svelte";
   import ExerciseOverviewRecommendationSkeleteon from "./components/ExerciseOverviewRecommendationSkeleteon.svelte";
   import { fade } from "svelte/transition";
+  import HeadlineBackground from "$lib/base/HeadlineBackground.svelte";
+  import Header from "$lib/base/Header.svelte";
 
   export let data: PageData;
 
@@ -83,9 +85,10 @@
     </div>
   {:then exercise}
     <div class="flex flex-col gap-12" in:fade={{ duration: 100, delay: 120 }}>
-      <div class="flex flex-col gap-4 pr-24">
-        <Headline>{exercise.type.name}</Headline>
+      <div class="flex flex-col gap-4 pr-24 relative items-start">
+        <Header>{exercise.type.name}</Header>
         <time
+          class="invert dark:invert-0 mix-blend-difference dark:mix-blend-normal z-50"
           use:svelteTime={{
             timestamp: exercise.createdAt,
             format: "dddd @ h:mm A · MMMM D, YYYY",

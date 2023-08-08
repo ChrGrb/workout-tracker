@@ -9,6 +9,7 @@
   import { sineInOut } from "svelte/easing";
   import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
   import DeleteButton from "$lib/base/DeleteButton.svelte";
+  import Header from "$lib/base/Header.svelte";
 
   export let data: PageData;
 
@@ -19,8 +20,8 @@
 <Container>
   <ExitButton exitPath={"/overview"} />
   <div class="flex flex-col gap-12">
-    <div class="flex flex-col gap-4 pr-24">
-      <Headline>Session</Headline>
+    <div class="flex flex-col gap-4 pr-24 items-start">
+      <Header>Session</Header>
       <time
         use:svelteTime={{
           timestamp: data.session.createdAt,

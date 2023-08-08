@@ -52,7 +52,7 @@
     // Represents the type of event that opens/closed the popup
     event: "click",
     // Matches the data-popup value on your popup element
-    target: "popupFeatured",
+    target: "popupFeatured" + name,
     // Defines which side of your trigger the popup will appear
     placement: "top",
     middleware: {
@@ -63,7 +63,7 @@
 
 <div
   class="card variant-filled-surface p-2 pr-0 shadow-xl z-50"
-  data-popup="popupFeatured"
+  data-popup={"popupFeatured" + name}
 >
   <div class="flex flex-col items-end">
     <SubmitFormWrapper action="?/deleteExerciseType" bind:form>
