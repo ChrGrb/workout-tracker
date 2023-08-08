@@ -5,6 +5,10 @@ import { getExerciseDescription } from '$lib/utils/chatgpt/ExerciseDescription';
 
 const prisma = new PrismaClient();
 
+export const config = {
+    rungime: 'edge'
+}
+
 export async function GET({ params }: RequestEvent) {
     const userId = params.userId;
 
