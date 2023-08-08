@@ -10,6 +10,7 @@
   import TextArea from "$lib/base/input/TextArea.svelte";
   import RadioSelect from "$lib/base/input/RadioSelect.svelte";
   import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
+  import Header from "$lib/base/Header.svelte";
 
   export let data: PageData;
   let repetitions = "";
@@ -27,8 +28,8 @@
 <Container>
   <ExitButton exitPath={"/overview/exercise/" + data.exercise.id} />
   <div class="flex flex-col gap-12">
-    <div class="flex flex-col gap-4">
-      <Headline>Add <br /> Set</Headline>
+    <div class="flex flex-col gap-4 w-1/2 md:w-1/4">
+      <Header>Add <br /> Set</Header>
     </div>
     <SubmitFormWrapper isButtonDisabled={isInvalid}>
       <div class="flex flex-col gap-4" slot="form-content">

@@ -4,6 +4,7 @@
   import TextInput from "$lib/base/input/TextInput.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
   import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
+  import Header from "$lib/base/Header.svelte";
 
   let exerciseTypeName = "";
   $: isInvalid = exerciseTypeName.length === 0;
@@ -12,8 +13,8 @@
 <Container>
   <ExitButton exitPath="/overview/exercise/addExercise" />
   <div class="flex flex-col gap-12">
-    <div class="flex flex-col gap-4">
-      <Headline>Add <br /> Exercise Type</Headline>
+    <div class="flex flex-col gap-4 items-start">
+      <Header>Add <br /> Exercise Type</Header>
     </div>
     <SubmitFormWrapper isButtonDisabled={isInvalid}>
       <svelte:fragment slot="form-content">

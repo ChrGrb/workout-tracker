@@ -38,12 +38,12 @@
   />
   <Headline style="small">{exercise.type.name}</Headline>
   {#if exercise.averageWeight && exercise.averageReps}
-    <div class="flex flex-row gap-2 justify-center mb-2">
-      <div class="flex flex-row badge variant-filled-tertiary pr-2.5 bg-white">
+    <div class="flex flex-row gap-2 justify-center mb-2 !ml-0">
+      <div class="flex flex-row badge rounded-full pr-2.5 bg-white text-black">
         <p>{exercise.averageReps} reps</p>
       </div>
 
-      <div class="flex flex-row badge variant-filled-tertiary pr-2.5 bg-white">
+      <div class="flex flex-row badge rounded-full pr-2.5 bg-white text-black">
         <p>{exercise.averageWeight} kg</p>
       </div>
     </div>

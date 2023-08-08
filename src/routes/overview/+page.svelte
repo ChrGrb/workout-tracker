@@ -25,6 +25,8 @@
   import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
   import { fade } from "svelte/transition";
   import SessionSkeleton from "./components/session/SessionSkeleton.svelte";
+  import HeadlineBackground from "$lib/base/HeadlineBackground.svelte";
+  import Header from "$lib/base/Header.svelte";
 
   export let data: PageData;
 
@@ -57,7 +59,7 @@
 <Container>
   <div class="flex flex-col gap-12">
     <div class="flex flex-row gap-4 justify-between">
-      <Headline style="large">Overview</Headline>
+      <Header>Overview</Header>
       <Button action={openSettings} icon={true}>
         <MoreVerticalIcon size="24" />
       </Button>
