@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client";
 import { redis } from "../redis";
 import { openai } from "./Client";
 
@@ -23,4 +24,17 @@ export async function getExerciseDescription(exerciseName: string): Promise<stri
     redis.set(redisKey, JSON.stringify(exerciseDescription))
 
     return exerciseDescription;
+}
+
+export async function setExerciseTypeDescription(exerciseTypeId: string, exerciseDescription: Promise<string>) {
+    const prisma = new PrismaClient();
+
+    await prisma.exerciseType.update({
+        where: {
+            id: exerciseTypeId
+        },
+        data: {
+            description: await exerciseDescription
+        }
+    });
 }
