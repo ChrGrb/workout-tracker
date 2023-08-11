@@ -12,8 +12,10 @@ export async function POST({ request, params }: RequestEvent) {
 
     const averages = await getAverages(exerciseSet, exerciseId);
 
+    let updatedExerciseId = "";
+
     try {
-        await prisma.exercise.update({
+        updatedExerciseId = (await prisma.exercise.update({
             where: {
                 id: exerciseId
             },
@@ -23,13 +25,16 @@ export async function POST({ request, params }: RequestEvent) {
                 },
                 averageReps: averages?.averageReps ?? 0,
                 averageWeight: averages?.averageWeight ?? 0,
+            },
+            select: {
+                id: true
             }
-        });
+        })).id;
     } catch (responseError) {
         throw error(400, (responseError as Error).message);
     }
 
-    return json(exerciseSet);
+    return json(updatedExerciseId);
 }
 
 async function getAverages(newexerciseSet: ExerciseSet, exerciseId: string): Promise<ExerciseAverage | null> {

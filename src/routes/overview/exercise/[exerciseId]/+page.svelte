@@ -29,6 +29,7 @@
   import { fade } from "svelte/transition";
   import HeadlineBackground from "$lib/base/HeadlineBackground.svelte";
   import Header from "$lib/base/Header.svelte";
+  import { exerciseTimer } from "$lib/stores/exerciseStores";
 
   export let data: PageData;
 
@@ -49,6 +50,31 @@
       offset: { crossAxis: -80 },
     },
   };
+
+  let exerciseTimers: {
+    exerciseId: string;
+    startTime: number;
+  }[] = [];
+
+  exerciseTimer.subscribe((value) => (exerciseTimers = value));
+
+  $: if (data.newSetId) {
+    let thisExerciseTimer = exerciseTimers.find((element) => element.exerciseId === data.newSetId);
+    if (
+      thisExerciseTimer ===
+      undefined
+    ) {
+      exerciseTimers.push({ exerciseId: data.newSetId, startTime: Date.now() });
+      exerciseTimer.set(exerciseTimers);
+    } else {
+      thisExerciseTimer.startTime = Date.now();
+      exerciseTimers.map((element) => {
+        element.exerciseId
+      })
+    }
+  }
+
+  $: console.log(exerciseTimers);
 </script>
 
 {#await data.streamed.exercise then exercise}

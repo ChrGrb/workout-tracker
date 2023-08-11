@@ -3,10 +3,12 @@ import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
 import { Prisma } from '@prisma/client';
 import { redirect } from '@sveltejs/kit';
 
-export async function load({ params, fetch }: PageServerLoadEvent) {
+export async function load({ params, fetch, url }: PageServerLoadEvent) {
     if (!params.exerciseId) {
         throw error(404, 'Workout not found');
     }
+
+    const newSetId = url.searchParams.get('newSetId');
 
     const exerciseWithSetsAndType = Prisma.validator<Prisma.ExerciseDefaultArgs>()({
         include: { sets: true, type: true },
@@ -29,6 +31,7 @@ export async function load({ params, fetch }: PageServerLoadEvent) {
     }
 
     return {
+        newSetId: newSetId,
         streamed: {
             exercise: exercise(),
             exerciseActive: exerciseActive(),

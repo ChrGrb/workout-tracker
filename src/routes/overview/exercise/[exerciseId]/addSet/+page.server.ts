@@ -19,8 +19,10 @@ export const actions: Actions = {
 			notes: notes,
 		} as ExerciseSet;
 
+		let newSetId = "";
+
 		try {
-			await fetch(
+			let request = await fetch(
 				"/api/exercise/" + exerciseId + "/set",
 				{
 					method: "POST",
@@ -30,10 +32,12 @@ export const actions: Actions = {
 					},
 				}
 			);
+
+			newSetId = await request.json()
 		} catch (responseError) {
 			throw error(400, 'Could not add set to exercise');
 		}
 
-		throw redirect(303, '/overview/exercise/' + exerciseId);
+		throw redirect(303, '/overview/exercise/' + exerciseId + '?newSetId=' + newSetId);
 	}
 }
