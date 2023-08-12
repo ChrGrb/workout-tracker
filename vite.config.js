@@ -7,7 +7,10 @@ import svg from '@poppanator/sveltekit-svg';
 export default defineConfig({
 	server: {
 		https: true,
-		host: 'dev.workout-tracker.com'
+		host: 'dev.workout-tracker.com',
+		watch: {
+			usePolling: true,
+		},
 	},
 	resolve: {
 		alias: {
