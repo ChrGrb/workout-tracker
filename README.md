@@ -66,7 +66,8 @@ git clone https://github.com/ChrGrb/workout-tracker && cd workout-tracker && yar
 <details>
 <summary>
 Run workout-tracker using Docker compose
-</summary>
+</summary> <br/>
+
 > **Note**
 > Alternatively you can also run the application using only docker
 > You can skip step 3-5 in this case
