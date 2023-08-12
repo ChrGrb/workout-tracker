@@ -54,13 +54,13 @@ git clone https://github.com/ChrGrb/workout-tracker && cd workout-tracker && yar
     openssl rand -base64 32
     ```
 
-   3. Generate GitHub OAuth credentials
+   3. Generate GitHub OAuth credentials <br/>
     Follow the instructions found here: https://authjs.dev/getting-started/oauth-tutorial?frameworks=next#2-configuring-oauth-provider
-    > **Note**
+    > **Important**
     > The callback url for the github provider is `https://dev.workout-tracker.com:5173/auth/callback/github`
 
    4. *Optional* Setup OpenAI API key
-    > This is only necessary if you want to generate workout descriptions locally
+    > This is only necessary if you want to generate workout descriptions locally <br/>
     Follow instructions on how to retrieve your OpenAI API key here: https://platform.openai.com/docs/api-reference/authentication
 
 <details>
@@ -77,6 +77,8 @@ Run workout-tracker using Docker compose
    ```shell
    docker compose up --build -d
    ```
+
+---
 </details>
 
 3. Run local infrastructure
