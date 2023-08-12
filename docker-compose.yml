@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  # Uncomment this section if you want to run the application in a Docker container
+  # web:
+  #   build: .
+  #   restart: on-failure
+  #   ports:
+  #     - 5173:5173
+  #     - 24678:24678
+  #   environment:
+  #     POSTGRES_PRISMA_URL: postgresql://prisma:prisma@db:5432/mydb
+  #     POSTGRES_URL_NON_POOLING: postgresql://prisma:prisma@db:5432/mydb
+  #     REDIS_URL: redis://cache:6379
+  #   hostname: dev.workout-tracker.com
+  #   command: bash -c "npx prisma db push && npm run dev"
+  #   volumes:
+  #     - ./src:/usr/src/app/src
+  #   depends_on:
+  #     - db
+  #     - cache
+
+  db:
+    image: postgres:13
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: prisma
+      POSTGRES_PASSWORD: prisma
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  cache:
+    image: redis:6
+    ports:
+      - 6379:6379
+
+volumes:
+  postgres-data:
