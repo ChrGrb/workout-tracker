@@ -9,6 +9,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"lint": "eslint .",
+		"setup:dev": "prisma generate && prisma db push",
 		"postinstall": "prisma generate"
 	},
 	"devDependencies": {
