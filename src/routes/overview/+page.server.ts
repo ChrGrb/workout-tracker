@@ -12,13 +12,17 @@ export async function load({ fetch, cookies, depends, locals }: PageServerLoadEv
 
     const workoutSessionWithExercisesWithType = Prisma.validator<Prisma.WorkoutSessionArgs>()({
         include: { exercises: { include: { type: true } } }
-    },
-    );
-
+    });
     type WorkoutSessionWithExercisesWithType = Prisma.WorkoutSessionGetPayload<typeof workoutSessionWithExercisesWithType>
 
+    depends("user");
+    const userWithSettingsType = Prisma.validator<Prisma.UserArgs>()({
+        include: { settings: true }
+    });
+    type UserWithSettingsType = Prisma.UserGetPayload<typeof userWithSettingsType>
+
     const responseUser = await fetch("/api/user?id=" + (session.user as User).id);
-    const user = (await responseUser.json()) as User;
+    const user = (await responseUser.json()) as UserWithSettingsType;
 
     const previousSessions = async () => {
         const responsePreviousSessions = await fetch("/api/session/previous?userId=" + (session.user as User)?.id);
@@ -103,6 +107,27 @@ export const actions: Actions = {
                     headers: {
                         "content-type": "application/json",
                     },
+                }
+            );
+        } catch (responseError) {
+            throw error(400, 'Could not finish current session');
+        }
+    },
+    updateTimerSettings: async ({ request, fetch }: RequestEvent) => {
+        const form = await request.formData();
+        const timerEnabled = form.get("timerEnabled");
+        const timerDuration = form.get("timerDuration");
+        const userId = form.get("userId");
+
+        try {
+            await fetch(
+                "/api/user/" + userId + "/settings/timer",
+                {
+                    method: "PUT",
+                    body: JSON.stringify({ enabled: timerEnabled, duration: timerDuration }),
+                    headers: {
+                        "content-type": "application/json",
+                    }
                 }
             );
         } catch (responseError) {

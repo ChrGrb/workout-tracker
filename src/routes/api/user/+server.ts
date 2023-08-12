@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 export async function GET({ url }: RequestEvent) {
     const id = url.searchParams.get('id') ?? "";
 
-    const user = await prisma.user.findUnique({ where: { id: id } });
+    const user = await prisma.user.findUnique({ where: { id: id }, include: { settings: true } });
 
     return json(user);
 }

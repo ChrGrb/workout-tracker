@@ -25,14 +25,17 @@
   import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
   import { fade } from "svelte/transition";
   import SessionSkeleton from "./components/session/SessionSkeleton.svelte";
-  import HeadlineBackground from "$lib/base/HeadlineBackground.svelte";
   import Header from "$lib/base/Header.svelte";
+  import { useExerciseTimers, useSettings } from "$lib/stores/stores";
 
   export let data: PageData;
 
   async function addExercise() {
     goto("/overview/exercise/addExercise");
   }
+
+  let settings = useSettings();
+  settings.set(data.user.settings!);
 
   const modalSettingsComponent: ModalComponent = {
     ref: SettingsDrawer,
@@ -54,6 +57,8 @@
   $: isFinishButtonActive = (exercises: Exercise[]) => {
     return exercises.length > 0;
   };
+
+  useExerciseTimers();
 </script>
 
 <Container>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
+  import { applyAction, enhance } from "$app/forms";
   import Button from "$lib/base/Button.svelte";
 
   export let isLoading = false;
@@ -7,6 +7,8 @@
   export let action = "";
   export let form: HTMLFormElement | null = null;
   export let formClasses = "";
+  export let formCallbackFunction: ((result: any) => void) | null = null;
+  export let resetOnSubmit = true;
 </script>
 
 <form
@@ -15,6 +17,14 @@
   {action}
   use:enhance={() => {
     isLoading = true;
+
+    return async ({ result, update }) => {
+      await update({ reset: resetOnSubmit });
+      isLoading = false;
+      if (formCallbackFunction) {
+        formCallbackFunction(result);
+      }
+    };
   }}
   bind:this={form}
 >

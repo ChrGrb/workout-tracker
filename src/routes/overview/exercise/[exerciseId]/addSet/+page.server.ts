@@ -34,6 +34,6 @@ export const actions: Actions = {
 			throw error(400, 'Could not add set to exercise');
 		}
 
-		throw redirect(303, '/overview/exercise/' + exerciseId);
+		throw redirect(303, '/overview/exercise/' + exerciseId + '?hasTimer=true');
 	}
 }
