@@ -48,44 +48,49 @@ git clone https://github.com/ChrGrb/workout-tracker && cd workout-tracker && yar
     ```shell
     cp .env.temp .env
     ```
+
    2. Generate AUTH_SECRET and add it to .env
     ```shell
     openssl rand -base64 32
     ```
+
    3. Generate GitHub OAuth credentials
     Follow the instructions found here: https://authjs.dev/getting-started/oauth-tutorial?frameworks=next#2-configuring-oauth-provider
     > **Note**
     > The callback url for the github provider is `https://dev.workout-tracker.com:5173/auth/callback/github`
+
    4. *Optional* Setup OpenAI API key
-    > **Note**
     > This is only necessary if you want to generate workout descriptions locally
     Follow instructions on how to retrieve your OpenAI API key here: https://platform.openai.com/docs/api-reference/authentication
 
-
-3b. Run workout-tracker using Docker compose
+<details>
+<summary>
+Run workout-tracker using Docker compose
+</summary>
 > **Note**
 > Alternatively you can also run the application using only docker
 > You can skip step 3-5 in this case
 
-1. Uncomment the web section in the docker-compose.yml file
-2. Run the docker-compose instance including the web section
-```shell
-docker compose up --build -d
-```
+   1. Uncomment the web section in the docker-compose.yml file
+   2. Run the docker-compose instance including the web section
+   ```shell
+   docker compose up --build -d
+   ```
+</details>
 
-1. Run local infrastructure
+3. Run local infrastructure
 > **Note**
 > This will run the necessary PostgreSQL and Redis instances locally
 ```shell
 docker compose up --build -d
 ```
 
-1. Setup local database
+4. Setup local database
 ```shell
 yarn setup:dev
 ```
 
-1. Run workout-tracker
+5. Run workout-tracker
 ```shell
 yarn dev
 ```
