@@ -4,7 +4,7 @@
   import { sineInOut } from "svelte/easing";
   import { fade } from "svelte/transition";
 
-  export let label: string;
+  export let label: string = "";
   export let type: string;
   export let name: string | null | undefined;
   export let id: string | null | undefined;
@@ -22,7 +22,9 @@
 </script>
 
 <div class="sm:col-span-4">
-  <label for="reps" class="label">{label}</label>
+  {#if label.length > 0}
+    <label for="reps" class="label">{label}</label>
+  {/if}
   <div class="mt-2 relative">
     <input
       use:typeAction

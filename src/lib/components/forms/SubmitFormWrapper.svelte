@@ -8,6 +8,7 @@
   export let form: HTMLFormElement | null = null;
   export let formClasses = "";
   export let formCallbackFunction: ((result: any) => void) | null = null;
+  export let resetOnSubmit = true;
 </script>
 
 <form
@@ -18,7 +19,8 @@
     isLoading = true;
 
     return async ({ result, update }) => {
-      await update();
+      await update({ reset: resetOnSubmit });
+      isLoading = false;
       if (formCallbackFunction) {
         formCallbackFunction(result);
       }

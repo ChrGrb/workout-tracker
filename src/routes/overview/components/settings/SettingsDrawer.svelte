@@ -2,14 +2,18 @@
   import Button from "$lib/base/Button.svelte";
   import { signOut } from "@auth/sveltekit/client";
   import { LogOutIcon, XIcon } from "svelte-feather-icons";
-  import { Avatar, modalStore } from "@skeletonlabs/skeleton";
+  import { Avatar, SlideToggle, modalStore } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
-  import type { User } from "@prisma/client";
+  import type { Settings, User } from "@prisma/client";
   import LightSwitch from "$lib/base/LightSwitch.svelte";
+  import clsx from "clsx";
+  import TextInput from "$lib/base/input/TextInput.svelte";
+  import RadioSelect from "$lib/base/input/RadioSelect.svelte";
+  import TimerSettings from "./TimerSettings.svelte";
 
   // Props
   export let parent: any;
-  export let user: User;
+  export let user: User & { settings: Settings };
 
   let initials = user.name
     ?.split(" ")
@@ -49,10 +53,13 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col gap-4">
+    <div class="card variant-filled-surface p-4 flex flex-col gap-4">
       <Headline style="medium">Dark Mode</Headline>
       <LightSwitch />
     </div>
+
+    <TimerSettings {user} />
+
     <div class="flex flex-col justify-between items-start gap-4">
       <Button action={signOut} classes="w-full flex flex-row gap-4">
         <p>Sign Out</p>
@@ -61,11 +68,3 @@
     </div>
   </div>
 {/if}
-<!-- 
-<div class="flex flex-row justify-between items-center">
-  <div class="flex flex-row gap-2">
-    <SettingsIcon size="24" />
-    <p>{email}</p>
-  </div>
-  <Button action={signOut} icon={true}><LogOutIcon size="24" /></Button>
-</div> -->

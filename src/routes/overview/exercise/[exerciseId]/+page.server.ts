@@ -7,8 +7,8 @@ export async function load({ params, fetch, url }: PageServerLoadEvent) {
     if (!params.exerciseId) {
         throw error(404, 'Workout not found');
     }
-
-    const newSetId = url.searchParams.get('newSetId');
+    const hasTimer = url.searchParams.get('hasTimer') === 'true';
+    const exerciseId = params.exerciseId;
 
     const exerciseWithSetsAndType = Prisma.validator<Prisma.ExerciseDefaultArgs>()({
         include: { sets: true, type: true },
@@ -16,12 +16,12 @@ export async function load({ params, fetch, url }: PageServerLoadEvent) {
     type ExerciseWithSetsAndType = Prisma.ExerciseGetPayload<typeof exerciseWithSetsAndType>
 
     const exercise = async () => {
-        const responseExercise = await fetch("/api/exercise/" + params.exerciseId);
+        const responseExercise = await fetch("/api/exercise/" + exerciseId);
         return (await responseExercise.json()) as ExerciseWithSetsAndType;
     }
 
     const exerciseActive = async () => {
-        const responseExerciseActive = await fetch("/api/exercise/" + params.exerciseId + "/isActive");
+        const responseExerciseActive = await fetch("/api/exercise/" + exerciseId + "/isActive");
         return (await responseExerciseActive.json()) as { active: boolean };
     }
 
@@ -31,7 +31,8 @@ export async function load({ params, fetch, url }: PageServerLoadEvent) {
     }
 
     return {
-        newSetId: newSetId,
+        hasTimer: hasTimer,
+        exerciseId: exerciseId,
         streamed: {
             exercise: exercise(),
             exerciseActive: exerciseActive(),

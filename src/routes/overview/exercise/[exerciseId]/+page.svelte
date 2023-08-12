@@ -7,12 +7,7 @@
   import { goto } from "$app/navigation";
   import ExerciseSetCard from "$lib/components/ExerciseSetCard.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
-  import {
-    InfoIcon,
-    MoreHorizontalIcon,
-    PlusIcon,
-    Trash2Icon,
-  } from "svelte-feather-icons";
+  import { InfoIcon, MoreHorizontalIcon } from "svelte-feather-icons";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
   import {
@@ -27,9 +22,10 @@
   import ExerciseOverviewSetSkeleton from "./components/ExerciseOverviewSetSkeleton.svelte";
   import ExerciseOverviewRecommendationSkeleteon from "./components/ExerciseOverviewRecommendationSkeleteon.svelte";
   import { fade } from "svelte/transition";
-  import HeadlineBackground from "$lib/base/HeadlineBackground.svelte";
   import Header from "$lib/base/Header.svelte";
-  import { exerciseTimer } from "$lib/stores/exerciseStores";
+  import ExerciseTimer from "./components/ExerciseTimer.svelte";
+  import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
+  import { useExerciseTimers, useSettings } from "$lib/stores/stores";
 
   export let data: PageData;
 
@@ -51,30 +47,25 @@
     },
   };
 
-  let exerciseTimers: {
-    exerciseId: string;
-    startTime: number;
-  }[] = [];
+  let settings = useSettings();
+  let exerciseTimers = useExerciseTimers();
 
-  exerciseTimer.subscribe((value) => (exerciseTimers = value));
+  $: currentExerciseTimer = $exerciseTimers.find(
+    (element) => element.exerciseId == data.exerciseId
+  );
 
-  $: if (data.newSetId) {
-    let thisExerciseTimer = exerciseTimers.find((element) => element.exerciseId === data.newSetId);
-    if (
-      thisExerciseTimer ===
-      undefined
-    ) {
-      exerciseTimers.push({ exerciseId: data.newSetId, startTime: Date.now() });
-      exerciseTimer.set(exerciseTimers);
-    } else {
-      thisExerciseTimer.startTime = Date.now();
-      exerciseTimers.map((element) => {
-        element.exerciseId
-      })
+  if (data.hasTimer && $settings.useTimer) {
+    let thisExerciseTimer = currentExerciseTimer;
+    if (thisExerciseTimer === undefined) {
+      exerciseTimers.update((exerciseTimers) => {
+        exerciseTimers.push({
+          exerciseId: data.exerciseId!,
+          startTime: Date.now(),
+        });
+        return exerciseTimers;
+      });
     }
   }
-
-  $: console.log(exerciseTimers);
 </script>
 
 {#await data.streamed.exercise then exercise}
@@ -200,7 +191,7 @@
               </button>
             {/if}
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pb-56">
             {#if exercise.sets}
               {#each exercise.sets as set (set.id)}
                 <div animate:flip={{ duration: 100, easing: sineInOut }}>
@@ -214,19 +205,42 @@
           </div>
         </div>
 
-        {#if exerciseActive.active}
-          <Button
-            action={() => {
-              addSet(exercise.id);
-            }}
-            loadingOnClick={true}
-            classes="w-full variant-filled-primary"
-          >
-            <div class="flex flex-row gap-4 items-center">
-              <p class="text-bold">Add set</p>
+        <FloatBottomWrapper>
+          <Container>
+            <div class="flex flex-col gap-4">
+              {#if currentExerciseTimer}
+                <div transition:fade={{ duration: 200, easing: sineInOut }}>
+                  <ExerciseTimer
+                    timer={currentExerciseTimer}
+                    finishAction={() => {
+                      exerciseTimers.update((exerciseTimers) => {
+                        return exerciseTimers.filter(
+                          (timer) =>
+                            timer.exerciseId != currentExerciseTimer?.exerciseId
+                        );
+                      });
+                    }}
+                    timerLength={$settings.timerValue}
+                  />
+                </div>
+              {/if}
+
+              {#if exerciseActive.active}
+                <Button
+                  action={() => {
+                    addSet(exercise.id);
+                  }}
+                  loadingOnClick={true}
+                  classes="w-full variant-filled-primary"
+                >
+                  <div class="flex flex-row gap-4 items-center">
+                    <p class="text-bold">Add set</p>
+                  </div>
+                </Button>
+              {/if}
             </div>
-          </Button>
-        {/if}
+          </Container>
+        </FloatBottomWrapper>
       {/await}
     </div>
   {/await}

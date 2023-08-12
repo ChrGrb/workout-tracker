@@ -6,11 +6,13 @@ import { APPLE_ID, APPLE_SECRET, AUTH_SECRET, GITHUB_ID, GITHUB_SECRET } from "$
 import { GOOGLE_ID, GOOGLE_SECRET } from "$env/static/private";
 import { redirect, type Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
-import type { Provider } from "@auth/core/providers";
 import prismaClient from '$lib/db.server';
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
 
 const unprotectedRoutes = ['/auth/login'];
+
+const prisma = new PrismaClient();
 
 
 export const authorization: Handle = (async ({ event, resolve }) => {
@@ -57,6 +59,44 @@ const handleAuth: Handle = (async (...args) => {
     pages: {
       signIn: '/auth/login',
       error: '/auth/login',
+    },
+    events: {
+      signIn: async function (message) {
+        // Add settings to user, if they do not yet exist
+        // Currently in signin to be backwards compatible without deleting db
+        try {
+          const user = (await prisma.user.findFirst({
+            where: {
+              id: message.user.id
+            },
+            include: {
+              settings: true
+            }
+          }));
+
+          if (user && !user.settings) {
+            (await prisma.user.update({
+              where: {
+                id: message.user.id
+              },
+              data: {
+                settings: {
+                  create: {
+                  },
+                }
+              },
+              select: {
+                settings: true,
+                id: true
+              }
+            }));
+          }
+        } catch (responseError) {
+          console.log(400, (responseError as Error).message);
+        }
+
+        console.log("Login function ended");
+      }
     },
     cookies: {
       pkceCodeVerifier: {

@@ -19,9 +19,12 @@
   } from "@floating-ui/dom";
 
   import { storePopup } from "@skeletonlabs/skeleton";
+  import { useSettings } from "$lib/stores/stores";
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
   export let data;
+
+  useSettings();
 </script>
 
 <svelte:head>
