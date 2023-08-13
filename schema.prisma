@@ -70,6 +70,7 @@ model Settings {
 
 model WorkoutSession {
   id        String     @id @default(cuid())
+  name      String     @default("Session")
   userId    String
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   exercises Exercise[]

@@ -13,7 +13,7 @@
   >
     <div class="flex flex-col gap-2">
       <div class="flex flex-row gap-2 justify-start mb-2 !ml-0">
-        <Headline style="small">Session</Headline>
+        <Headline style="small">{session.name}</Headline>
         <div class="flex flex-row badge rounded-full bg-black text-white">
           <p>{session.exercises.length}</p>
         </div>

@@ -113,6 +113,26 @@ export const actions: Actions = {
             throw error(400, 'Could not finish current session');
         }
     },
+    updateCurrentSessionName: async ({ request, fetch }: RequestEvent) => {
+        const form = await request.formData();
+        const sessionId = form.get("sessionId");
+        const newSessionName = form.get("sessionName");
+
+        try {
+            await fetch(
+                "/api/session/" + sessionId + "/rename",
+                {
+                    method: "PUT",
+                    body: JSON.stringify({ newSessionName: newSessionName }),
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                }
+            );
+        } catch (responseError) {
+            throw error(400, 'Could not finish current session');
+        }
+    },
     updateTimerSettings: async ({ request, fetch }: RequestEvent) => {
         const form = await request.formData();
         const timerEnabled = form.get("timerEnabled");
