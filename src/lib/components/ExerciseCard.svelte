@@ -36,7 +36,9 @@
     stroke={100}
     meter="stroke-primary-50"
   />
-  <Headline style="small">{exercise.type.name}</Headline>
+  <Headline style="small" classes="break-words whitespace-normal line-clamp-3">
+    {exercise.type.name}
+  </Headline>
   {#if exercise.averageWeight && exercise.averageReps}
     <div class="flex flex-row gap-2 justify-center mb-2 !ml-0">
       <div class="flex flex-row badge rounded-full pr-2.5 bg-white text-black">
