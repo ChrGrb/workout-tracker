@@ -10,7 +10,7 @@
   import AddExerciseCard from "$lib/components/AddCard.svelte";
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
   import { confirmDelete } from "$lib/modals/ConfirmDeleteModalWrapper";
-  import CurrentSessionHeadlineEditable from "./CurrentSessionHeadlineEditable.svelte";
+  import CurrentSessionHeadlineEditable from "./SessionHeadlineEditable.svelte";
 
   export let currentSessionExercises:
     | (WorkoutSession & {

@@ -10,6 +10,7 @@
   import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
   import DeleteButton from "$lib/base/DeleteButton.svelte";
   import Header from "$lib/base/Header.svelte";
+  import SessionHeadlineEditable from "../../components/session/currentSession/SessionHeadlineEditable.svelte";
 
   export let data: PageData;
 
@@ -21,7 +22,9 @@
   <ExitButton exitPath={"/overview"} />
   <div class="flex flex-col gap-12">
     <div class="flex flex-col gap-4 pr-24 items-start">
-      <Header>Session</Header>
+      <Header>
+        <SessionHeadlineEditable workoutSession={data.session} slot="content" />
+      </Header>
       <time
         use:svelteTime={{
           timestamp: data.session.createdAt,

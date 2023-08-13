@@ -5,5 +5,9 @@
 
 <div class="relative isolate">
   <HeadlineBackground />
-  <Headline classes="z-50 relative"><slot /></Headline>
+  <div class="z-50 relative">
+    <slot name="content">
+      <Headline><slot /></Headline>
+    </slot>
+  </div>
 </div>

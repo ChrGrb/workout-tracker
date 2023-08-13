@@ -9,6 +9,7 @@
   export let workoutSession: WorkoutSession;
 
   let isEditMode = false;
+  let isLoading = false;
 </script>
 
 {#if !isEditMode}
@@ -24,7 +25,11 @@
     </Button>
   </div>
 {:else}
-  <SubmitFormWrapper action="?/updateCurrentSessionName">
+  <SubmitFormWrapper
+    action="?/updateCurrentSessionName"
+    bind:isLoading
+    formCallbackFunction={() => (isEditMode = false)}
+  >
     <svelte:fragment slot="form-content">
       <div class="flex flex-row gap-4 items-end">
         <TextInput
@@ -42,6 +47,7 @@
         <Button
           type="submit"
           icon={true}
+          {isLoading}
           classes="transition-all drop-shadow-none w-auto pb-1.5"
         >
           <CheckIcon size="18" />
