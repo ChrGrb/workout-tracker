@@ -105,7 +105,7 @@
       <div class="flex flex-col gap-4 pr-24 relative items-start">
         <Header>{exercise.type.name}</Header>
         <time
-          class="invert dark:invert-0 mix-blend-difference dark:mix-blend-normal z-50"
+          class="z-50"
           use:svelteTime={{
             timestamp: exercise.createdAt,
             format: "dddd @ h:mm A · MMMM D, YYYY",

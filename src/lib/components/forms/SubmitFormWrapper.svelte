@@ -1,6 +1,8 @@
 <script lang="ts">
   import { applyAction, enhance } from "$app/forms";
   import Button from "$lib/base/Button.svelte";
+  import Container from "$lib/base/Container.svelte";
+  import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
 
   export let isLoading = false;
   export let isButtonDisabled = false;
@@ -32,14 +34,21 @@
     <slot name="form-content" />
 
     <slot name="button">
-      <Button
-        type="submit"
-        disabled={isButtonDisabled}
-        highlight={true}
-        {isLoading}
-      >
-        <slot name="button-content">Add</slot>
-      </Button>
+      <FloatBottomWrapper>
+        <Container>
+          <div class="w-full">
+            <Button
+              type="submit"
+              disabled={isButtonDisabled}
+              highlight={true}
+              {isLoading}
+              classes="w-full"
+            >
+              <slot name="button-content">Add</slot>
+            </Button>
+          </div>
+        </Container>
+      </FloatBottomWrapper>
     </slot>
   </div>
 </form>

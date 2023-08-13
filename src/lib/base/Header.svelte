@@ -3,10 +3,7 @@
   import HeadlineBackground from "./HeadlineBackground.svelte";
 </script>
 
-<div class="relative">
+<div class="relative isolate">
   <HeadlineBackground />
-  <Headline
-    classes="invert dark:invert-0 mix-blend-difference dark:mix-blend-normal z-50 font-['Courier']"
-    ><slot /></Headline
-  >
+  <Headline classes="z-50 relative"><slot /></Headline>
 </div>

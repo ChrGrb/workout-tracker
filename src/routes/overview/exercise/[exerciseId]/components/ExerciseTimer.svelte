@@ -44,12 +44,12 @@
 
 <div
   class={clsx(
-    "card flex flex-col gap-8 justify-center py-4 px-4 md:p-6 variant-soft-primary bg-gradient-to-tr from-secondary-100 to-tertiary-100 relative shadow-sm"
+    "card flex flex-col gap-8 justify-center py-4 px-4 md:p-6 variant-soft-primary bg-gradient-to-tr from-secondary-100 via-surface-50 to-tertiary-100 dark:from-secondary-900 dark:via-surface-900 dark:to-tertiary-900 relative shadow-sm"
   )}
 >
   <div class="absolute top-2 right-2 z-50">
     <Button action={finishAction} icon={true} loadingOnClick={true}>
-      <XIcon size="24" />
+      <XIcon size="24" class="text-on-primary-token" />
     </Button>
   </div>
   <div class="flex flex-col md:flex-row gap-4 md:items-end justify-between">

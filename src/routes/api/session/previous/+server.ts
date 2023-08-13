@@ -10,7 +10,7 @@ export async function GET({ url }: RequestEvent) {
     }
     const userId = url.searchParams.get('userId') ?? "";
 
-    const sessions = await prisma.workoutSession.findMany({ where: { userId: userId, finished: true }, orderBy: { createdAt: 'desc' }, });
+    const sessions = await prisma.workoutSession.findMany({ where: { userId: userId, finished: true }, include: { exercises: true }, orderBy: { createdAt: 'desc' }, });
 
     return json(sessions);
 }

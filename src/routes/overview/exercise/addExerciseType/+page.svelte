@@ -31,9 +31,7 @@
       </svelte:fragment>
 
       <svelte:fragment slot="button-content">
-        <div class="flex flex-row gap-4">
-          <Headline style="small">Add</Headline>
-        </div>
+        <div class="flex flex-row gap-4">Add</div>
       </svelte:fragment>
     </SubmitFormWrapper>
   </div>
