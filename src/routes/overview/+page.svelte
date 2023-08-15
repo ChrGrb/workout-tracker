@@ -15,6 +15,7 @@
   import Header from "$lib/base/Header.svelte";
   import { useExerciseTimers, useSettings } from "$lib/stores/stores";
   import CurrentSessionSection from "./components/session/currentSession/CurrentSessionSection.svelte";
+  import LastWeekChart from "./components/LastWeekChart.svelte";
 
   export let data: PageData;
 
@@ -57,11 +58,13 @@
     <hr />
 
     {#await data.streamed.previousSessions}
-      <div transition:fade={{ duration: 100 }}>
+      <div transition:fade={{ duration: 100 }} class="flex flex-col gap-8">
+        <LastWeekChart loading={true} />
         <PreviousSessions loading={true} />
       </div>
     {:then previousSessions}
-      <div in:fade={{ duration: 100, delay: 120 }}>
+      <div in:fade={{ duration: 100, delay: 120 }} class="flex flex-col gap-8">
+        <LastWeekChart workoutSessions={previousSessions} />
         <PreviousSessions {previousSessions} />
       </div>
     {/await}
