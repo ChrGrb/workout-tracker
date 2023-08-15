@@ -36,6 +36,7 @@
         return settings;
       });
     }}
+    floatingSubmitbutton={false}
   >
     <div class="flex flex-col gap-4" slot="form-content">
       <Headline style="medium">Cooldown Timer</Headline>

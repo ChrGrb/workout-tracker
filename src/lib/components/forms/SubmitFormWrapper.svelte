@@ -11,6 +11,7 @@
   export let formClasses = "";
   export let formCallbackFunction: ((result: any) => void) | null = null;
   export let resetOnSubmit = true;
+  export let floatingSubmitbutton = true;
 </script>
 
 <form
@@ -34,21 +35,35 @@
     <slot name="form-content" />
 
     <slot name="button">
-      <FloatBottomWrapper>
-        <Container>
-          <div class="w-full">
-            <Button
-              type="submit"
-              disabled={isButtonDisabled}
-              highlight={true}
-              {isLoading}
-              classes="w-full"
-            >
-              <slot name="button-content">Add</slot>
-            </Button>
-          </div>
-        </Container>
-      </FloatBottomWrapper>
+      {#if floatingSubmitbutton}
+        <FloatBottomWrapper>
+          <Container>
+            <div class="w-full">
+              <Button
+                type="submit"
+                disabled={isButtonDisabled}
+                highlight={true}
+                {isLoading}
+                classes="w-full"
+              >
+                <slot name="button-content">Add</slot>
+              </Button>
+            </div>
+          </Container>
+        </FloatBottomWrapper>
+      {:else}
+        <div class="w-full">
+          <Button
+            type="submit"
+            disabled={isButtonDisabled}
+            highlight={true}
+            {isLoading}
+            classes="w-full"
+          >
+            <slot name="button-content">Add</slot>
+          </Button>
+        </div>
+      {/if}
     </slot>
   </div>
 </form>
