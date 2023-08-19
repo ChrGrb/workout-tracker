@@ -16,6 +16,20 @@ export async function POST({ request }: RequestEvent) {
     const { exercise } = (await request.json()) as { exercise: Exercise };
 
     try {
+        const previousExerciseOfType = await prisma.exercise.findFirst({
+            where: {
+                typeId: exercise.typeId
+            },
+            select: {
+                score: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            }
+        });
+
+        exercise.previousScore = previousExerciseOfType?.score ?? null;
+
         await prisma.workoutSession.update({
             where: {
                 id: exercise.sessionId
