@@ -25,6 +25,7 @@ export async function POST({ request, params }: RequestEvent) {
                 },
                 averageReps: averages?.averageReps ?? 0,
                 averageWeight: averages?.averageWeight ?? 0,
+                score: (averages?.averageReps ?? 0) * (averages?.averageWeight ?? 0)
             },
             select: {
                 id: true

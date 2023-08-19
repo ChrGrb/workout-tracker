@@ -86,6 +86,8 @@ model Exercise {
   user          User           @relation(fields: [userId], references: [id])
   averageWeight Float?
   averageReps   Int?
+  score         Float          @default(0)
+  previousScore Float?
   typeId        String
   type          ExerciseType   @relation(fields: [typeId], references: [id])
   sessionId     String
