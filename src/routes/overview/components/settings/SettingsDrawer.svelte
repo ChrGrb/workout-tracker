@@ -10,6 +10,8 @@
   import TextInput from "$lib/base/input/TextInput.svelte";
   import RadioSelect from "$lib/base/input/RadioSelect.svelte";
   import TimerSettings from "./TimerSettings.svelte";
+  import InstallationSettings from "./InstallationSettings.svelte";
+  import SettingsCard from "./components/SettingsCard.svelte";
 
   // Props
   export let parent: any;
@@ -53,12 +55,14 @@
         </div>
       </div>
     </div>
-    <div class="card variant-filled-surface p-4 flex flex-col gap-4">
-      <Headline style="medium">Dark Mode</Headline>
-      <LightSwitch />
-    </div>
+
+    <SettingsCard>
+      <svelte:fragment slot="headline">Dark Mode</svelte:fragment>
+      <svelte:fragment slot="content"><LightSwitch /></svelte:fragment>
+    </SettingsCard>
 
     <TimerSettings {user} />
+    <InstallationSettings />
 
     <div class="flex flex-col justify-between items-start gap-4">
       <Button action={signOut} classes="w-full flex flex-row gap-4">
