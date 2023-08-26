@@ -18,9 +18,6 @@
 
   export let exercise: ExerciseWithType;
 
-  console.log("Previous: ", exercise.previousScore);
-  console.log("Score: ", exercise.score);
-
   $: scoreImprovement =
     Math.round(
       (exercise.previousScore && exercise.score < exercise.previousScore
