@@ -11,6 +11,9 @@ const config = {
 		adapter: adapter(),    
 		csrf: {
 			checkOrigin: false,
+		},
+		serviceWorker: {
+			register: false
 		}
 	}
 };
