@@ -9,5 +9,5 @@ export async function load({ locals, url }: PageServerLoadEvent) {
         return { error: error };
     }
 
-    throw redirect(303, '/overview');
+    throw redirect(303, '/auth/afterLogin');
 }

@@ -29,21 +29,21 @@ export default defineConfig({
 			strategies: 'generateSW',
 			filename: undefined,
 			devOptions: {
-				enabled: false,
+				enabled: true,
 				type: 'module',
 			},		
 			injectManifest: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+				globPatterns: ['src/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			workbox: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+				globPatterns: ['src/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			manifest: {
 				short_name: 'Workout Tracker',
 				name: 'Workout Tracker',
 				description: 'The minimal workout tracking app',
 				start_url: '/auth/login',
-				scope: '/',
+				scope: '/overview',
 				display: 'standalone',
 				theme_color: "#000000",
 				background_color: "#ffffff",

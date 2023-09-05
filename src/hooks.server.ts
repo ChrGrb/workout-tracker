@@ -9,6 +9,7 @@ import { sequence } from "@sveltejs/kit/hooks";
 import prismaClient from '$lib/db.server';
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
+import type { Session } from "@auth/core/types";
 
 const unprotectedRoutes = ['/auth/login'];
 
@@ -20,11 +21,21 @@ export const authorization: Handle = (async ({ event, resolve }) => {
   if (event.url.pathname === '/') {
     throw redirect(303, "/auth/login");
   }
+
+  let session: Session | null = null;
+
   // Protect any routes under /authenticated
   if (!unprotectedRoutes.includes(event.url.pathname)) {
-    const session = await event.locals.getSession();
+    session = await event.locals.getSession();
     if (!session) {
       throw redirect(303, "/auth/login");
+    }
+  }
+
+  // Set userId cookie if it doesn't exist or changed
+  if (session?.user) {
+    if (!event.cookies.get("userId") || event.cookies.get("userId") !== session!.user?.id) {
+      event.cookies.set("userId", session!.user?.id);
     }
   }
 
@@ -53,6 +64,7 @@ const handleAuth: Handle = (async (...args) => {
           image: user.image,
         };
         event.locals.session = session;
+
         return session;
       },
     },
@@ -70,7 +82,8 @@ const handleAuth: Handle = (async (...args) => {
               id: message.user.id
             },
             include: {
-              settings: true
+              settings: true,
+              replicacheSpace: true,
             }
           }));
 
@@ -91,11 +104,24 @@ const handleAuth: Handle = (async (...args) => {
               }
             }));
           }
+
+          // Add replicacheSpace to the user if it does not yet exist
+          if (user && !(user.replicacheSpace.length > 0)) {
+            (await prisma.user.update({
+              where: {
+                id: message.user.id
+              },
+              data: {
+                replicacheSpace: {
+                  create: {
+                  },
+                }
+              }
+            }));
+          }
         } catch (responseError) {
           console.log(400, (responseError as Error).message);
         }
-
-        console.log("Login function ended");
       }
     },
     cookies: {

@@ -7,70 +7,103 @@
   import ExitButton from "$lib/base/ExitButton.svelte";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
-  import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
-  import DeleteButton from "$lib/base/DeleteButton.svelte";
   import Header from "$lib/base/Header.svelte";
   import SessionHeadlineEditable from "../../components/session/currentSession/SessionHeadlineEditable.svelte";
+  import updateSessionNameAction from "../../actions/updateSessionNameAction";
+  import { getReplicache, useUserId } from "$lib/stores/stores";
+  import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
+  import { onMount } from "svelte";
+  import Button from "$lib/base/Button.svelte";
+  import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
+  import deleteSessionAction from "../../actions/deleteSessionAction";
+  import { Trash2Icon } from "svelte-feather-icons";
+  import { goto } from "$app/navigation";
+  import { getOverviewPath } from "$lib/utils/routes";
 
   export let data: PageData;
 
-  let form: HTMLFormElement;
-  let isDeleteLoading = false;
+  let session: WorkoutSessionFull | null;
+
+  let userId = useUserId();
+
+  onMount(() => {
+    getReplicache($userId ?? "").subscribe(
+      async (tx) =>
+        (
+          await tx.scan({
+            prefix: `user/${$userId}/session/${data.sessionId}`,
+          })
+        ).toArray(),
+      {
+        onData: (data) => {
+          try {
+            session = JSON.parse(data?.toString()) as WorkoutSessionFull;
+          } catch {}
+        },
+      }
+    );
+  });
 </script>
 
 <Container>
   <ExitButton exitPath={"/overview"} />
-  <div class="flex flex-col gap-12">
-    <div class="flex flex-col gap-4 pr-24 items-start">
-      <Header>
-        <SessionHeadlineEditable workoutSession={data.session} slot="content" />
-      </Header>
-      <time
-        use:svelteTime={{
-          timestamp: data.session.createdAt,
-          format: "dddd @ HH:mm · MMMM D, YYYY",
-        }}
-      />
-    </div>
-    <div class="flex flex-col w-full gap-4">
-      <div class="flex flex-row justify-start">
-        <Headline style="small">Exercises</Headline>
+  {#if session}
+    <div class="flex flex-col gap-12">
+      <div class="flex flex-col gap-4 pr-24 items-start">
+        <Header>
+          <SessionHeadlineEditable
+            bind:workoutSession={session}
+            updateSessionNameAction={() => {
+              if (session) updateSessionNameAction(session);
+            }}
+            slot="content"
+          />
+        </Header>
+        <time
+          use:svelteTime={{
+            timestamp: session.createdAt,
+            format: "dddd @ HH:mm · MMMM D, YYYY",
+          }}
+        />
       </div>
-      <div class="flex flex-col gap-2">
-        {#if data.session.exercises && data.session.exercises.length > 0}
-          <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {#each data.session.exercises as exercise (exercise.id)}
-              <div animate:flip={{ duration: 100, easing: sineInOut }}>
-                <WorkoutCard {exercise} />
-              </div>
-            {/each}
-          </div>
-        {:else}
-          <Headline style="small">No exercises in session</Headline>
-        {/if}
+      <div class="flex flex-col w-full gap-4">
+        <div class="flex flex-row justify-start">
+          <Headline style="small">Exercises</Headline>
+        </div>
+        <div class="flex flex-col gap-2">
+          {#if session.exercises && session.exercises.filter((exercise) => !exercise.isDeleted).length > 0}
+            <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {#each session.exercises
+                .filter((exercise) => !exercise.isDeleted)
+                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) as exercise (exercise.id)}
+                <div animate:flip={{ duration: 100, easing: sineInOut }}>
+                  <WorkoutCard {exercise} />
+                </div>
+              {/each}
+            </div>
+          {:else}
+            <Headline style="small">No exercises in session</Headline>
+          {/if}
+        </div>
       </div>
-    </div>
 
-    <SubmitFormWrapper
-      action="?/deleteCurrentSession"
-      formClasses="w-full grow"
-      bind:form
-    >
-      <input
-        type="text"
-        name="sessionId"
-        value={data.session.id}
-        class="hidden"
-        slot="form-content"
-      />
-      <DeleteButton
-        bind:form
-        toDeleteName="session"
-        classes="w-full variant-soft-error"
-        slot="button"
+      <Button
+        action={() => {
+          confirmDeleteWithAction(
+            () => {
+              if (session) {
+                deleteSessionAction(session);
+                goto(getOverviewPath);
+              }
+            },
+            "session",
+            () => {}
+          );
+        }}
       >
-        <p slot="title">Delete Session</p>
-      </DeleteButton>
-    </SubmitFormWrapper>
-  </div>
+        <p>Delete</p>
+        <Trash2Icon size="18" />
+      </Button>
+    </div>
+  {/if}
 </Container>

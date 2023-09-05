@@ -16,7 +16,7 @@
     addDays(new Date(Date.now()), -(i + 1))
   ).reverse();
 
-  let weekData = dates.map((date) => {
+  $: weekData = dates.map((date) => {
     let workoutOnDate = workoutSessions.find((workoutSession) => {
       const workoutSessionDate = new Date(workoutSession.createdAt);
       return workoutSessionDate.getFullYear() === date.getFullYear() &&
@@ -30,7 +30,10 @@
       weekday: new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(
         date
       ),
-      exerciseCount: workoutOnDate ? workoutOnDate.exercises.length : 0,
+      exerciseCount: workoutOnDate
+        ? workoutOnDate.exercises.filter((exercise) => !exercise.isDeleted)
+            .length
+        : 0,
     };
   });
 </script>

@@ -27,3 +27,20 @@ export function confirmDelete(form: HTMLFormElement, toDeleteName: string, cance
   };
   modalStore.trigger(modal);
 }
+
+export function confirmDeleteWithAction(action: () => void, toDeleteName: string, cancelAction: () => void): void {
+  const modal: ModalSettings = {
+    type: "component",
+    title: "Confirm delete",
+    body: "Are you sure you want to delete the " + toDeleteName + "?",
+    component: modalComponent,
+    response: (response: boolean) => {
+      if (response) {
+        action();
+      } else {
+        cancelAction();
+      }
+    },
+  };
+  modalStore.trigger(modal);
+}

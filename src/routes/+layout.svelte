@@ -19,16 +19,28 @@
   } from "@floating-ui/dom";
 
   import { storePopup } from "@skeletonlabs/skeleton";
-  import { useSettings } from "$lib/stores/stores";
-  storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
-
-  export let data;
-
-  useSettings();
-
+  import {
+    getReplicacheAfterInit,
+    useSettings,
+    useUserId,
+  } from "$lib/stores/stores";
   import { pwaInfo } from "virtual:pwa-info";
   import { onMount } from "svelte";
   import { useRegisterSW } from "virtual:pwa-register/svelte";
+  import Pusher from "pusher-js";
+  import {
+    PUBLIC_REPLICACHE_PUSHER_KEY,
+    PUBLIC_REPLICACHE_PUSHER_CLUSTER,
+  } from "$env/static/public";
+  import { dev } from "$app/environment";
+  import type { PageData } from "./$types";
+
+  storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
+
+  export let data: PageData;
+
+  useSettings();
+  let userId = useUserId();
 
   $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : "";
 
@@ -38,7 +50,29 @@
         immediate: true,
       });
     }
+
+    if ($userId) {
+      listen($userId);
+    }
   });
+
+  // Listen for changes to the remote data
+  function listen(userId: string) {
+    const replicache = getReplicacheAfterInit();
+    if (!replicache) {
+      return;
+    }
+
+    // Listen for pokes, and pull whenever we get one.
+    Pusher.logToConsole = dev;
+    const pusher = new Pusher(PUBLIC_REPLICACHE_PUSHER_KEY, {
+      cluster: PUBLIC_REPLICACHE_PUSHER_CLUSTER,
+    });
+    const channel = pusher.subscribe(userId);
+    channel.bind("poke", () => {
+      replicache.pull();
+    });
+  }
 </script>
 
 <svelte:head>

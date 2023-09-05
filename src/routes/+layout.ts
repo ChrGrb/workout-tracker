@@ -1,11 +1,9 @@
-import type { LoadEvent } from "@sveltejs/kit";
-import { dev } from '$app/environment';
-import { inject } from '@vercel/analytics';
+import type { LayoutLoad } from "./$types";
+export const ssr = false;
 
-inject({ mode: dev ? 'development' : 'production' });
-
-export function load({ url }: LoadEvent) {
+export const load: LayoutLoad = async (event) => {
     return {
-        url: url.pathname,
-    }
-}
+        session: null,
+        url: event.url.pathname,
+    };
+};

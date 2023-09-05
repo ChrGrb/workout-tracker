@@ -7,9 +7,10 @@
   import { InfoIcon, Trash2Icon } from "svelte-feather-icons";
   import SubmitFormWrapper from "./forms/SubmitFormWrapper.svelte";
   import DeleteButton from "$lib/base/DeleteButton.svelte";
+  import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
 
   export let exerciseSet: ExerciseSet;
-  export let deleteAction: string;
+  export let deleteAction: () => void;
 
   $: exerciseSetTypeString =
     exerciseSet.exerciseSetType.charAt(0).toUpperCase() +
@@ -30,24 +31,15 @@
     <Headline style="small">
       {exerciseSetTypeString}
     </Headline>
-    <SubmitFormWrapper action={deleteAction} bind:form>
-      <svelte:fragment slot="form-content">
-        <input
-          type="text"
-          name="workoutId"
-          value={exerciseSet.exerciseId}
-          class="hidden"
-        />
-        <input type="text" name="setId" value={exerciseSet.id} class="hidden" />
-      </svelte:fragment>
-
-      <DeleteButton
-        toDeleteName="exercise"
-        bind:form
-        slot="button"
-        classes="w-full variant-soft-error"
-      />
-    </SubmitFormWrapper>
+    <Button
+      action={() => confirmDeleteWithAction(deleteAction, "set", () => {})}
+      classes="btn !bg-transparent text-inherit transition-all drop-shadow-none"
+      icon={true}
+    >
+      <div class="flex flex-row gap-4 justify-center items-center">
+        <Trash2Icon size="18" />
+      </div>
+    </Button>
   </div>
   <div class="flex flex-row justify-between">
     <div

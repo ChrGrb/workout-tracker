@@ -2,7 +2,8 @@
   import { goto } from "$app/navigation";
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
-  import type { Exercise, ExerciseType } from "@prisma/client";
+  import type { ExerciseFull } from "$lib/utils/prismaTypes";
+  import { getExercisePath } from "$lib/utils/routes";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import clsx from "clsx";
   import {
@@ -12,11 +13,7 @@
   } from "svelte-feather-icons";
   import { svelteTime } from "svelte-time";
 
-  type ExerciseWithType = Exercise & {
-    type: ExerciseType;
-  };
-
-  export let exercise: ExerciseWithType;
+  export let exercise: ExerciseFull;
 
   $: scoreImprovement =
     Math.round(
@@ -24,12 +21,32 @@
         ? -(1 - exercise.score / exercise.previousScore) * 100
         : ((exercise.score / exercise.previousScore! ?? 0) - 1) * 100) * 100
     ) / 100;
+
+  $: averageWeight = exercise.sets
+    ? Math.round(
+        (exercise.sets.reduce((acc, set) => acc + set.weight, 0) /
+          exercise.sets.length) *
+          2
+      ) / 2
+    : 0;
+
+  $: averageReps = exercise.sets
+    ? Math.round(
+        exercise.sets.reduce((acc, set) => acc + set.reps, 0) /
+          exercise.sets.length
+      )
+    : 0;
 </script>
 
 <Button
   classes="card variant-filled-primary w-full flex flex-col gap-2 justify-center p-4 aspect-square text-center relative drop-shadow-lg"
   action={() => {
-    goto("/overview/exercise/" + exercise.id);
+    goto(
+      getExercisePath({
+        sessionId: exercise.sessionId,
+        exerciseId: exercise.id,
+      })
+    );
   }}
   loadingOnClick={true}
 >
@@ -46,16 +63,16 @@
   >
     {exercise.type.name}
   </Headline>
-  {#if exercise.averageWeight && exercise.averageReps}
+  {#if +averageWeight > 0 && +averageReps > 0}
     <div
       class="flex flex-row gap-2 flex-wrap justify-center mb-6 md:mb-2 !ml-0"
     >
       <div class="flex flex-row badge rounded-full pr-2.5 bg-white text-black">
-        <p>{exercise.averageReps} reps</p>
+        <p>{averageReps} reps</p>
       </div>
 
       <div class="flex flex-row badge rounded-full pr-2.5 bg-white text-black">
-        <p>{exercise.averageWeight} kg</p>
+        <p>{averageWeight} kg</p>
       </div>
 
       {#if scoreImprovement < Infinity}

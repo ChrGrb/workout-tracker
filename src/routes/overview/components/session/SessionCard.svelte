@@ -15,7 +15,9 @@
       <div class="flex flex-row gap-2 justify-start mb-2 !ml-0">
         <Headline style="small">{session.name}</Headline>
         <div class="flex flex-row badge rounded-full bg-black text-white">
-          <p>{session.exercises.length}</p>
+          <p>
+            {session.exercises.filter((exercise) => !exercise.isDeleted).length}
+          </p>
         </div>
       </div>
       <time
