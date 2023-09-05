@@ -24,7 +24,7 @@
         <SessionCardSkeleton />
         <SessionCardSkeleton />
       {:else if previousSessions}
-        {#each previousSessions as session}
+        {#each previousSessions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) as session}
           <SessionCard {session} />
         {/each}
       {/if}

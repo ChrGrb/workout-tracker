@@ -4,18 +4,15 @@
   import { LogOutIcon, XIcon } from "svelte-feather-icons";
   import { Avatar, SlideToggle, modalStore } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
-  import type { Settings, User } from "@prisma/client";
   import LightSwitch from "$lib/base/LightSwitch.svelte";
-  import clsx from "clsx";
-  import TextInput from "$lib/base/input/TextInput.svelte";
-  import RadioSelect from "$lib/base/input/RadioSelect.svelte";
   import TimerSettings from "./TimerSettings.svelte";
-  import InstallationSettings from "./InstallationSettings.svelte";
+  import NotificationSettings from "./NotificationSettings.svelte";
   import SettingsCard from "./components/SettingsCard.svelte";
+  import type { UserWithSettings } from "$lib/utils/prismaTypes";
 
   // Props
   export let parent: any;
-  export let user: User & { settings: Settings };
+  export let user: UserWithSettings;
 
   let initials = user.name
     ?.split(" ")
@@ -62,7 +59,7 @@
     </SettingsCard>
 
     <TimerSettings {user} />
-    <InstallationSettings />
+    <NotificationSettings />
 
     <div class="flex flex-col justify-between items-start gap-4">
       <Button action={signOut} classes="w-full flex flex-row gap-4">

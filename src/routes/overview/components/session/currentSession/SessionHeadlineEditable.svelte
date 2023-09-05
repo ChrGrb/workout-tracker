@@ -2,11 +2,11 @@
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
-  import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
   import type { WorkoutSession } from "@prisma/client";
   import { CheckIcon, EditIcon } from "svelte-feather-icons";
 
   export let workoutSession: WorkoutSession;
+  export let updateSessionNameAction: () => void;
 
   let isEditMode = false;
   let isLoading = false;
@@ -25,35 +25,23 @@
     </Button>
   </div>
 {:else}
-  <SubmitFormWrapper
-    action="?/updateCurrentSessionName"
-    bind:isLoading
-    formCallbackFunction={() => (isEditMode = false)}
-  >
-    <svelte:fragment slot="form-content">
-      <div class="flex flex-row gap-4 items-end">
-        <TextInput
-          type="text"
-          id="sessionName"
-          name="sessionName"
-          input={workoutSession.name}
-        />
-        <input
-          type="text"
-          name="sessionId"
-          value={workoutSession.id}
-          class="hidden"
-        />
-        <Button
-          type="submit"
-          icon={true}
-          {isLoading}
-          classes="transition-all drop-shadow-none w-auto pb-1.5"
-        >
-          <CheckIcon size="18" />
-        </Button>
-      </div>
-    </svelte:fragment>
-    <svelte:fragment slot="button" />
-  </SubmitFormWrapper>
+  <div class="flex flex-row gap-4 items-end">
+    <TextInput
+      type="text"
+      id="sessionName"
+      name="sessionName"
+      bind:input={workoutSession.name}
+    />
+    <Button
+      icon={true}
+      {isLoading}
+      action={() => {
+        updateSessionNameAction();
+        isEditMode = false;
+      }}
+      classes="transition-all drop-shadow-none w-auto pb-1.5"
+    >
+      <CheckIcon size="18" />
+    </Button>
+  </div>
 {/if}

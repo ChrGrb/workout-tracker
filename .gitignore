@@ -12,3 +12,4 @@ vite.config.ts.timestamp-*
 yarn-error.log
 .env*.local
 /.dont-commit
+/dev-dist
