@@ -1,5 +1,5 @@
 import type { ExerciseSet, ExerciseType, Settings, WorkoutSession } from "@prisma/client";
-import type { WriteTransaction } from "replicache";
+import type { ReadTransaction, WriteTransaction } from "replicache";
 import mutationsExerciseCreate from "./exercise/mutationsExerciseCreate";
 import mutationsSessionCreate from "./session/mutationsSessionCreate";
 import mutationsSessionUpdate from "./session/mutationsSessionUpdate";
@@ -11,6 +11,7 @@ import mutationsExerciseSetDelete from "./exerciseSet/mutationsExerciseSetDelete
 import mutationsUserSettingsUpdate from "./user/settings/mutationsUserSettingsUpdate";
 import mutationsExerciseTypeCreate from "./exerciseType/mutationsExerciseTypeCreate";
 import mutationsExerciseTypeDelete from "./exerciseType/mutationsExerciseTypeDelete";
+import mutationsSessionsGet from "./session/mutationsSessionsGet";
 
 export type M = typeof mutators;
 
@@ -22,6 +23,7 @@ export const mutators = {
     createSession: (tx: WriteTransaction, args: WorkoutSession) => mutationsSessionCreate({ tx, args }),
     updateSession: (tx: WriteTransaction, args: WorkoutSession) => mutationsSessionUpdate({ tx, args }),
     deleteSession: (tx: WriteTransaction, args: WorkoutSession) => mutationsSessionDelete({ tx, args }),
+    getSessions: (tx: ReadTransaction, args: { userId: string }) => mutationsSessionsGet({ tx, args }),
     updateUserSettings: (tx: WriteTransaction, args: Settings) => mutationsUserSettingsUpdate({ tx, args }),
     createExerciseType: (tx: WriteTransaction, args: { exerciseType: ExerciseType, userId: string }) => mutationsExerciseTypeCreate({ tx, args }),
     deleteExerciseType: (tx: WriteTransaction, args: { exerciseType: ExerciseType, userId: string }) => mutationsExerciseTypeDelete({ tx, args }),

@@ -29,3 +29,4 @@ export const getReplicacheAfterInit = () => replicachePromise;
 export const useSettings = () => useWritable<Settings>('settings', { id: "", useTimer: false, timerValue: 180000, userId: "" } as Settings);
 export const useExerciseTimers = () => useWritable<Array<{ exerciseId: string, startTime: number }>>('exerciseTimers', []);
 export const useUserId = () => useWritable<string | undefined>('userId', undefined);
+export const useScroll = () => useWritable<number>('scroll', 0);

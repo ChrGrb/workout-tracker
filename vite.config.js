@@ -33,10 +33,10 @@ export default defineConfig({
 				type: 'module',
 			},		
 			injectManifest: {
-				globPatterns: ['src/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+				globPatterns: ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			workbox: {
-				globPatterns: ['src/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+				globPatterns: ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			manifest: {
 				short_name: 'Workout Tracker',

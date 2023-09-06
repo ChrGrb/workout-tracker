@@ -45,24 +45,31 @@
   });
 </script>
 
+<Header>
+  {#if session}
+    <SessionHeadlineEditable
+      bind:workoutSession={session}
+      updateSessionNameAction={() => {
+        if (session) updateSessionNameAction(session);
+      }}
+      slot="content"
+    />
+  {:else}
+    Session
+  {/if}
+  <svelte:fragment slot="action">
+    <ExitButton exitPath={getOverviewPath} />
+  </svelte:fragment>
+</Header>
+
 <Container>
-  <ExitButton exitPath={"/overview"} />
   {#if session}
     <div class="flex flex-col gap-12">
-      <div class="flex flex-col gap-4 pr-24 items-start">
-        <Header>
-          <SessionHeadlineEditable
-            bind:workoutSession={session}
-            updateSessionNameAction={() => {
-              if (session) updateSessionNameAction(session);
-            }}
-            slot="content"
-          />
-        </Header>
+      <div class="flex flex-col gap-4 items-start">
         <time
           use:svelteTime={{
             timestamp: session.createdAt,
-            format: "dddd @ HH:mm · MMMM D, YYYY",
+            format: "MMMM D, YYYY · h:mm A ",
           }}
         />
       </div>

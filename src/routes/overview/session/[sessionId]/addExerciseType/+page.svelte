@@ -20,13 +20,15 @@
   let userId = useUserId();
 </script>
 
-<Container>
-  <ExitButton exitPath={getAddExercisePath({ sessionId: data.sessionId })} />
-  <div class="flex flex-col gap-12">
-    <div class="flex flex-col gap-4 items-start">
-      <Header>Add <br /> Exercise Type</Header>
-    </div>
+<Header>
+  <svelte:fragment>Add Exercise Type</svelte:fragment>
+  <svelte:fragment slot="action">
+    <ExitButton exitPath={getAddExercisePath({ sessionId: data.sessionId })} />
+  </svelte:fragment>
+</Header>
 
+<Container>
+  <div class="flex flex-col gap-12">
     <div class="flex flex-col gap-4">
       <TextInput
         name="exerciseTypeName"

@@ -9,7 +9,7 @@
 
 <Button
   classes={clsx(
-    "card variant-soft-primary flex flex-col gap-4 justify-center items-center p-4 aspect-square text-center text-primary-700 drop-shadow-xl relative"
+    "card variant-soft-primary flex flex-col gap-4 justify-center items-center p-4 aspect-square text-center drop-shadow-xl relative"
   )}
   action={addAction}
   loadingOnClick={true}

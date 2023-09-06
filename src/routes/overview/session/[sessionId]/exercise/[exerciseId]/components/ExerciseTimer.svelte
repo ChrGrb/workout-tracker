@@ -10,14 +10,17 @@
   export let timerLength = 30000;
   let remainingTime = 0;
 
-  let timerInterval = setInterval(() => {
+  const updateTime = () => {
     remainingTime = timer.startTime + timerLength - Date.now();
 
     if (remainingTime <= 0) {
       clearInterval(timerInterval);
       finishAction();
     }
-  }, 1000);
+  };
+
+  updateTime();
+  let timerInterval = setInterval(updateTime, 1000);
 
   let minutes = "00";
   let seconds = "00";

@@ -9,16 +9,11 @@
 
 <a href={"/overview/session/" + session.id}>
   <div
-    class="card card-soft-surface p-4 flex flex-row items-center justify-between gap-2"
+    class="card variant-soft-primary p-4 flex flex-row items-center justify-between gap-2"
   >
     <div class="flex flex-col gap-2">
       <div class="flex flex-row gap-2 justify-start mb-2 !ml-0">
         <Headline style="small">{session.name}</Headline>
-        <div class="flex flex-row badge rounded-full bg-black text-white">
-          <p>
-            {session.exercises.filter((exercise) => !exercise.isDeleted).length}
-          </p>
-        </div>
       </div>
       <time
         use:svelteTime={{

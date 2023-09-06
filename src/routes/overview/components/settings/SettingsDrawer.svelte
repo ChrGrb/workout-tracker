@@ -11,7 +11,6 @@
   import type { UserWithSettings } from "$lib/utils/prismaTypes";
 
   // Props
-  export let parent: any;
   export let user: UserWithSettings;
 
   let initials = user.name
@@ -53,12 +52,19 @@
       </div>
     </div>
 
+    <hr />
+
     <SettingsCard>
       <svelte:fragment slot="headline">Dark Mode</svelte:fragment>
       <svelte:fragment slot="content"><LightSwitch /></svelte:fragment>
     </SettingsCard>
 
+    <hr />
+
     <TimerSettings {user} />
+
+    <hr />
+
     <NotificationSettings />
 
     <div class="flex flex-col justify-between items-start gap-4">

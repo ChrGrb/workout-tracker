@@ -49,12 +49,15 @@
   });
 </script>
 
+<Header>
+  <svelte:fragment>Add Exercise</svelte:fragment>
+  <svelte:fragment slot="action">
+    <ExitButton exitPath="/overview" />
+  </svelte:fragment>
+</Header>
+
 <Container>
-  <ExitButton exitPath="/overview" />
   <div class="flex flex-col gap-12">
-    <div class="flex flex-col gap-4 items-start w-1/2 md:w-1/4">
-      <Header>Add <br /> Exercise</Header>
-    </div>
     <div
       class="grid grid-cols-2 md:grid-cols-4 gap-4 pb-24"
       in:fade={{ duration: 100, delay: 120 }}

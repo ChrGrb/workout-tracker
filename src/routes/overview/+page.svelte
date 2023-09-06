@@ -89,15 +89,17 @@
   });
 </script>
 
+<Header>
+  <svelte:fragment>Overview</svelte:fragment>
+  <svelte:fragment slot="action">
+    <Button action={openSettings} icon={true}>
+      <MoreVerticalIcon size="24" />
+    </Button>
+  </svelte:fragment>
+</Header>
+
 <Container>
   <div class="flex flex-col gap-12">
-    <div class="flex flex-row gap-4 justify-between">
-      <Header>Overview</Header>
-      <Button action={openSettings} icon={true}>
-        <MoreVerticalIcon size="24" />
-      </Button>
-    </div>
-
     <CurrentSessionSection
       bind:currentSession={activeSession}
       createSessionAction={() => {
@@ -112,12 +114,11 @@
       updateSessionNameAction={() => {
         if (activeSession) updateSessionNameAction(activeSession);
       }}
-      userId={$userId ?? ""}
     />
 
     <hr />
 
-    <div in:fade={{ duration: 100, delay: 120 }} class="flex flex-col gap-8">
+    <div in:fade={{ duration: 100, delay: 120 }} class="flex flex-col gap-12">
       <LastWeekChart workoutSessions={inactiveSessions} />
       <PreviousSessions previousSessions={inactiveSessions} />
     </div>

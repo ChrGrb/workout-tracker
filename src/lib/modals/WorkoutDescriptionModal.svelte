@@ -3,9 +3,6 @@
   import { modalStore } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
   import { XIcon } from "svelte-feather-icons";
-
-  // Props
-  export let parent: any;
 </script>
 
 {#if $modalStore[0]}

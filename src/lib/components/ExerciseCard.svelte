@@ -2,7 +2,10 @@
   import { goto } from "$app/navigation";
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
+  import { getReplicache, useUserId } from "$lib/stores/stores";
+  import calculateExerciseScore from "$lib/utils/data/calculateExerciseScore";
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
+  import getExerciseTypePreviousScore from "$lib/utils/replicache/getters/getExerciseTypePreviousScore";
   import { getExercisePath } from "$lib/utils/routes";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import clsx from "clsx";
@@ -15,11 +18,20 @@
 
   export let exercise: ExerciseFull;
 
+  let userId = useUserId();
+
+  getExerciseTypePreviousScore(exercise.type, $userId ?? "").then((value) => {
+    previousScore = value ?? 0;
+  });
+
+  $: previousScore = 0;
+  $: score = calculateExerciseScore(exercise);
+
   $: scoreImprovement =
     Math.round(
-      (exercise.previousScore && exercise.score < exercise.previousScore
-        ? -(1 - exercise.score / exercise.previousScore) * 100
-        : ((exercise.score / exercise.previousScore! ?? 0) - 1) * 100) * 100
+      (previousScore && score < previousScore
+        ? -(1 - score / previousScore) * 100
+        : ((score / previousScore! ?? 0) - 1) * 100) * 100
     ) / 100;
 
   $: averageWeight = exercise.sets
@@ -39,7 +51,13 @@
 </script>
 
 <Button
-  classes="card variant-filled-primary w-full flex flex-col gap-2 justify-center p-4 aspect-square text-center relative drop-shadow-lg"
+  classes={clsx(
+    "card w-full flex flex-col gap-2 justify-center p-4 aspect-square text-center relative drop-shadow-lg",
+    {
+      "variant-soft": exercise.sets.length === 0,
+      "variant-filled-primary": exercise.sets.length > 0,
+    }
+  )}
   action={() => {
     goto(
       getExercisePath({
