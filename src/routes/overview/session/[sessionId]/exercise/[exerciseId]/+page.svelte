@@ -148,17 +148,21 @@
   </div>
 {/if}
 
+<Header>
+  <svelte:fragment>{exercise?.type.name}</svelte:fragment>
+  <svelte:fragment slot="action">
+    <ExitButton exitPath={getOverviewPath} />
+  </svelte:fragment>
+</Header>
+
 <Container>
-  <ExitButton exitPath={"/overview"} />
   {#if exercise}
     <div class="flex flex-col gap-12" in:fade={{ duration: 100 }}>
-      <div class="flex flex-col gap-4 pr-24 relative items-start">
-        <Header>{exercise.type.name}</Header>
+      <div class="flex flex-col gap-4 relative items-start">
         <time
-          class="z-50"
           use:svelteTime={{
             timestamp: exercise.createdAt,
-            format: "dddd @ h:mm A · MMMM D, YYYY",
+            format: "MMMM D, YYYY · h:mm A ",
           }}
         />
       </div>
@@ -166,7 +170,7 @@
       <Accordion>
         {#if exercise.type.description}
           <AccordionItem
-            class="card variant-soft-primary"
+            class="card"
             regionControl="variant-soft-primary"
             regionPanel="pt-4 pb-6"
             hover=""
@@ -189,7 +193,7 @@
           {#if recommendations}
             <div in:fade={{ duration: 100, delay: 120 }}>
               <AccordionItem
-                class="card variant-soft-primary"
+                class="card"
                 regionControl="variant-soft-primary"
                 regionPanel="py-4"
                 hover=""

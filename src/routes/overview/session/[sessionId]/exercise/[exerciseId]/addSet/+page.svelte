@@ -65,17 +65,20 @@
   });
 </script>
 
+<Header>
+  <svelte:fragment>Add Set</svelte:fragment>
+  <svelte:fragment slot="action">
+    <ExitButton
+      exitPath={getExercisePath({
+        sessionId: data.sessionId,
+        exerciseId: data.exerciseId,
+      })}
+    />
+  </svelte:fragment>
+</Header>
+
 <Container>
-  <ExitButton
-    exitPath={getExercisePath({
-      sessionId: data.sessionId,
-      exerciseId: data.exerciseId,
-    })}
-  />
   <div class="flex flex-col gap-12">
-    <div class="flex flex-col gap-4 w-1/2 md:w-1/4">
-      <Header>Add <br /> Set</Header>
-    </div>
     <div class="flex flex-col gap-4">
       <RadioSelect
         items={[
@@ -84,7 +87,6 @@
           { name: "Cooldown", value: "COOLDOWN" },
         ]}
         name="exerciseSetType"
-        id="exerciseSetType"
         label="Type"
         bind:group={exerciseSetType}
       />

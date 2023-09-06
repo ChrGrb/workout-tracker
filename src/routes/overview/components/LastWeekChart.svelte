@@ -39,7 +39,7 @@
 </script>
 
 {#if !loading}
-  <div class="card p-4 variant-soft-primary flex flex-col gap-4">
+  <div class="flex flex-col gap-4">
     <Headline style="small">Last week</Headline>
 
     <div class="flex flex-row justify-between w-full">

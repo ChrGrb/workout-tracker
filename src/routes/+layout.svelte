@@ -21,6 +21,7 @@
   import { storePopup } from "@skeletonlabs/skeleton";
   import {
     getReplicacheAfterInit,
+    useScroll,
     useSettings,
     useUserId,
   } from "$lib/stores/stores";
@@ -34,6 +35,7 @@
   } from "$env/static/public";
   import { dev } from "$app/environment";
   import type { PageData } from "./$types";
+  import type { ComponentEvents } from "svelte";
 
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
@@ -41,8 +43,13 @@
 
   useSettings();
   let userId = useUserId();
+  let scroll = useScroll();
 
   $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : "";
+
+  function scrollHandler(event: ComponentEvents<AppShell>["scroll"]) {
+    scroll.set(event.currentTarget.scrollTop);
+  }
 
   onMount(async () => {
     if (pwaInfo) {
@@ -90,7 +97,7 @@
 <Modal />
 <Toast />
 
-<AppShell>
+<AppShell on:scroll={scrollHandler}>
   {#key data.url}
     <div in:fade={{ duration: 100, delay: 100 }} out:fade={{ duration: 100 }}>
       <slot />

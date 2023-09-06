@@ -2,9 +2,6 @@
   import Button from "$lib/base/Button.svelte";
   import { modalStore } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
-
-  // Props
-  export let parent: any;
 </script>
 
 {#if $modalStore[0]}

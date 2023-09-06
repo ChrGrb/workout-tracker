@@ -1,7 +1,7 @@
 <script lang="ts">
   import Button from "$lib/base/Button.svelte";
   import { PauseIcon, PlayIcon, Trash2Icon } from "svelte-feather-icons";
-  import type { Exercise, ExerciseType, WorkoutSession } from "@prisma/client";
+  import type { Exercise } from "@prisma/client";
   import { fade } from "svelte/transition";
   import { goto } from "$app/navigation";
   import AddExerciseCard from "$lib/components/AddCard.svelte";
@@ -11,7 +11,6 @@
   import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
 
   export let currentSession: WorkoutSessionFull | null;
-  export let userId: string;
 
   let isStartLoading = false;
 

@@ -16,7 +16,7 @@
       setModeUserPrefers(true);
     }}
   >
-    <label
+    <div
       class={clsx(
         "card rounded-none justify-center p-2 text-center text-sm transition-all relative rounded-tl-token rounded-bl-token",
         {
@@ -26,7 +26,7 @@
       )}
     >
       <p>Light</p>
-    </label>
+    </div>
   </button>
   <button
     class="grow"
@@ -35,7 +35,7 @@
       setModeUserPrefers(false);
     }}
   >
-    <label
+    <div
       class={clsx(
         "card rounded-none justify-center p-2 text-center text-sm transition-all relative rounded-tr-token rounded-br-token",
         {
@@ -45,6 +45,6 @@
       )}
     >
       <p>Dark</p>
-    </label>
+    </div>
   </button>
 </div>

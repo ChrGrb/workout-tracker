@@ -1,33 +1,48 @@
 <script lang="ts">
   import Headline from "$lib/base/Headline.svelte";
-  import type { Exercise, Session, WorkoutSession } from "@prisma/client";
   import SessionCard from "./SessionCard.svelte";
-  import SessionCardSkeleton from "./SessionCardSkeleton.svelte";
-  import { Accordion, AccordionItem } from "@skeletonlabs/skeleton";
+  import { Paginator, type PaginationSettings } from "@skeletonlabs/skeleton";
+  import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
+  import { fade } from "svelte/transition";
 
-  export let previousSessions: (WorkoutSession & { exercises: Exercise[] })[] =
-    [];
-  export let loading: boolean = false;
+  export let previousSessions: WorkoutSessionFull[] = [];
+
+  $: previousSessionsSorted = previousSessions.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  $: paginatedSource = previousSessionsSorted.slice(
+    paginationSettings.offset * paginationSettings.limit,
+    paginationSettings.offset * paginationSettings.limit +
+      paginationSettings.limit
+  );
+
+  let paginationSettings = {
+    offset: 0,
+    limit: 4,
+    size: previousSessions.length,
+    amounts: [4],
+  } satisfies PaginationSettings;
+
+  $: paginationSettings.size = previousSessions.length;
 </script>
 
-<Accordion
-  padding=""
-  regionControl="px-4 py-2"
-  regionPanel="pt-2 p-4"
-  class="card variant-soft-primary"
->
-  <AccordionItem>
-    <Headline style="small" slot="summary">Previous Sessions</Headline>
+<div class="flex flex-col gap-4">
+  <Headline style="small">Previous Sessions</Headline>
 
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2" slot="content">
-      {#if loading}
-        <SessionCardSkeleton />
-        <SessionCardSkeleton />
-      {:else if previousSessions}
-        {#each previousSessions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) as session}
-          <SessionCard {session} />
-        {/each}
-      {/if}
-    </div>
-  </AccordionItem>
-</Accordion>
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+    {#each paginatedSource as session (session.id)}
+      <div in:fade={{ duration: 100, delay: 100 }} out:fade={{ duration: 100 }}>
+        <SessionCard {session} />
+      </div>
+    {/each}
+  </div>
+
+  <Paginator
+    bind:settings={paginationSettings}
+    select="hidden"
+    controlVariant="variant-filled-primary"
+    showFirstLastButtons={false}
+    showPreviousNextButtons={true}
+  />
+</div>

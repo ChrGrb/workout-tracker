@@ -7,7 +7,6 @@
   }[];
 
   export let name: string;
-  export let id: string;
   export let required = false;
   export let group = "";
   export let label = "";
