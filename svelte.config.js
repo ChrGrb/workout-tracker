@@ -14,6 +14,9 @@ const config = {
 		},
 		serviceWorker: {
 			register: false
+		},
+		files: {
+			serviceWorker: 'src/my-sw.ts',
 		}
 	}
 };

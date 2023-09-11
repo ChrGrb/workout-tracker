@@ -29,6 +29,7 @@
   import { onMount } from "svelte";
   import { useRegisterSW } from "virtual:pwa-register/svelte";
   import Pusher from "pusher-js";
+  import * as PusherPushNotifications from "@pusher/push-notifications-web";
   import {
     PUBLIC_REPLICACHE_PUSHER_KEY,
     PUBLIC_REPLICACHE_PUSHER_CLUSTER,
@@ -61,6 +62,20 @@
     if ($userId) {
       listen($userId);
     }
+
+    window.navigator.serviceWorker.ready.then(
+      async (serviceWorkerRegistration) => {
+        const beamsClient = new PusherPushNotifications.Client({
+          instanceId: "048a214b-32be-4d9e-b3a1-0a91b4dfc3fc",
+          serviceWorkerRegistration: serviceWorkerRegistration,
+        });
+
+        beamsClient
+          .start()
+          .then(() => beamsClient.addDeviceInterest("debug-test"))
+          .catch(console.error);
+      }
+    );
   });
 
   // Listen for changes to the remote data

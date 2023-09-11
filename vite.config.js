@@ -18,6 +18,11 @@ export default defineConfig({
 			$: resolve('./src'),
 		},
 	},
+	define: {
+		'process.env.NODE_ENV': process.env.NODE_ENV === 'production' 
+			? '"production"'
+			: '"development"'
+	},
 	plugins: [
 		sveltekit(), 
 		mkcert(),
@@ -26,24 +31,25 @@ export default defineConfig({
 		}),
 		SvelteKitPWA({
 			srcDir: './src',
-			strategies: 'generateSW',
-			filename: undefined,
+			strategies: 'injectManifest',
+			filename: 'my-sw.ts',
+			scope: '/',
 			devOptions: {
 				enabled: true,
 				type: 'module',
 			},		
 			injectManifest: {
-				globPatterns: ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			workbox: {
-				globPatterns: ['**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			manifest: {
 				short_name: 'Workout Tracker',
 				name: 'Workout Tracker',
 				description: 'The minimal workout tracking app',
 				start_url: '/auth/login',
-				scope: '/overview',
+				scope: '/',
 				display: 'standalone',
 				theme_color: "#000000",
 				background_color: "#ffffff",
