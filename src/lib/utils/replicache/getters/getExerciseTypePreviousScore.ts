@@ -13,7 +13,7 @@ const getExerciseTypePreviousScore = async (exerciseType: ExerciseType, userId: 
     let exercise = sessions
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .reduce((exerciseArray, session) => exerciseArray.concat(session.exercises), <ExerciseFull[]>[])
-        .filter(exercise => exercise.type.id === exerciseType.id)
+        .filter(exercise => exercise.type.id === exerciseType.id && !exercise.isDeleted)
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .at(1);
 

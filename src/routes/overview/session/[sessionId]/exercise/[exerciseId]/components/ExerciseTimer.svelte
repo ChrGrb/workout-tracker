@@ -2,6 +2,7 @@
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import clsx from "clsx";
+  import { onMount } from "svelte";
   import { XIcon } from "svelte-feather-icons";
 
   export let timer: { exerciseId: string; startTime: number };
@@ -13,14 +14,15 @@
   const updateTime = () => {
     remainingTime = timer.startTime + timerLength - Date.now();
 
-    if (remainingTime <= 0) {
+    if (remainingTime <= 0 && timerInterval) {
       clearInterval(timerInterval);
       finishAction();
     }
   };
 
-  updateTime();
   let timerInterval = setInterval(updateTime, 1000);
+
+  onMount(() => updateTime());
 
   let minutes = "00";
   let seconds = "00";

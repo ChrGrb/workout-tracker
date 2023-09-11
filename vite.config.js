@@ -18,6 +18,11 @@ export default defineConfig({
 			$: resolve('./src'),
 		},
 	},
+	define: {
+		'process.env.NODE_ENV': process.env.NODE_ENV === 'production' 
+			? '"production"'
+			: '"development"'
+	},
 	plugins: [
 		sveltekit(), 
 		mkcert(),
@@ -26,8 +31,8 @@ export default defineConfig({
 		}),
 		SvelteKitPWA({
 			srcDir: './src',
-			strategies: 'generateSW',
-			filename: undefined,
+			strategies: 'injectManifest',
+			filename: 'service-worker/index.ts',
 			devOptions: {
 				enabled: true,
 				type: 'module',
@@ -43,7 +48,7 @@ export default defineConfig({
 				name: 'Workout Tracker',
 				description: 'The minimal workout tracking app',
 				start_url: '/auth/login',
-				scope: '/overview',
+				scope: '/',
 				display: 'standalone',
 				theme_color: "#000000",
 				background_color: "#ffffff",
