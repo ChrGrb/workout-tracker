@@ -2,10 +2,10 @@ import { CACHE_NAME } from './constants';
 export default (event: any): void => {
     event.respondWith(
         caches.match(event.request).then((cacheResponse) => {
-            if (cacheResponse) {
-                console.info(`fetching from cache: ${event.request.url}`);
-                return cacheResponse;
-            }
+            // if (cacheResponse) {
+            //     console.info(`fetching from cache: ${event.request.url}`);
+            //     return cacheResponse;
+            // }
             console.info(`trying to fetch from server: ${event.request.url}`);
             return fetch(event.request)
                 .then(async (fetchResponse): Promise<Response | undefined> => {
