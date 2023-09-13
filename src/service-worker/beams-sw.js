@@ -1,3 +1,10 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-fallthrough */
+/* eslint-disable no-func-assign */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-constant-condition */
+/* eslint-disable no-mixed-spaces-and-tabs */
+// @ts-nocheck
 // SDK version: v1.0.2
 // Git commit: bc6831d1ab41b3b1a3de2297f7024efbb2772d8e
 
@@ -122,8 +129,8 @@ var runtime_1 = createCommonjsModule(function (module) {
 		var getProto = Object.getPrototypeOf;
 		var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
 		if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    NativeIteratorPrototype !== Op &&
+	hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
 			// This environment has a native %IteratorPrototype%; use it instead
 			// of the polyfill.
 			IteratorPrototype = NativeIteratorPrototype;

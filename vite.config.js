@@ -32,7 +32,7 @@ export default defineConfig({
 		SvelteKitPWA({
 			srcDir: './src',
 			strategies: 'injectManifest',
-			filename: 'my-sw.ts',
+			filename: 'service-worker.ts',
 			scope: '/',
 			devOptions: {
 				enabled: true,

@@ -3,7 +3,7 @@ import { clientsClaim } from 'workbox-core/clientsClaim';
 import fetchEvent from './service-worker/fetchEvent';
 import installEvent from './service-worker/installEvent';
 import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
-import "/beams-sw.js?url";
+import "./service-worker/beams-sw";
 
 // has to be var, because we need function scope
 declare var self: any;
