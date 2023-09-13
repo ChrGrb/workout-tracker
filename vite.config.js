@@ -37,6 +37,12 @@ export default defineConfig({
 			devOptions: {
 				enabled: true,
 				type: 'module',
+			},		
+			injectManifest: {
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+			},
+			workbox: {
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			manifest: {
 				short_name: 'Workout Tracker',
