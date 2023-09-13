@@ -6,7 +6,6 @@ export default (event: any): void => {
             //     console.info(`fetching from cache: ${event.request.url}`);
             //     return cacheResponse;
             // }
-            console.info(`trying to fetch from server: ${event.request.url}`);
             return fetch(event.request)
                 .then(async (fetchResponse): Promise<Response | undefined> => {
                     if (

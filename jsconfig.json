@@ -12,6 +12,9 @@
 		"types": [
 			"vite-plugin-pwa/svelte",
 			"vite-plugin-pwa/info"
+		],
+		"lib": [
+			"WebWorker"
 		]
 	},
 	"include": [
