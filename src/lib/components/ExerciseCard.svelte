@@ -25,14 +25,15 @@
   });
 
   $: previousScore = 0;
-  $: score = calculateExerciseScore(exercise);
+  $: score = exercise.sets ? calculateExerciseScore(exercise) : null;
 
-  $: scoreImprovement =
-    Math.round(
-      (previousScore && score < previousScore
-        ? -(1 - score / previousScore) * 100
-        : ((score / previousScore! ?? 0) - 1) * 100) * 100
-    ) / 100;
+  $: scoreImprovement = score
+    ? Math.round(
+        (previousScore && score < previousScore
+          ? -(1 - score / previousScore) * 100
+          : ((score / previousScore! ?? 0) - 1) * 100) * 100
+      ) / 100
+    : null;
 
   $: averageWeight = exercise.sets
     ? Math.round(
@@ -54,8 +55,8 @@
   classes={clsx(
     "card w-full flex flex-col gap-2 justify-center p-4 aspect-square text-center relative drop-shadow-lg",
     {
-      "variant-soft": exercise.sets.length === 0,
-      "variant-filled-primary": exercise.sets.length > 0,
+      "variant-soft": !exercise.sets || exercise.sets.length === 0,
+      "variant-filled-primary": exercise.sets && exercise.sets.length > 0,
     }
   )}
   action={() => {
@@ -93,7 +94,7 @@
         <p>{averageWeight} kg</p>
       </div>
 
-      {#if scoreImprovement < Infinity}
+      {#if scoreImprovement && scoreImprovement < Infinity}
         <div
           class={clsx(
             "flex flex-row badge rounded-full pr-2.5 bg-gradient-to-tr text-white",

@@ -33,6 +33,7 @@
   import {
     PUBLIC_REPLICACHE_PUSHER_KEY,
     PUBLIC_REPLICACHE_PUSHER_CLUSTER,
+    PUBLIC_BEAMS_INSTANCE_ID,
   } from "$env/static/public";
   import { dev } from "$app/environment";
   import type { PageData } from "./$types";
@@ -52,6 +53,40 @@
     scroll.set(event.currentTarget.scrollTop);
   }
 
+  function startBeamsClient(userId: string) {
+    window.navigator.serviceWorker.ready.then(
+      async (serviceWorkerRegistration) => {
+        const beamsClient = new PusherPushNotifications.Client({
+          instanceId: PUBLIC_BEAMS_INSTANCE_ID,
+          serviceWorkerRegistration: serviceWorkerRegistration,
+        });
+
+        beamsClient
+          .start()
+          .then((beamsClient: any) => beamsClient.getDeviceId())
+          .then((deviceId) => {
+            if (dev)
+              console.log(
+                "Successfully registered with Beams. Device ID:",
+                deviceId
+              );
+          })
+          .then(() => {
+            beamsClient.clearDeviceInterests();
+          })
+          .then(() => beamsClient.addDeviceInterest(`user-${userId}`))
+          .then(() => {
+            if (dev) beamsClient.addDeviceInterest("debug-test");
+          })
+          .then(() => beamsClient.getDeviceInterests())
+          .then((interests) => {
+            if (dev) console.log("Current interests:", interests);
+          })
+          .catch(console.error);
+      }
+    );
+  }
+
   onMount(async () => {
     if (pwaInfo) {
       useRegisterSW({
@@ -63,19 +98,7 @@
       listen($userId);
     }
 
-    window.navigator.serviceWorker.ready.then(
-      async (serviceWorkerRegistration) => {
-        const beamsClient = new PusherPushNotifications.Client({
-          instanceId: "048a214b-32be-4d9e-b3a1-0a91b4dfc3fc",
-          serviceWorkerRegistration: serviceWorkerRegistration,
-        });
-
-        beamsClient
-          .start()
-          .then(() => beamsClient.addDeviceInterest("debug-test"))
-          .catch(console.error);
-      }
-    );
+    startBeamsClient($userId ?? "");
   });
 
   // Listen for changes to the remote data
