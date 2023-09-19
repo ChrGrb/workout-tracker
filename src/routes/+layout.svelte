@@ -21,6 +21,7 @@
   import { storePopup } from "@skeletonlabs/skeleton";
   import {
     getReplicacheAfterInit,
+    useBeamsClient,
     useScroll,
     useSettings,
     useUserId,
@@ -46,6 +47,7 @@
   useSettings();
   let userId = useUserId();
   let scroll = useScroll();
+  let beamsClient = useBeamsClient();
 
   $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : "";
 
@@ -56,33 +58,36 @@
   function startBeamsClient(userId: string) {
     window.navigator.serviceWorker.ready.then(
       async (serviceWorkerRegistration) => {
-        const beamsClient = new PusherPushNotifications.Client({
-          instanceId: PUBLIC_BEAMS_INSTANCE_ID,
-          serviceWorkerRegistration: serviceWorkerRegistration,
-        });
+        beamsClient.set(
+          new PusherPushNotifications.Client({
+            instanceId: PUBLIC_BEAMS_INSTANCE_ID,
+            serviceWorkerRegistration: serviceWorkerRegistration,
+          })
+        );
 
-        beamsClient
-          .start()
-          .then((beamsClient: any) => beamsClient.getDeviceId())
-          .then((deviceId) => {
-            if (dev)
-              console.log(
-                "Successfully registered with Beams. Device ID:",
-                deviceId
-              );
-          })
-          .then(() => {
-            beamsClient.clearDeviceInterests();
-          })
-          .then(() => beamsClient.addDeviceInterest(`user-${userId}`))
-          .then(() => {
-            if (dev) beamsClient.addDeviceInterest("debug-test");
-          })
-          .then(() => beamsClient.getDeviceInterests())
-          .then((interests) => {
-            if (dev) console.log("Current interests:", interests);
-          })
-          .catch(console.error);
+        if (beamsClient)
+          $beamsClient!
+            .start()
+            .then((beamsClient: any) => beamsClient.getDeviceId())
+            .then((deviceId) => {
+              if (dev)
+                console.log(
+                  "Successfully registered with Beams. Device ID:",
+                  deviceId
+                );
+            })
+            .then(() => {
+              $beamsClient!.clearDeviceInterests();
+            })
+            .then(() => $beamsClient!.addDeviceInterest(`user-${userId}`))
+            .then(() => {
+              if (dev) $beamsClient!.addDeviceInterest("debug-test");
+            })
+            .then(() => $beamsClient!.getDeviceInterests())
+            .then((interests) => {
+              if (dev) console.log("Current interests:", interests);
+            })
+            .catch(console.error);
       }
     );
   }

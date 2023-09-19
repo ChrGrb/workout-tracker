@@ -31,7 +31,6 @@
           { name: "Disable", value: "false" },
         ]}
         name="timerEnabled"
-        id="timerEnabled"
         bind:group={enabled}
       />
       <TextInput
