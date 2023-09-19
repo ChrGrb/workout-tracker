@@ -30,19 +30,20 @@ export default defineConfig({
 			includePaths: ['./src/lib/icons/'],
 		}),
 		SvelteKitPWA({
-			srcDir: './src',
+			srcDir: 'src',
 			strategies: 'injectManifest',
 			filename: 'service-worker.ts',
 			scope: '/',
-			devOptions: {
-				enabled: true,
-				type: 'module',
-			},		
+			// devOptions: {
+			// 	enabled: true,
+			// 	type: 'module',
+			// },		
 			injectManifest: {
 				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			workbox: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}'],
+				swDest: 'service-worker.js'
 			},
 			manifest: {
 				short_name: 'Workout Tracker',
