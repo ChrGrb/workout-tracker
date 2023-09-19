@@ -1,8 +1,12 @@
 <script lang="ts">
-  import Headline from "$lib/base/Headline.svelte";
   import { PlusSquareIcon, ShareIcon } from "svelte-feather-icons";
   import SettingsCard from "./components/SettingsCard.svelte";
   import Button from "$lib/base/Button.svelte";
+  import { useBeamsClient, useUserId } from "$lib/stores/stores";
+  import { dev } from "$app/environment";
+
+  let beamsClient = useBeamsClient();
+  let userId = useUserId();
 </script>
 
 <SettingsCard>
@@ -36,8 +40,37 @@
 
     <Button
       action={async () => {
-        const status = await Notification.requestPermission();
-        console.log(status);
+        if ($beamsClient)
+          $beamsClient
+            .start()
+            .then(() => {
+              if ($beamsClient) return $beamsClient.getDeviceId();
+            })
+            .then((deviceId) => {
+              if (dev)
+                console.log(
+                  "Successfully registered with Beams. Device ID:",
+                  deviceId
+                );
+            })
+            .then(() => {
+              if ($beamsClient) $beamsClient.clearDeviceInterests();
+            })
+            .then(() => {
+              if ($beamsClient)
+                $beamsClient.addDeviceInterest(`user-${$userId}`);
+            })
+            .then(() => {
+              if (dev)
+                if ($beamsClient) $beamsClient.addDeviceInterest("debug-test");
+            })
+            .then(() => {
+              if ($beamsClient) return $beamsClient.getDeviceInterests();
+            })
+            .then((interests) => {
+              if (dev) console.log("Current interests:", interests);
+            })
+            .catch(console.error);
       }}
     >
       Enable Notifications

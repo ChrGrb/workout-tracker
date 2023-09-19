@@ -12,7 +12,7 @@
   import addExerciseSetAction from "./actions/addExerciseSetAction";
   import { goto } from "$app/navigation";
   import { getExercisePath } from "$lib/utils/routes";
-  import { getReplicache, useUserId } from "$lib/stores/stores";
+  import { getReplicache, useSettings, useUserId } from "$lib/stores/stores";
   import type {
     ExerciseFull,
     WorkoutSessionFull,
@@ -39,6 +39,8 @@
     +weight < 0;
 
   let exercise: ExerciseFull | undefined;
+
+  let settings = useSettings();
 
   let userId = useUserId();
 
@@ -126,12 +128,28 @@
             action={() => {
               if (exercise) {
                 addExerciseSetAction(exercise, exerciseSet);
-                goto(
+                console.log($settings.useTimer);
+                if ($settings.useTimer)
+                  fetch("https://eoj3xsgtl8d1hzc.m.pipedream.net", {
+                    method: "POST",
+                    body: JSON.stringify({
+                      delay: $settings.timerValue,
+                      userId: $userId,
+                      sessionId: data.sessionId,
+                      exerciseId: data.exerciseId,
+                    }),
+                  });
+
+                console.log("Fetch done");
+                const exercisePath =
                   getExercisePath({
                     sessionId: data.sessionId,
                     exerciseId: data.exerciseId,
-                  }) + "?hasTimer=true"
-                );
+                  }) + ($settings.useTimer ? "?hasTimer=true" : "");
+
+                console.log(exercisePath);
+
+                goto(exercisePath);
               }
             }}
             disabled={isInvalid}

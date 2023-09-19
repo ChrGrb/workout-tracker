@@ -1,8 +1,9 @@
-import type { Exercise, ExerciseType, Settings, WorkoutSession } from "@prisma/client";
+import type { Settings } from "@prisma/client";
 import { useWritable } from "./use-shared-store";
-import { Replicache, type WriteTransaction } from "replicache";
+import { Replicache } from "replicache";
 import { PUBLIC_REPLICACHE_LICENSE_KEY } from "$env/static/public";
 import { mutators, type M } from "$lib/utils/replicache/mutations/mutations";
+import type * as PusherPushNotifications from "@pusher/push-notifications-web";
 
 
 
@@ -11,7 +12,7 @@ let replicachePromise: Replicache<M>;
 const _createReplicache = (userId: string) => {
     const rep = new Replicache<M>({
         name: userId,
-        licenseKey: "l6cdbef9e35ba4bbe9120a334bdaf4873",
+        licenseKey: PUBLIC_REPLICACHE_LICENSE_KEY,
         pullURL: "/api/replicache/pull?userId=" + userId,
         pushURL: "/api/replicache/push?userId=" + userId,
         mutators: mutators
@@ -30,3 +31,4 @@ export const useSettings = () => useWritable<Settings>('settings', { id: "", use
 export const useExerciseTimers = () => useWritable<Array<{ exerciseId: string, startTime: number }>>('exerciseTimers', []);
 export const useUserId = () => useWritable<string | undefined>('userId', undefined);
 export const useScroll = () => useWritable<number>('scroll', 0);
+export const useBeamsClient = () => useWritable<PusherPushNotifications.Client | undefined>('beamsClient', undefined);
