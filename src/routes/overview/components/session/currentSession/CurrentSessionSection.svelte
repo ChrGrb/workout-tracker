@@ -9,6 +9,8 @@
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import CurrentSessionHeadlineEditable from "./SessionHeadlineEditable.svelte";
   import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
+  import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
+  import { filterDeleted } from "$lib/utils/data/filterDeleted";
 
   export let currentSession: WorkoutSessionFull | null;
 
@@ -37,9 +39,7 @@
       />
       <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
         {#if currentSession.exercises}
-          {#each currentSession.exercises
-            .filter((exercise) => !exercise.isDeleted)
-            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) as exercise}
+          {#each filterDeleted(currentSession.exercises).sort(sortByCreatedAt) as exercise}
             <ExerciseCard {exercise} />
           {/each}
         {/if}

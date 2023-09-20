@@ -4,12 +4,11 @@
   import { Paginator, type PaginationSettings } from "@skeletonlabs/skeleton";
   import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
   import { fade } from "svelte/transition";
+  import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
 
   export let previousSessions: WorkoutSessionFull[] = [];
 
-  $: previousSessionsSorted = previousSessions.sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  $: previousSessionsSorted = previousSessions.sort(sortByCreatedAt);
 
   $: paginatedSource = previousSessionsSorted.slice(
     paginationSettings.offset * paginationSettings.limit,

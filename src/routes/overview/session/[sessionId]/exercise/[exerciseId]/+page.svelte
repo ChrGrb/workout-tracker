@@ -40,6 +40,7 @@
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import deleteExerciseAction from "./actions/deleteExerciseAction";
   import deleteExerciseSetAction from "./actions/deleteExerciseSetAction";
+  import { filterDeleted } from "$lib/utils/data/filterDeleted";
 
   export let data: PageData;
 
@@ -103,14 +104,10 @@
           try {
             isActive = !(JSON.parse(value?.toString()) as WorkoutSessionFull)
               .finished;
-            exercise = (
-              JSON.parse(value?.toString()) as WorkoutSessionFull
-            ).exercises
-              .filter(
-                (exercise) =>
-                  exercise.id === data.exerciseId &&
-                  exercise.isDeleted === false
-              )
+            exercise = filterDeleted(
+              (JSON.parse(value?.toString()) as WorkoutSessionFull).exercises
+            )
+              .filter((exercise) => exercise.id === data.exerciseId)
               .at(0);
           } catch {}
         },
@@ -242,7 +239,7 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pb-56">
           {#if exercise.sets}
-            {#each exercise.sets.filter((set) => !set.isDeleted) as set (set.id)}
+            {#each filterDeleted(exercise.sets) as set (set.id)}
               <div animate:flip={{ duration: 100, easing: sineInOut }}>
                 <ExerciseSetCard
                   exerciseSet={set}

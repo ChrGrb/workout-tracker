@@ -19,6 +19,8 @@
   import { Trash2Icon } from "svelte-feather-icons";
   import { goto } from "$app/navigation";
   import { getOverviewPath } from "$lib/utils/routes";
+  import { filterDeleted } from "$lib/utils/data/filterDeleted";
+  import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
 
   export let data: PageData;
 
@@ -78,11 +80,9 @@
           <Headline style="small">Exercises</Headline>
         </div>
         <div class="flex flex-col gap-2">
-          {#if session.exercises && session.exercises.filter((exercise) => !exercise.isDeleted).length > 0}
+          {#if session.exercises && filterDeleted(session.exercises).length > 0}
             <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
-              {#each session.exercises
-                .filter((exercise) => !exercise.isDeleted)
-                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) as exercise (exercise.id)}
+              {#each filterDeleted(session.exercises).sort(sortByCreatedAt) as exercise (exercise.id)}
                 <div animate:flip={{ duration: 100, easing: sineInOut }}>
                   <WorkoutCard {exercise} />
                 </div>

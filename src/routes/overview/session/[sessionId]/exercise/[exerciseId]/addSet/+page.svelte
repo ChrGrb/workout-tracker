@@ -140,14 +140,11 @@
                     }),
                   });
 
-                console.log("Fetch done");
                 const exercisePath =
                   getExercisePath({
                     sessionId: data.sessionId,
                     exerciseId: data.exerciseId,
                   }) + ($settings.useTimer ? "?hasTimer=true" : "");
-
-                console.log(exercisePath);
 
                 goto(exercisePath);
               }
