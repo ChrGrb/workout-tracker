@@ -1,22 +1,14 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import {
-    CheckIcon,
-    EditIcon,
     InfoIcon,
     MoreHorizontalIcon,
     Trash2Icon,
-    XIcon,
   } from "svelte-feather-icons";
-  import {
-    confirmDelete,
-    confirmDeleteWithAction,
-  } from "$lib/modals/ConfirmDeleteModalWrapper";
-  import TextInput from "$lib/base/input/TextInput.svelte";
+  import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import { fade } from "svelte/transition";
-  import { sineIn, sineOut } from "svelte/easing";
+  import { sineIn } from "svelte/easing";
   import {
     modalStore,
     type ModalSettings,
@@ -25,8 +17,6 @@
     popup,
   } from "@skeletonlabs/skeleton";
   import WorkoutDescriptionModal from "$lib/modals/WorkoutDescriptionModal.svelte";
-  import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
-  import DeleteButton from "$lib/base/DeleteButton.svelte";
   import deleteExerciseTypeAction from "../actions/deleteExerciseTypeAction";
   import type { ExerciseType } from "@prisma/client";
   import { useUserId } from "$lib/stores/stores";
@@ -36,9 +26,6 @@
   export let exerciseType: ExerciseType;
 
   let userId = useUserId();
-
-  let form: HTMLFormElement;
-  let editMode = false;
 
   const workoutDescriptionModal: ModalComponent = {
     ref: WorkoutDescriptionModal,
@@ -115,16 +102,9 @@
   />
   <label
     for={exerciseType.name}
-    class="card flex flex-col justify-center aspect-square text-center variant-soft-primary drop-shadow-md peer-checked:drop-shadow-lg peer-checked:variant-filled-primary text-on-surface-token peer-checked:text-on-primary-token transition-all relative"
+    class="card flex flex-col justify-center aspect-square text-center variant-soft-primary drop-shadow-md peer-checked:drop-shadow-lg peer-checked:variant-filled-primary text-on-surface-token peer-checked:text-on-primary-token transition-colors relative"
   >
-    <div
-      transition:fade={{
-        delay: editMode ? 0 : 150,
-        duration: 200,
-        easing: sineIn,
-      }}
-      class="absolute inset-0 flex flex-col items-center justify-center p-4"
-    >
+    <div class="absolute inset-0 flex flex-col items-center justify-center p-4">
       <Headline style="small">{exerciseType.name}</Headline>
 
       <div class="absolute bottom-2 right-2">

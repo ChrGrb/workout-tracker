@@ -29,6 +29,7 @@
     UserWithSettings,
     WorkoutSessionFull,
   } from "$lib/utils/prismaTypes";
+  import { filterDeleted } from "$lib/utils/data/filterDeleted";
   let sessions: WorkoutSessionFull[] = [];
   let user: UserWithSettings | null = null;
 
@@ -59,10 +60,11 @@
       {
         onData: (session) => {
           try {
-            sessions = session.map((element) =>
-              JSON.parse(element!.toString())
-            ) as WorkoutSessionFull[];
-            sessions = sessions.filter((session) => !session.isDeleted);
+            sessions = filterDeleted(
+              session.map((element) =>
+                JSON.parse(element!.toString())
+              ) as WorkoutSessionFull[]
+            );
           } catch {}
         },
       }

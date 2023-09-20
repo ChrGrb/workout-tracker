@@ -2,8 +2,9 @@
   import { goto } from "$app/navigation";
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
-  import { getReplicache, useUserId } from "$lib/stores/stores";
+  import { useUserId } from "$lib/stores/stores";
   import calculateExerciseScore from "$lib/utils/data/calculateExerciseScore";
+  import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
   import getExerciseTypePreviousScore from "$lib/utils/replicache/getters/getExerciseTypePreviousScore";
   import { getExercisePath } from "$lib/utils/routes";
@@ -24,8 +25,13 @@
     previousScore = value ?? 0;
   });
 
+  $: exerciseSets = filterDeleted(exercise.sets);
+  $: workoutSets = exerciseSets.filter(
+    (set) => set.exerciseSetType === "WORKOUT"
+  );
+
   $: previousScore = 0;
-  $: score = exercise.sets ? calculateExerciseScore(exercise) : null;
+  $: score = exerciseSets ? calculateExerciseScore(exercise) : null;
 
   $: scoreImprovement = score
     ? Math.round(
@@ -35,28 +41,30 @@
       ) / 100
     : null;
 
-  $: averageWeight = exercise.sets
-    ? Math.round(
-        (exercise.sets.reduce((acc, set) => acc + set.weight, 0) /
-          exercise.sets.length) *
-          2
-      ) / 2
-    : 0;
+  $: averageWeight =
+    workoutSets.length > 0
+      ? Math.round(
+          (workoutSets.reduce((acc, set) => acc + set.weight, 0) /
+            workoutSets.length) *
+            2
+        ) / 2
+      : 0;
 
-  $: averageReps = exercise.sets
-    ? Math.round(
-        exercise.sets.reduce((acc, set) => acc + set.reps, 0) /
-          exercise.sets.length
-      )
-    : 0;
+  $: averageReps =
+    workoutSets.length > 0
+      ? Math.round(
+          workoutSets.reduce((acc, set) => acc + set.reps, 0) /
+            workoutSets.length
+        )
+      : 0;
 </script>
 
 <Button
   classes={clsx(
     "card w-full flex flex-col gap-2 justify-center p-4 aspect-square text-center relative drop-shadow-lg",
     {
-      "variant-soft": !exercise.sets || exercise.sets.length === 0,
-      "variant-filled-primary": exercise.sets && exercise.sets.length > 0,
+      "variant-soft": !exercise.sets || exerciseSets.length === 0,
+      "variant-filled-primary": exercise.sets && exerciseSets.length > 0,
     }
   )}
   action={() => {

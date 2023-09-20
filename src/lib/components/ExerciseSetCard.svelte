@@ -1,12 +1,9 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import type { ExerciseSet } from "@prisma/client";
   import clsx from "clsx";
   import { InfoIcon, Trash2Icon } from "svelte-feather-icons";
-  import SubmitFormWrapper from "./forms/SubmitFormWrapper.svelte";
-  import DeleteButton from "$lib/base/DeleteButton.svelte";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
 
   export let exerciseSet: ExerciseSet;
@@ -15,8 +12,6 @@
   $: exerciseSetTypeString =
     exerciseSet.exerciseSetType.charAt(0).toUpperCase() +
     exerciseSet.exerciseSetType.slice(1).toLowerCase();
-
-  let form: HTMLFormElement;
 </script>
 
 <div

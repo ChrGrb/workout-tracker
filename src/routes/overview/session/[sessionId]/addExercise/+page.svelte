@@ -16,6 +16,7 @@
   import type { ExerciseType } from "@prisma/client";
   import { onMount } from "svelte";
   import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
+  import { filterDeleted } from "$lib/utils/data/filterDeleted";
 
   export let data: PageData;
 
@@ -39,8 +40,8 @@
             exerciseTypes = data.map((element) =>
               JSON.parse(element!.toString())
             ) as ExerciseType[];
-            exerciseTypes = exerciseTypes.filter(
-              (exerciseType) => !exerciseType.isDeleted
+            exerciseTypes = filterDeleted(exerciseTypes).sort((a, b) =>
+              a.name.localeCompare(b.name)
             );
           } catch {}
         },
@@ -58,11 +59,8 @@
 
 <Container>
   <div class="flex flex-col gap-12">
-    <div
-      class="grid grid-cols-2 md:grid-cols-4 gap-4 pb-24"
-      in:fade={{ duration: 100, delay: 120 }}
-    >
-      {#each exerciseTypes.sort( (a, b) => a.name.localeCompare(b.name) ) as exerciseType (exerciseType.id)}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pb-24">
+      {#each exerciseTypes as exerciseType (exerciseType.id)}
         <div animate:flip={{ duration: 100, easing: sineInOut }}>
           <ExerciseTypeRadioButton
             bind:group={exerciseTypeSelection}

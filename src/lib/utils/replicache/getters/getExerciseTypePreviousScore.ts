@@ -1,20 +1,22 @@
 import { getReplicache } from "$lib/stores/stores";
 import calculateExerciseScore from "$lib/utils/data/calculateExerciseScore";
+import { filterDeleted } from "$lib/utils/data/filterDeleted";
+import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
 import type { ExerciseFull, WorkoutSessionFull } from "$lib/utils/prismaTypes";
 import type { ExerciseType } from "@prisma/client";
 
 
 
 const getExerciseTypePreviousScore = async (exerciseType: ExerciseType, userId: string) => {
-    let sessions = (await getReplicache(userId).mutate.getSessions({ userId })).map((element) =>
+    let sessions = filterDeleted((await getReplicache(userId).mutate.getSessions({ userId })).map((element) =>
         JSON.parse(element!.toString())
-    ) as WorkoutSessionFull[];;
+    ) as WorkoutSessionFull[]);
 
-    let exercise = sessions
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        .reduce((exerciseArray, session) => exerciseArray.concat(session.exercises), <ExerciseFull[]>[])
-        .filter(exercise => exercise.type.id === exerciseType.id && !exercise.isDeleted)
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    let exercise = filterDeleted(sessions
+        .sort(sortByCreatedAt)
+        .reduce((exerciseArray, session) => exerciseArray.concat(session.exercises), <ExerciseFull[]>[]))
+        .filter(exercise => exercise.type.id === exerciseType.id)
+        .sort(sortByCreatedAt)
         .at(1);
 
     if (!exercise)
