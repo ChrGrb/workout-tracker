@@ -8,11 +8,20 @@
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import CurrentSessionHeadlineEditable from "./SessionHeadlineEditable.svelte";
-  import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
+  import type {
+    WorkoutSessionFull,
+    WorkoutSessionTemplateWithExerciseTypes,
+  } from "$lib/utils/prismaTypes";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
+  import Headline from "$lib/base/Headline.svelte";
+  import WorkoutSessionTemplateCard from "./components/WorkoutSessionTemplateCard.svelte";
+  import { getAddTemplatePath } from "$lib/utils/routes";
 
   export let currentSession: WorkoutSessionFull | null;
+  export let workoutSessionTemplates:
+    | WorkoutSessionTemplateWithExerciseTypes[]
+    | null;
 
   let isStartLoading = false;
 
@@ -37,13 +46,15 @@
         bind:workoutSession={currentSession}
         {updateSessionNameAction}
       />
-      <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div class="flex flex-col gap-4">
         {#if currentSession.exercises}
           {#each filterDeleted(currentSession.exercises).sort(sortByCreatedAt) as exercise}
             <ExerciseCard {exercise} />
           {/each}
         {/if}
-        <AddExerciseCard addAction={addExercise}>Add exercise</AddExerciseCard>
+        <AddExerciseCard isInline={true} addAction={addExercise}
+          >Add exercise</AddExerciseCard
+        >
       </div>
     </div>
 
@@ -68,7 +79,7 @@
       </Button>
     </div>
   {:else}
-    <div in:fade={{ duration: 100, delay: 120 }}>
+    <div class="flex flex-col gap-12" in:fade={{ duration: 100, delay: 120 }}>
       <Button
         highlight={true}
         action={createSessionAction}
@@ -80,6 +91,26 @@
           <PlayIcon size="14" />
         </div>
       </Button>
+
+      {#if workoutSessionTemplates}
+        <div class="flex flex-col gap-4">
+          <Headline style="medium">Start from template</Headline>
+          <div class="flex flex-col gap-4">
+            {#each workoutSessionTemplates as workoutSessionTemplate}
+              <WorkoutSessionTemplateCard {workoutSessionTemplate} />
+            {/each}
+
+            <AddExerciseCard
+              isInline={true}
+              addAction={() => {
+                goto(getAddTemplatePath);
+              }}
+            >
+              Add template
+            </AddExerciseCard>
+          </div>
+        </div>
+      {/if}
     </div>
   {/if}
 </div>

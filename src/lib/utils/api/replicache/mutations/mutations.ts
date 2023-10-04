@@ -10,6 +10,8 @@ import utilsApiMutationsUserSettingsUpdate from "./user/settings/mutationuserSet
 import utilsApiLastMutationIdSave from "../client/lastMutationIdSave"
 import utilsApiMutationsExerciseTypeCreate from "./exerciseType/mutationsExerciseTypeCreate"
 import utilsApiMutationsExerciseTypeDelete from "./exerciseType/mutationsExerciseTypeDelete"
+import utilsApiMutationsUserWorkoutSessionTemplateUpdate from "./user/workoutSessionTemplate/mutationUserWorkoutSessionTemplateUpdate"
+import utilsApiMutationsUserWorkoutSessionTemplateCreate from "./user/workoutSessionTemplate/mutationsUserWorkoutSessionTemplateCreate"
 
 const utilsApiMutations = async ({ replicacheClientGroupId, mutations, userId, tx, versionNext }: { replicacheClientGroupId: string, mutations: any, userId: string, tx: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">, versionNext: number }) => {
     for await (const mutation of mutations) {
@@ -56,6 +58,10 @@ const utilsApiMutations = async ({ replicacheClientGroupId, mutations, userId, t
                 await utilsApiMutationsExerciseTypeCreate({ args: mutation.args, tx, versionNext });
             if (mutation.name === 'deleteExerciseType')
                 await utilsApiMutationsExerciseTypeDelete({ args: mutation.args, tx, versionNext });
+            if (mutation.name === 'createUserWorkoutSessionTemplate')
+                await utilsApiMutationsUserWorkoutSessionTemplateCreate({ args: mutation.args, tx, versionNext });
+            if (mutation.name === 'updateUserWorkoutSessionTemplate')
+                await utilsApiMutationsUserWorkoutSessionTemplateUpdate({ args: mutation.args, tx, versionNext });
 
             // Only increase mutation id upon successful mutation
             await utilsApiLastMutationIdSave({ replicacheClientId, replicacheClientGroupId, userId, nextMutationId, lastModifiedVersion: versionNext, tx })

@@ -59,7 +59,7 @@
 
 <Container>
   <div class="flex flex-col gap-12">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pb-24">
+    <div class="flex flex-col gap-4 pb-24">
       {#each exerciseTypes as exerciseType (exerciseType.id)}
         <div animate:flip={{ duration: 100, easing: sineInOut }}>
           <ExerciseTypeRadioButton
@@ -70,6 +70,7 @@
         </div>
       {/each}
       <AddCard
+        isInline={true}
         addAction={() =>
           goto(getAddExerciseTypePath({ sessionId: data.sessionId }))}
       >

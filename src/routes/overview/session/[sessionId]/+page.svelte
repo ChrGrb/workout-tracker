@@ -81,7 +81,7 @@
         </div>
         <div class="flex flex-col gap-2">
           {#if session.exercises && filterDeleted(session.exercises).length > 0}
-            <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div class="flex flex-col gap-4">
               {#each filterDeleted(session.exercises).sort(sortByCreatedAt) as exercise (exercise.id)}
                 <div animate:flip={{ duration: 100, easing: sineInOut }}>
                   <WorkoutCard {exercise} />

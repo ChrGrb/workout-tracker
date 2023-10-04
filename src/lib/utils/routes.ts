@@ -3,3 +3,4 @@ export const getExercisePath = ({ sessionId, exerciseId }: { sessionId: string, 
 export const getAddExerciseSetPath = (args: { sessionId: string, exerciseId: string }) => `${getExercisePath(args)}/addSet`;
 export const getAddExerciseTypePath = ({ sessionId }: { sessionId: string }) => `${getOverviewPath}/session/${sessionId}/addExerciseType`;
 export const getAddExercisePath = ({ sessionId }: { sessionId: string }) => `${getOverviewPath}/session/${sessionId}/addExercise`;
+export const getAddTemplatePath = `${getOverviewPath}/template/addWorkoutSessionTemplate`
