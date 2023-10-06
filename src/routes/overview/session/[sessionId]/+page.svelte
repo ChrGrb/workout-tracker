@@ -18,7 +18,7 @@
   import deleteSessionAction from "../../actions/deleteSessionAction";
   import { Trash2Icon } from "svelte-feather-icons";
   import { goto } from "$app/navigation";
-  import { getOverviewPath } from "$lib/utils/routes";
+  import { getOverviewPath } from "$lib/utils/routing/routes";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
 

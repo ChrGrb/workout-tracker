@@ -9,7 +9,10 @@
   import Header from "$lib/base/Header.svelte";
   import Button from "$lib/base/Button.svelte";
   import { getReplicache, useUserId } from "$lib/stores/stores";
-  import { getOverviewPath } from "$lib/utils/routes";
+  import {
+    getAddExerciseTypePath,
+    getOverviewPath,
+  } from "$lib/utils/routing/routes";
   import type { ExerciseType } from "@prisma/client";
   import { onMount } from "svelte";
   import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
@@ -18,6 +21,8 @@
   import createWorkoutSessionTemplateAction from "../../actions/createWorkoutSessionTemplate";
   import Headline from "$lib/base/Headline.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
+  import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
+  import { page } from "$app/stores";
 
   export let data: PageData;
 
@@ -88,9 +93,13 @@
             />
           </div>
         {/each}
-        <AddCard isInline={true} addAction={() => goto(getOverviewPath)}
-          >Add Type</AddCard
+        <AddCard
+          isInline={true}
+          addAction={() =>
+            goto(addCallbackToUrl(getAddExerciseTypePath, $page.url.pathname))}
         >
+          Add Type
+        </AddCard>
       </div>
     </div>
 

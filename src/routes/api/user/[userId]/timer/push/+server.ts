@@ -3,7 +3,7 @@ import type { RequestEvent } from './$types';
 import PushNotifications from '@pusher/push-notifications-server';
 import { PUBLIC_BEAMS_INSTANCE_ID } from '$env/static/public';
 import { BEAMS_SECRET_KEY } from '$env/static/private';
-import { getExercisePath } from '$lib/utils/routes';
+import { getExercisePath } from '$lib/utils/routing/routes';
 
 export async function GET({ params, url }: RequestEvent) {
     const userId = params.userId;

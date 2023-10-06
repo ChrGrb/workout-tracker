@@ -16,7 +16,7 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import Headline from "$lib/base/Headline.svelte";
   import WorkoutSessionTemplateCard from "./components/WorkoutSessionTemplateCard.svelte";
-  import { getAddTemplatePath } from "$lib/utils/routes";
+  import { getAddTemplatePath } from "$lib/utils/routing/routes";
 
   export let currentSession: WorkoutSessionFull | null;
   export let workoutSessionTemplates:
@@ -32,6 +32,9 @@
   async function addExercise() {
     goto(`/overview/session/${currentSession?.id}/addExercise`);
   }
+
+  $: workoutSessionTemplates =
+    workoutSessionTemplates?.sort(sortByCreatedAt) ?? null;
 
   export let createSessionAction: () => void;
   export let finishSessionAction: () => void;
@@ -52,9 +55,9 @@
             <ExerciseCard {exercise} />
           {/each}
         {/if}
-        <AddExerciseCard isInline={true} addAction={addExercise}
-          >Add exercise</AddExerciseCard
-        >
+        <AddExerciseCard isInline={true} addAction={addExercise}>
+          Add exercise
+        </AddExerciseCard>
       </div>
     </div>
 

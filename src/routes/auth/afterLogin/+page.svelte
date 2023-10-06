@@ -3,7 +3,7 @@
   import type { PageData } from "./$types";
   import { useUserId } from "$lib/stores/stores";
   import { goto } from "$app/navigation";
-  import { getOverviewPath } from "$lib/utils/routes";
+  import { getOverviewPath } from "$lib/utils/routing/routes";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
 

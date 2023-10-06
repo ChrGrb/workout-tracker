@@ -31,7 +31,10 @@
     useSettings,
     useUserId,
   } from "$lib/stores/stores";
-  import { getAddExerciseSetPath, getOverviewPath } from "$lib/utils/routes";
+  import {
+    getAddExerciseSetPath,
+    getOverviewPath,
+  } from "$lib/utils/routing/routes";
   import { onMount } from "svelte";
   import type {
     ExerciseFull,

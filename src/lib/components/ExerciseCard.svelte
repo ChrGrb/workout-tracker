@@ -7,7 +7,7 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
   import getExerciseTypePreviousScore from "$lib/utils/replicache/getters/getExerciseTypePreviousScore";
-  import { getExercisePath } from "$lib/utils/routes";
+  import { getExercisePath } from "$lib/utils/routing/routes";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import clsx from "clsx";
   import {
