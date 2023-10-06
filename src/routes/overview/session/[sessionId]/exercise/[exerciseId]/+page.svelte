@@ -44,6 +44,8 @@
   import deleteExerciseAction from "./actions/deleteExerciseAction";
   import deleteExerciseSetAction from "./actions/deleteExerciseSetAction";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
+  import { getRecommendations } from "$lib/utils/data/recommendations";
+  import type { ExerciseAverage } from "$lib/types/exerciseAverage";
 
   export let data: PageData;
 
@@ -94,6 +96,14 @@
     (element) => element.exerciseId == exercise?.id
   );
 
+  let previousExercises: ExerciseFull[] | null;
+  let recommendations: ExerciseAverage | null = null;
+
+  $: recommendations =
+    exercise && previousExercises
+      ? getRecommendations(exercise, previousExercises)
+      : null;
+
   onMount(() => {
     getReplicache($userId ?? "").subscribe(
       async (tx) =>
@@ -113,6 +123,30 @@
               .filter((exercise) => exercise.id === data.exerciseId)
               .at(0);
           } catch {}
+        },
+      }
+    );
+
+    getReplicache($userId ?? "").subscribe(
+      async (tx) =>
+        (
+          await tx.scan({
+            prefix: `user/${$userId}/session`,
+          })
+        ).toArray(),
+      {
+        onData: (value) => {
+          try {
+            previousExercises = filterDeleted(
+              value.map((element) =>
+                JSON.parse(element!.toString())
+              ) as WorkoutSessionFull[]
+            )
+              .filter((workoutSession) => workoutSession.id !== data.sessionId)
+              .flatMap((workoutSession) => workoutSession.exercises);
+          } catch (error) {
+            previousExercises = null;
+          }
         },
       }
     );
@@ -185,45 +219,38 @@
             >
           </AccordionItem>
         {/if}
-        {#await data.streamed.recommendations}
-          <div transition:fade={{ duration: 100 }}>
-            <ExerciseOverviewRecommendationSkeleteon />
-          </div>
-        {:then recommendations}
-          {#if recommendations}
-            <div in:fade={{ duration: 100, delay: 120 }}>
-              <AccordionItem
-                class="card"
-                regionControl="variant-soft-primary"
-                regionPanel="py-4"
-                hover=""
-                open
+        {#if recommendations}
+          <div in:fade={{ duration: 100, delay: 120 }}>
+            <AccordionItem
+              class="card"
+              regionControl="variant-soft-primary"
+              regionPanel="py-4"
+              hover=""
+              open
+            >
+              <svelte:fragment slot="lead"
+                ><InfoIcon size="18" /></svelte:fragment
               >
-                <svelte:fragment slot="lead"
-                  ><InfoIcon size="18" /></svelte:fragment
-                >
-                <svelte:fragment slot="summary">Recommendations</svelte:fragment
-                >
-                <svelte:fragment slot="content">
-                  <div class="flex flex-row w-full basis-1/2">
-                    <div class="flex flex-col basis-1/2 items-center">
-                      <p class="font-semibold">Reps</p>
-                      <p class="">{recommendations.recommendedReps}</p>
-                      <p />
-                    </div>
-                    <div class="flex flex-col basis-1/2 items-center">
-                      <p class="font-semibold">Weight</p>
-                      <p class="">
-                        {recommendations.recommendedWeight} kg
-                      </p>
-                      <p />
-                    </div>
+              <svelte:fragment slot="summary">Recommendations</svelte:fragment>
+              <svelte:fragment slot="content">
+                <div class="flex flex-row w-full basis-1/2">
+                  <div class="flex flex-col basis-1/2 items-center">
+                    <p class="font-semibold">Reps</p>
+                    <p class="">{recommendations.averageReps}</p>
+                    <p />
                   </div>
-                </svelte:fragment>
-              </AccordionItem>
-            </div>
-          {/if}
-        {/await}
+                  <div class="flex flex-col basis-1/2 items-center">
+                    <p class="font-semibold">Weight</p>
+                    <p class="">
+                      {recommendations.averageWeight} kg
+                    </p>
+                    <p />
+                  </div>
+                </div>
+              </svelte:fragment>
+            </AccordionItem>
+          </div>
+        {/if}
       </Accordion>
 
       <hr />

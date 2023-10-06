@@ -15,17 +15,9 @@ export async function load({ params, fetch, url }: PageLoadEvent) {
     const hasTimer = url.searchParams.get('hasTimer') === 'true';
 
 
-    const recommendations = async () => {
-        const responseExerciseRecommendations = await fetch("/api/exercise/" + params.exerciseId + "/recommendations");
-        return (await responseExerciseRecommendations.json()) as { recommendedWeight: number, recommendedReps: number } | null;
-    }
-
     return {
         hasTimer: hasTimer,
         sessionId: sessionId,
         exerciseId: exerciseId,
-        streamed: {
-            recommendations: recommendations()
-        }
     }
 };
