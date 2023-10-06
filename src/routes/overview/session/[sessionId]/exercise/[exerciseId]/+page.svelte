@@ -7,20 +7,10 @@
   import { goto } from "$app/navigation";
   import ExerciseSetCard from "$lib/components/ExerciseSetCard.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
-  import {
-    InfoIcon,
-    MoreHorizontalIcon,
-    Trash2Icon,
-  } from "svelte-feather-icons";
+  import { MoreHorizontalIcon, Trash2Icon } from "svelte-feather-icons";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
-  import {
-    Accordion,
-    AccordionItem,
-    popup,
-    type PopupSettings,
-  } from "@skeletonlabs/skeleton";
-  import ExerciseOverviewRecommendationSkeleteon from "./components/ExerciseOverviewRecommendationSkeleteon.svelte";
+  import { Accordion, popup, type PopupSettings } from "@skeletonlabs/skeleton";
   import { fade } from "svelte/transition";
   import Header from "$lib/base/Header.svelte";
   import ExerciseTimer from "./components/ExerciseTimer.svelte";
@@ -46,6 +36,9 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import { getRecommendations } from "$lib/utils/data/recommendations";
   import type { ExerciseAverage } from "$lib/types/exerciseAverage";
+  import ExerciseInfoCard from "./components/ExerciseInfoCard.svelte";
+  import ExerciseOverviewGraph from "./components/ExerciseOverviewGraph.svelte";
+  import { getPreviousExercisesOfType } from "$lib/utils/data/previousExercisesOfType";
 
   export let data: PageData;
 
@@ -96,13 +89,23 @@
     (element) => element.exerciseId == exercise?.id
   );
 
-  let previousExercises: ExerciseFull[] | null;
+  let previousExercises: ExerciseFull[] | null = null;
   let recommendations: ExerciseAverage | null = null;
 
-  $: recommendations =
-    exercise && previousExercises
-      ? getRecommendations(exercise, previousExercises)
+  $: previousExercisesOfType =
+    previousExercises && exercise
+      ? getPreviousExercisesOfType(previousExercises, exercise)
       : null;
+
+  $: recommendations =
+    exercise && previousExercisesOfType
+      ? getRecommendations(exercise, previousExercisesOfType)
+      : null;
+
+  $: showInfoSection =
+    recommendations ||
+    (exercise && exercise.type.description) ||
+    (previousExercisesOfType?.length ?? 0 > 0);
 
   onMount(() => {
     getReplicache($userId ?? "").subscribe(
@@ -201,37 +204,19 @@
         />
       </div>
 
-      <Accordion>
-        {#if exercise.type.description}
-          <AccordionItem
-            class="card"
-            regionControl="variant-soft-primary"
-            regionPanel="pt-4 pb-6"
-            hover=""
-          >
-            <svelte:fragment slot="lead"><InfoIcon size="18" /></svelte:fragment
-            >
-            <svelte:fragment slot="summary">Description</svelte:fragment>
-            <svelte:fragment slot="content"
-              ><article class="whitespace-pre-line">
+      {#if showInfoSection}
+        <Accordion>
+          {#if exercise.type.description}
+            <ExerciseInfoCard>
+              <svelte:fragment slot="headline">Description</svelte:fragment>
+              <article class="whitespace-pre-line">
                 {exercise.type.description}
-              </article></svelte:fragment
-            >
-          </AccordionItem>
-        {/if}
-        {#if recommendations}
-          <div in:fade={{ duration: 100, delay: 120 }}>
-            <AccordionItem
-              class="card"
-              regionControl="variant-soft-primary"
-              regionPanel="py-4"
-              hover=""
-              open
-            >
-              <svelte:fragment slot="lead"
-                ><InfoIcon size="18" /></svelte:fragment
-              >
-              <svelte:fragment slot="summary">Recommendations</svelte:fragment>
+              </article>
+            </ExerciseInfoCard>
+          {/if}
+          {#if recommendations}
+            <ExerciseInfoCard open={true}>
+              <svelte:fragment slot="headline">Recommendations</svelte:fragment>
               <svelte:fragment slot="content">
                 <div class="flex flex-row w-full basis-1/2">
                   <div class="flex flex-col basis-1/2 items-center">
@@ -248,12 +233,21 @@
                   </div>
                 </div>
               </svelte:fragment>
-            </AccordionItem>
-          </div>
-        {/if}
-      </Accordion>
+            </ExerciseInfoCard>
+          {/if}
+          {#if previousExercisesOfType && (previousExercisesOfType.length ?? 0 > 0) && exercise}
+            <ExerciseInfoCard open>
+              <svelte:fragment slot="headline">Performance</svelte:fragment>
+              <ExerciseOverviewGraph
+                previousExercises={previousExercisesOfType}
+                {exercise}
+              />
+            </ExerciseInfoCard>
+          {/if}
+        </Accordion>
 
-      <hr />
+        <hr />
+      {/if}
 
       <div
         class="flex flex-col w-full gap-4"
