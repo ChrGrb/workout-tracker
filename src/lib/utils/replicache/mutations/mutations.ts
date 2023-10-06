@@ -4,7 +4,7 @@ import mutationsExerciseCreate from "./exercise/mutationsExerciseCreate";
 import mutationsSessionCreate from "./session/mutationsSessionCreate";
 import mutationsSessionUpdate from "./session/mutationsSessionUpdate";
 import mutationsSessionDelete from "./session/mutationsSessionDelete";
-import type { ExerciseFull } from "$lib/utils/prismaTypes";
+import type { ExerciseFull, WorkoutSessionTemplateWithExerciseTypes } from "$lib/utils/prismaTypes";
 import mutationsExerciseSetCreate from "./exerciseSet/mutationsExerciseSetCreate";
 import mutationsExerciseDelete from "./exercise/mutationsExerciseDelete";
 import mutationsExerciseSetDelete from "./exerciseSet/mutationsExerciseSetDelete";
@@ -12,6 +12,8 @@ import mutationsUserSettingsUpdate from "./user/settings/mutationsUserSettingsUp
 import mutationsExerciseTypeCreate from "./exerciseType/mutationsExerciseTypeCreate";
 import mutationsExerciseTypeDelete from "./exerciseType/mutationsExerciseTypeDelete";
 import mutationsSessionsGet from "./session/mutationsSessionsGet";
+import mutationsUserWorkoutSessionTemplatesUpdate from "./user/workoutSessionTemplates/mutationsUserWorkoutSessionTemplatesUpdate";
+import mutationsUserWorkoutSessionTemplatesCreate from "./user/workoutSessionTemplates/mutationsUserWorkoutSessionTemplateCreate";
 
 export type M = typeof mutators;
 
@@ -27,4 +29,6 @@ export const mutators = {
     updateUserSettings: (tx: WriteTransaction, args: Settings) => mutationsUserSettingsUpdate({ tx, args }),
     createExerciseType: (tx: WriteTransaction, args: { exerciseType: ExerciseType, userId: string }) => mutationsExerciseTypeCreate({ tx, args }),
     deleteExerciseType: (tx: WriteTransaction, args: { exerciseType: ExerciseType, userId: string }) => mutationsExerciseTypeDelete({ tx, args }),
+    createUserWorkoutSessionTemplate: (tx: WriteTransaction, args: WorkoutSessionTemplateWithExerciseTypes) => mutationsUserWorkoutSessionTemplatesCreate({ tx, args }),
+    updateUserWorkoutSessionTemplate: (tx: WriteTransaction, args: Partial<WorkoutSessionTemplateWithExerciseTypes>) => mutationsUserWorkoutSessionTemplatesUpdate({ tx, args }),
 }

@@ -11,7 +11,7 @@
   import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
   import addExerciseSetAction from "./actions/addExerciseSetAction";
   import { goto } from "$app/navigation";
-  import { getExercisePath } from "$lib/utils/routes";
+  import { getExercisePath } from "$lib/utils/routing/routes";
   import { getReplicache, useSettings, useUserId } from "$lib/stores/stores";
   import type {
     ExerciseFull,

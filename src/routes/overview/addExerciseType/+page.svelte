@@ -1,11 +1,9 @@
 <script lang="ts">
-  import Headline from "$lib/base/Headline.svelte";
   import Container from "$lib/base/Container.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
-  import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
   import Header from "$lib/base/Header.svelte";
-  import { getAddExercisePath } from "$lib/utils/routes";
+  import { getAddExercisePath } from "$lib/utils/routing/routes";
   import type { PageData } from "./$types";
   import Button from "$lib/base/Button.svelte";
   import createExerciseTypeAction from "./actions/createExerciseTypeAction";
@@ -23,7 +21,7 @@
 <Header>
   <svelte:fragment>Add Exercise Type</svelte:fragment>
   <svelte:fragment slot="action">
-    <ExitButton exitPath={getAddExercisePath({ sessionId: data.sessionId })} />
+    <ExitButton exitPath={data.callback} />
   </svelte:fragment>
 </Header>
 
@@ -38,19 +36,13 @@
         required={true}
         bind:input={exerciseTypeName}
       />
-      <input
-        type="text"
-        name="sessionId"
-        value={data.sessionId}
-        class="hidden"
-      />
     </div>
 
     <Button
       action={async () => {
         if ($userId) createExerciseTypeAction($userId, exerciseTypeName);
 
-        goto(getAddExercisePath({ sessionId: data.sessionId }));
+        goto(data.callback);
       }}
       disabled={isInvalid}
     >

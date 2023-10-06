@@ -6,7 +6,12 @@ const utilsApiEntriesUserGet = async ({ tx, userId, versionAt }: { tx: Omit<Pris
             AND: [{ versionUpdatedAt: { gt: versionAt ?? -1 } }, { id: userId }]
         },
         include: {
-            settings: true
+            settings: true,
+            workoutSessionTemplates: {
+                include: {
+                    exerciseTypes: true
+                }
+            },
         }
     })
 

@@ -7,7 +7,7 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
   import getExerciseTypePreviousScore from "$lib/utils/replicache/getters/getExerciseTypePreviousScore";
-  import { getExercisePath } from "$lib/utils/routes";
+  import { getExercisePath } from "$lib/utils/routing/routes";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import clsx from "clsx";
   import {
@@ -61,7 +61,7 @@
 
 <Button
   classes={clsx(
-    "card w-full flex flex-col gap-2 justify-center p-4 aspect-square text-center relative drop-shadow-lg",
+    "card w-full flex flex-row gap-2 justify-center p-4 text-center justify-between relative drop-shadow-lg",
     {
       "variant-soft": !exercise.sets || exerciseSets.length === 0,
       "variant-filled-primary": exercise.sets && exerciseSets.length > 0,
@@ -84,15 +84,25 @@
     stroke={100}
     meter="stroke-primary-50"
   />
-  <Headline
-    style="small"
-    classes="break-words whitespace-normal line-clamp-3 max-w-[95%]"
-  >
-    {exercise.type.name}
-  </Headline>
+  <div class="flex flex-col justify-between align-stretch items-start">
+    <Headline
+      style="small"
+      classes="break-words whitespace-normal line-clamp-3 max-w-[95%] text-start"
+    >
+      {exercise.type.name}
+    </Headline>
+
+    <time
+      use:svelteTime={{
+        timestamp: exercise.createdAt,
+        format: "HH:mm · MMMM D",
+      }}
+      class="font-light text-sm"
+    />
+  </div>
   {#if +averageWeight > 0 && +averageReps > 0}
     <div
-      class="flex flex-row gap-2 flex-wrap justify-center mb-6 md:mb-2 !ml-0"
+      class="flex flex-row gap-2 flex-wrap justify-end align-end items-center !ml-0"
     >
       <div class="flex flex-row badge rounded-full pr-2.5 bg-white text-black">
         <p>{averageReps} reps</p>
@@ -126,11 +136,4 @@
       {/if}
     </div>
   {/if}
-  <time
-    use:svelteTime={{
-      timestamp: exercise.createdAt,
-      format: "HH:mm · MMMM D",
-    }}
-    class="font-light text-sm absolute bottom-0 left-0 right-0 pb-3"
-  />
 </Button>

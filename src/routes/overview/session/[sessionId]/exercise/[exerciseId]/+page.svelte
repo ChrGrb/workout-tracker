@@ -31,7 +31,10 @@
     useSettings,
     useUserId,
   } from "$lib/stores/stores";
-  import { getAddExerciseSetPath, getOverviewPath } from "$lib/utils/routes";
+  import {
+    getAddExerciseSetPath,
+    getOverviewPath,
+  } from "$lib/utils/routing/routes";
   import { onMount } from "svelte";
   import type {
     ExerciseFull,
@@ -73,10 +76,6 @@
   let settings = useSettings();
   let exerciseTimers = useExerciseTimers();
 
-  $: currentExerciseTimer = $exerciseTimers.find(
-    (element) => element.exerciseId == exercise?.id
-  );
-
   $: if (data.hasTimer && $settings.useTimer) {
     let thisExerciseTimer = currentExerciseTimer;
     if (thisExerciseTimer === undefined) {
@@ -90,6 +89,10 @@
       });
     }
   }
+
+  $: currentExerciseTimer = $exerciseTimers.find(
+    (element) => element.exerciseId == exercise?.id
+  );
 
   onMount(() => {
     getReplicache($userId ?? "").subscribe(

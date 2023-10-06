@@ -7,8 +7,6 @@
     Trash2Icon,
   } from "svelte-feather-icons";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
-  import { fade } from "svelte/transition";
-  import { sineIn } from "svelte/easing";
   import {
     modalStore,
     type ModalSettings,
@@ -17,12 +15,11 @@
     popup,
   } from "@skeletonlabs/skeleton";
   import WorkoutDescriptionModal from "$lib/modals/WorkoutDescriptionModal.svelte";
-  import deleteExerciseTypeAction from "../actions/deleteExerciseTypeAction";
   import type { ExerciseType } from "@prisma/client";
   import { useUserId } from "$lib/stores/stores";
+  import deleteExerciseTypeAction from "../../../session/[sessionId]/addExercise/actions/deleteExerciseTypeAction";
 
-  export let group: string;
-  export let required: boolean;
+  export let checked: boolean;
   export let exerciseType: ExerciseType;
 
   let userId = useUserId();
@@ -95,16 +92,15 @@
     id={exerciseType.name}
     name="exercise-type-id"
     value={exerciseType.id}
-    type="radio"
+    type="checkbox"
     class="hidden peer"
-    bind:group
-    {required}
+    bind:checked
   />
   <label
     for={exerciseType.name}
     class="card flex flex-col justify-center text-center variant-soft-primary drop-shadow-md peer-checked:drop-shadow-lg peer-checked:variant-filled-primary text-on-surface-token peer-checked:text-on-primary-token transition-colors relative"
   >
-    <div class="flex flex-col items-start justify-start p-4">
+    <div class="flex flex-col items-start justify-between p-4">
       <Headline style="small">{exerciseType.name}</Headline>
 
       <div class="absolute bottom-2 right-2">

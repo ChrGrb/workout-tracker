@@ -28,10 +28,14 @@
   import type {
     UserWithSettings,
     WorkoutSessionFull,
+    WorkoutSessionTemplateWithExerciseTypes,
   } from "$lib/utils/prismaTypes";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
+  import type { ReadTransaction } from "replicache";
+  import createWorkoutSessionTemplateAction from "./actions/createWorkoutSessionTemplate";
   let sessions: WorkoutSessionFull[] = [];
   let user: UserWithSettings | null = null;
+  let sessionTemplates: WorkoutSessionTemplateWithExerciseTypes[] = [];
 
   let settings = useSettings();
 
@@ -72,7 +76,26 @@
 
     getReplicache($userId ?? "").subscribe(
       async (tx) =>
-        (await tx.scan({ prefix: `user/${$userId ?? ""}/user` })).toArray(),
+        (
+          await tx.scan({
+            prefix: `user/${$userId ?? ""}/user/workoutSessionTemplates`,
+          })
+        ).toArray(),
+      {
+        onData: (value) => {
+          try {
+            sessionTemplates = filterDeleted(
+              value.map((element) =>
+                JSON.parse(element!.toString())
+              ) as WorkoutSessionTemplateWithExerciseTypes[]
+            );
+          } catch {}
+        },
+      }
+    );
+
+    getReplicache($userId ?? "").subscribe(
+      async (tx: ReadTransaction) => await tx.get(`user/${$userId ?? ""}/user`),
       {
         onData: (value) => {
           try {
@@ -103,6 +126,7 @@
 <Container>
   <div class="flex flex-col gap-12">
     <CurrentSessionSection
+      bind:workoutSessionTemplates={sessionTemplates}
       bind:currentSession={activeSession}
       createSessionAction={() => {
         if ($userId) createSessionAction($userId);

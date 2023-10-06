@@ -34,7 +34,7 @@ const utilsApiEntriesGet = async ({ tx, userId, versionAt }: { tx: Omit<PrismaCl
         versionAt
     });
 
-    if (apiEntriesUserGet)
+    if (apiEntriesUserGet) {
         patch.push(
             {
                 op: 'put',
@@ -42,6 +42,22 @@ const utilsApiEntriesGet = async ({ tx, userId, versionAt }: { tx: Omit<PrismaCl
                 value: JSON.stringify({ ...apiEntriesUserGet })
             } as PatchOperation
         );
+
+        const userWorkoutSessionTemplates = apiEntriesUserGet.workoutSessionTemplates;
+        patch.push(
+            ...userWorkoutSessionTemplates.map(
+                userWorkoutSessionTemplate => (userWorkoutSessionTemplate.isDeleted ? {
+                    op: 'del',
+                    key: `user/${apiEntriesUserGet.id}/user/workoutSessionTemplates/${userWorkoutSessionTemplate.id}`,
+                    value: JSON.stringify({ ...userWorkoutSessionTemplate })
+                } as PatchOperation : {
+                    op: 'put',
+                    key: `user/${apiEntriesUserGet.id}/user/workoutSessionTemplates/${userWorkoutSessionTemplate.id}`,
+                    value: JSON.stringify({ ...userWorkoutSessionTemplate })
+                } as PatchOperation)
+            )
+        );
+    }
     const { data: apiEntriesExerciseTypeGet } = await utilsApiEntriesExerciseTypeGet({
         tx,
         userId,
