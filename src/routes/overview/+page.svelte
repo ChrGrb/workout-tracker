@@ -116,7 +116,7 @@
 
 <Header>
   <svelte:fragment>Overview</svelte:fragment>
-  <svelte:fragment slot="action">
+  <svelte:fragment slot="actionEnd">
     <Button action={openSettings} icon={true}>
       <MoreVerticalIcon size="24" />
     </Button>

@@ -13,19 +13,19 @@
 </script>
 
 {#if !isEditMode}
-  <div class="flex flex-row gap-4 items-end h-10">
+  <div class="flex flex-row gap-4 items-center h-10">
     <Headline style="medium">{workoutSession.name}</Headline>
     <Button
       action={() => (isEditMode = true)}
       type="button"
       icon={true}
-      classes="transition-all drop-shadow-none w-auto pb-1.5"
+      classes="transition-all drop-shadow-none w-auto"
     >
       <EditIcon size="18" />
     </Button>
   </div>
 {:else}
-  <div class="flex flex-row gap-4 items-end">
+  <div class="flex flex-row gap-4 items-center">
     <TextInput
       type="text"
       id="sessionName"
@@ -39,9 +39,9 @@
         updateSessionNameAction();
         isEditMode = false;
       }}
-      classes="transition-all drop-shadow-none w-auto pb-1.5"
+      classes="transition-all drop-shadow-none w-auto"
     >
-      <CheckIcon size="18" />
+      <CheckIcon size="24" />
     </Button>
   </div>
 {/if}

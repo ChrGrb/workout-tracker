@@ -14,11 +14,14 @@
     })}
   >
     <Container>
-      <div class="flex justify-between">
+      <div class="flex justify-start items-center align-middle gap-4">
+        <slot name="action" />
         <slot name="content">
           <Headline><slot /></Headline>
         </slot>
-        <slot name="action" />
+        <div class="absolute right-4 top-4">
+          <slot name="actionEnd" />
+        </div>
       </div>
     </Container>
   </div>
@@ -27,12 +30,15 @@
 <div class="relative isolate opacity-0">
   <div class="z-50 relative">
     <Container>
-      <slot name="content">
-        <div class="flex justify-between">
+      <div class="flex justify-start gap-8">
+        <slot name="action" />
+        <slot name="content">
           <Headline><slot /></Headline>
-          <slot name="action" />
+        </slot>
+        <div class="absolute right-4 top-4">
+          <slot name="actionEnd" />
         </div>
-      </slot>
+      </div>
     </Container>
   </div>
 </div>
