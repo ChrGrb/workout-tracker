@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import Button from "./Button.svelte";
-  import { XIcon } from "svelte-feather-icons";
+  import { ChevronLeftIcon, XIcon } from "svelte-feather-icons";
 
   export let exitPath: string;
 
@@ -10,8 +10,13 @@
   }
 </script>
 
-<div class="absolute top-5 right-5 z-50">
-  <Button action={redirect} icon={true} loadingOnClick={true}>
-    <XIcon size="24" />
+<div class="z-50 flex flex-col justify-center">
+  <Button
+    action={redirect}
+    icon={true}
+    loadingOnClick={true}
+    classes="aspect-auto w-auto my-auto"
+  >
+    <ChevronLeftIcon size="32" />
   </Button>
 </div>

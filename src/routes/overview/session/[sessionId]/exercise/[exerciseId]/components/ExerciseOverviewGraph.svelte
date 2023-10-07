@@ -8,7 +8,7 @@
   export let previousExercises: ExerciseFull[];
   export let exercise: ExerciseFull;
 
-  let barHeight = 40;
+  let barHeight = 60;
 
   $: exerciseScores = getPreviousExercisesOfType(previousExercises, exercise)
     .sort(sortByCreatedAt)
@@ -28,13 +28,19 @@
   {#each exerciseBarHeights as barHeight, index}
     <div class="flex flex-col justify-start items-center align-center gap-2">
       <div
-        class="w-4 h-[40px] variant-soft-primary rounded-full relative overflow-hidden"
+        class="w-4 h-[60px] variant-soft-primary rounded-t-full relative overflow-hidden"
       >
         <div
-          class={clsx("w-4 rounded-full absolute bottom-0", {
+          class={clsx("w-4 rounded-t-full absolute bottom-0", {
             "variant-filled-primary": index != exerciseBarHeights.length - 1,
-            "bg-gradient-to-tr from-secondary-400 to-tertiary-400":
-              index == exerciseBarHeights.length - 1,
+            "bg-gradient-to-tr": index == exerciseBarHeights.length - 1,
+            "from-success-700 to-success-900":
+              calculateExerciseScore(exercise) / scoreMax >= 1,
+            "from-warning-700 to-warning-900":
+              calculateExerciseScore(exercise) / scoreMax < 1 &&
+              calculateExerciseScore(exercise) / scoreMax >= 0.5,
+            "from-error-700 to-error-900":
+              calculateExerciseScore(exercise) / scoreMax < 0.5,
           })}
           style="height: {barHeight}px"
         />
