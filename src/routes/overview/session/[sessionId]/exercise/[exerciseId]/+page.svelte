@@ -221,13 +221,13 @@
                 <div class="flex flex-row w-full basis-1/2">
                   <div class="flex flex-col basis-1/2 items-center">
                     <p class="font-semibold">Reps</p>
-                    <p class="">{recommendations.averageReps}</p>
+                    <p class="">{Math.round(recommendations.averageReps)}</p>
                     <p />
                   </div>
                   <div class="flex flex-col basis-1/2 items-center">
                     <p class="font-semibold">Weight</p>
                     <p class="">
-                      {recommendations.averageWeight} kg
+                      {Math.round(recommendations.averageWeight * 2) / 2} kg
                     </p>
                     <p />
                   </div>
