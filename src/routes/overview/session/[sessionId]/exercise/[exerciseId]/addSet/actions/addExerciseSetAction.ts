@@ -12,6 +12,7 @@ const addExerciseSetAction = async (exercise: ExerciseFull, exerciseSet: Partial
             exerciseSetType: exerciseSet.exerciseSetType,
             reps: exerciseSet.reps,
             weight: exerciseSet.weight,
+            additionalWeight: exerciseSet.additionalWeight,
             notes: exerciseSet.notes,
             createdAt: new Date(),
             isDeleted: false,

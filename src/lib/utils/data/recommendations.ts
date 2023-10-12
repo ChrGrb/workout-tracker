@@ -1,6 +1,7 @@
 import type { ExerciseAverage } from "$lib/types/exerciseAverage";
 import type { ExerciseFull } from "../prismaTypes"
 import { filterDeleted } from "./filterDeleted"
+import { getExerciseSetWeight } from "./getExerciseSetWeight";
 import { getPreviousExercisesOfType } from "./previousExercisesOfType";
 import { sortByCreatedAt } from "./sortByDate";
 
@@ -11,7 +12,7 @@ export const getRecommendations = (exercise: ExerciseFull, previousExercises: Ex
         if (!previousRelevantExerciseSets || previousRelevantExerciseSets.length === 0)
             return null;
 
-        const averageWeights = previousRelevantExerciseSets.map((previousExercise) => previousExercise.weight).reduce((partialSum, weight) => partialSum + weight, 0) / previousRelevantExerciseSets.length;
+        const averageWeights = previousRelevantExerciseSets.map((previousExercise) => getExerciseSetWeight(previousExercise)).reduce((partialSum, weight) => partialSum + weight, 0) / previousRelevantExerciseSets.length;
         const averageReps = previousRelevantExerciseSets.map((previousExercise) => previousExercise.reps).reduce((partialSum, reps) => partialSum + reps, 0) / previousRelevantExerciseSets.length;
 
         return { averageWeight: averageWeights, averageReps: averageReps };

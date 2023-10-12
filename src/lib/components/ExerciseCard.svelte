@@ -5,6 +5,7 @@
   import { useUserId } from "$lib/stores/stores";
   import calculateExerciseScore from "$lib/utils/data/calculateExerciseScore";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
+  import { getExerciseSetWeight } from "$lib/utils/data/getExerciseSetWeight";
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
   import getExerciseTypePreviousScore from "$lib/utils/replicache/getters/getExerciseTypePreviousScore";
   import { getExercisePath } from "$lib/utils/routing/routes";
@@ -44,7 +45,10 @@
   $: averageWeight =
     workoutSets.length > 0
       ? Math.round(
-          (workoutSets.reduce((acc, set) => acc + set.weight, 0) /
+          (workoutSets.reduce(
+            (acc, set) => acc + getExerciseSetWeight(set),
+            0
+          ) /
             workoutSets.length) *
             2
         ) / 2
