@@ -148,15 +148,16 @@ model ExerciseSet {
   // --- SYSTEM ---
   versionUpdatedAt Int? @default(0)
 
-  id              String          @id @default(cuid())
-  exerciseId      String
-  exercise        Exercise        @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-  exerciseSetType ExerciseSetType @default(WORKOUT)
-  reps            Int
-  weight          Float
-  notes           String          @default("")
-  createdAt       DateTime        @default(now())
-  isDeleted       Boolean         @default(false)
+  id               String          @id @default(cuid())
+  exerciseId       String
+  exercise         Exercise        @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseSetType  ExerciseSetType @default(WORKOUT)
+  reps             Int
+  weight           Float
+  additionalWeight Float           @default(0.0)
+  notes            String          @default("")
+  createdAt        DateTime        @default(now())
+  isDeleted        Boolean         @default(false)
 }
 
 model ReplicacheSpace {

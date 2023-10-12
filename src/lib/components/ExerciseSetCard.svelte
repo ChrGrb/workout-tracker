@@ -5,6 +5,7 @@
   import clsx from "clsx";
   import { InfoIcon, Trash2Icon } from "svelte-feather-icons";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
+  import { getExerciseSetWeight } from "$lib/utils/data/getExerciseSetWeight";
 
   export let exerciseSet: ExerciseSet;
   export let deleteAction: () => void;
@@ -45,13 +46,26 @@
       <p class="font-medium">{exerciseSet.reps}</p>
       <p>reps</p>
     </div>
-    <div
-      class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
-        "bg-white text-primary-900": exerciseSet.exerciseSetType == "WORKOUT",
-      })}
-    >
-      <p class="font-medium">{exerciseSet.weight}</p>
-      <p>kg</p>
+    <div class="flex flex-row gap-2">
+      <div
+        class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
+          "bg-white text-primary-900": exerciseSet.exerciseSetType == "WORKOUT",
+        })}
+      >
+        <p class="font-medium">{exerciseSet.weight}</p>
+        <p>kg</p>
+      </div>
+      {#if exerciseSet.additionalWeight > 0.0}
+        <div
+          class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
+            "bg-white text-primary-900":
+              exerciseSet.exerciseSetType == "WORKOUT",
+          })}
+        >
+          <p class="font-medium">{exerciseSet.additionalWeight}</p>
+          <p>kg</p>
+        </div>
+      {/if}
     </div>
   </div>
   {#if exerciseSet.notes && exerciseSet.notes !== ""}

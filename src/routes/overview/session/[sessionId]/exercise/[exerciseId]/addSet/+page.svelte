@@ -18,16 +18,21 @@
     WorkoutSessionFull,
   } from "$lib/utils/prismaTypes";
   import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
 
   export let data: PageData;
   let repetitions = "";
-  let weight = "";
+  let weightMain = "";
+  let weightAdditional = "";
   let notes = "";
   let exerciseSetType = "WORKOUT";
 
+  let weightType = "UNIFIED";
+
   $: exerciseSet = {
     reps: +repetitions,
-    weight: +weight,
+    weight: +weightMain,
+    additionalWeight: weightAdditional !== "" ? +weightAdditional : 0.0,
     notes: notes,
     exerciseSetType: exerciseSetType,
   } as Partial<ExerciseSet>;
@@ -35,8 +40,10 @@
   $: isInvalid =
     repetitions.length === 0 ||
     +repetitions < 0 ||
-    weight.length === 0 ||
-    +weight < 0;
+    weightMain.length === 0 ||
+    +weightMain < 0 ||
+    (weightType !== "UNIFIED" &&
+      (weightAdditional.length === 0 || +weightAdditional < 0));
 
   let exercise: ExerciseFull | undefined;
 
@@ -101,16 +108,63 @@
         required={true}
         metric="reps"
       />
-      <TextInput
-        name="weight"
-        id="weight"
-        type="number"
-        label="Weight"
-        step={0.01}
-        bind:input={weight}
-        required={true}
-        metric="kg"
-      />
+      <div class="flex flex-col">
+        <p>Weight</p>
+        <div class="flex flex-col gap-2">
+          <RadioSelect
+            items={[
+              { name: "Unified", value: "UNIFIED" },
+              { name: "Bilateral", value: "BILATERAL" },
+            ]}
+            name="weightType"
+            bind:group={weightType}
+          />
+          {#if weightType === "UNIFIED"}
+            <div
+              transition:fade={{
+                delay: weightType === "UNIFIED" ? 0 : 210,
+                duration: 200,
+              }}
+            >
+              <TextInput
+                name="weight"
+                id="weight"
+                type="number"
+                step={0.01}
+                bind:input={weightMain}
+                required={true}
+                metric="kg"
+              />
+            </div>
+          {:else if weightType === "BILATERAL"}
+            <div
+              class="flex flex-row justify-between gap-4"
+              transition:fade={{
+                duration: 200,
+              }}
+            >
+              <TextInput
+                name="weight"
+                id="weight"
+                type="number"
+                step={0.01}
+                bind:input={weightMain}
+                required={true}
+                metric="kg"
+              />
+              <TextInput
+                name="weight"
+                id="weight"
+                type="number"
+                step={0.01}
+                bind:input={weightAdditional}
+                required={true}
+                metric="kg"
+              />
+            </div>
+          {/if}
+        </div>
+      </div>
       <TextArea
         name="notes"
         id="notes"
@@ -128,7 +182,7 @@
             action={() => {
               if (exercise) {
                 addExerciseSetAction(exercise, exerciseSet);
-                console.log($settings.useTimer);
+                console.log(exerciseSet);
                 if ($settings.useTimer)
                   fetch("https://eoj3xsgtl8d1hzc.m.pipedream.net", {
                     method: "POST",

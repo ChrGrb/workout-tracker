@@ -10,6 +10,7 @@ const utilsApiMutationsExerciseSetUpdate = async ({ args, tx, versionNext }: { a
         exerciseSetType: args.exerciseSet.exerciseSetType,
         reps: args.exerciseSet.reps,
         weight: args.exerciseSet.weight,
+        additionalWeight: args.exerciseSet.additionalWeight,
         createdAt: args.exerciseSet.createdAt,
         notes: args.exerciseSet.notes,
         isDeleted: args.exerciseSet.isDeleted,
