@@ -37,7 +37,7 @@
 
 <div
   class="w-full relative"
-  style="touch-action: none;"
+  style="touch-action: pan-y;"
   id={key}
   use:clickOutside={() => {
     animate(x, 0);
