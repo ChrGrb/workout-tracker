@@ -11,7 +11,7 @@
 
 <Button
   classes={clsx(
-    "card variant-filled-surface flex gap-4 p-4 drop-shadow-xl relative",
+    "card variant-filled-primary flex gap-4 p-4 drop-shadow-xl relative",
     {
       "justify-between items-center flex-row mt-4": isInline,
       "aspect-square text-center justify-center items-center flex-col":

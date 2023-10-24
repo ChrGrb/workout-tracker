@@ -264,7 +264,10 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pb-56">
           {#if exercise.sets}
             {#each filterDeleted(exercise.sets) as set (set.id)}
-              <div animate:flip={{ duration: 100, easing: sineInOut }}>
+              <div
+                animate:flip={{ delay: 100, duration: 250, easing: sineInOut }}
+                transition:fade
+              >
                 <ExerciseSetCard
                   exerciseSet={set}
                   deleteAction={() => {

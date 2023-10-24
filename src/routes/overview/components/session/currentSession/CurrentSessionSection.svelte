@@ -1,6 +1,11 @@
 <script lang="ts">
   import Button from "$lib/base/Button.svelte";
-  import { PauseIcon, PlayIcon, Trash2Icon } from "svelte-feather-icons";
+  import {
+    PauseIcon,
+    PlayIcon,
+    PlusIcon,
+    Trash2Icon,
+  } from "svelte-feather-icons";
   import type { Exercise } from "@prisma/client";
   import { fade } from "svelte/transition";
   import { goto } from "$app/navigation";
@@ -17,6 +22,8 @@
   import Headline from "$lib/base/Headline.svelte";
   import WorkoutSessionTemplateCard from "./components/WorkoutSessionTemplateCard.svelte";
   import { getAddTemplatePath } from "$lib/utils/routing/routes";
+  import { flip } from "svelte/animate";
+  import { sineInOut } from "svelte/easing";
 
   export let currentSession: WorkoutSessionFull | null;
   export let workoutSessionTemplates:
@@ -51,8 +58,13 @@
       />
       <div class="flex flex-col gap-4">
         {#if currentSession.exercises}
-          {#each filterDeleted(currentSession.exercises).sort(sortByCreatedAt) as exercise}
-            <ExerciseCard {exercise} />
+          {#each filterDeleted(currentSession.exercises).sort(sortByCreatedAt) as exercise (exercise.id)}
+            <div
+              animate:flip={{ delay: 100, duration: 250, easing: sineInOut }}
+              transition:fade
+            >
+              <ExerciseCard {exercise} />
+            </div>
           {/each}
         {/if}
         <AddExerciseCard isInline={true} addAction={addExercise}>
@@ -97,20 +109,26 @@
 
       {#if workoutSessionTemplates}
         <div class="flex flex-col gap-4">
-          <Headline style="medium">Start from template</Headline>
-          <div class="flex flex-col gap-4">
-            {#each workoutSessionTemplates as workoutSessionTemplate}
-              <WorkoutSessionTemplateCard {workoutSessionTemplate} />
-            {/each}
-
-            <AddExerciseCard
-              isInline={true}
-              addAction={() => {
+          <div class="flex flex-row justify-between">
+            <Headline style="medium">Start from template</Headline>
+            <Button
+              icon={true}
+              action={() => {
                 goto(getAddTemplatePath);
               }}
             >
-              Add template
-            </AddExerciseCard>
+              <PlusIcon size="28" />
+            </Button>
+          </div>
+          <div class="flex flex-col gap-4">
+            {#each workoutSessionTemplates as workoutSessionTemplate (workoutSessionTemplate.id)}
+              <div
+                animate:flip={{ delay: 100, duration: 250, easing: sineInOut }}
+                transition:fade
+              >
+                <WorkoutSessionTemplateCard {workoutSessionTemplate} />
+              </div>
+            {/each}
           </div>
         </div>
       {/if}
