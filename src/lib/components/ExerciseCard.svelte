@@ -2,13 +2,15 @@
   import { goto } from "$app/navigation";
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
+  import SwipeToAction from "$lib/base/SwipeToAction.svelte";
+  import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import { useUserId } from "$lib/stores/stores";
   import calculateExerciseScore from "$lib/utils/data/calculateExerciseScore";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import { getExerciseSetWeight } from "$lib/utils/data/getExerciseSetWeight";
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
   import getExerciseTypePreviousScore from "$lib/utils/replicache/getters/getExerciseTypePreviousScore";
-  import { getExercisePath } from "$lib/utils/routing/routes";
+  import { getExercisePath, getOverviewPath } from "$lib/utils/routing/routes";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import clsx from "clsx";
   import {
@@ -17,6 +19,8 @@
     TrendingUpIcon,
   } from "svelte-feather-icons";
   import { svelteTime } from "svelte-time";
+  import deleteExerciseAction from "../../routes/overview/session/[sessionId]/exercise/[exerciseId]/actions/deleteExerciseAction";
+  import { useMotionValue } from "svelte-motion";
 
   export let exercise: ExerciseFull;
 
@@ -61,83 +65,106 @@
             workoutSets.length
         )
       : 0;
+
+  let x = useMotionValue(0);
 </script>
 
-<Button
-  classes={clsx(
-    "card w-full flex flex-row gap-2 justify-center p-4 text-center justify-between relative drop-shadow-lg",
-    {
-      "variant-soft": !exercise.sets || exerciseSets.length === 0,
-      "variant-filled-primary": exercise.sets && exerciseSets.length > 0,
-    }
-  )}
-  action={() => {
-    goto(
-      getExercisePath({
-        sessionId: exercise.sessionId,
-        exerciseId: exercise.id,
-      })
-    );
-  }}
-  loadingOnClick={true}
+<SwipeToAction
+  deleteAction={() =>
+    confirmDeleteWithAction(
+      () => {
+        if (exercise) {
+          deleteExerciseAction(exercise);
+          goto(getOverviewPath);
+        }
+      },
+      "exercise",
+      () => {}
+    )}
+  bind:x
 >
-  <svelte:component
-    this={ProgressRadial}
-    slot="spinner"
-    width="w-[48px]"
-    stroke={100}
-    meter="stroke-primary-50"
-  />
-  <div class="flex flex-col justify-between align-stretch items-start">
-    <Headline
-      style="small"
-      classes="break-words whitespace-normal line-clamp-3 max-w-[95%] text-start"
-    >
-      {exercise.type.name}
-    </Headline>
-
-    <time
-      use:svelteTime={{
-        timestamp: exercise.createdAt,
-        format: "HH:mm · MMMM D",
-      }}
-      class="font-light text-sm"
+  <Button
+    classes={clsx(
+      "card w-full flex flex-row gap-2 justify-center p-4 text-center justify-between relative drop-shadow-lg",
+      {
+        "variant-soft bg-white": !exercise.sets || exerciseSets.length === 0,
+        "variant-filled-primary": exercise.sets && exerciseSets.length > 0,
+        "active:scale-100 active:brightness-100": $x !== 0,
+      }
+    )}
+    action={() => {
+      console.log($x);
+      if ($x === 0 || $x === undefined)
+        goto(
+          getExercisePath({
+            sessionId: exercise.sessionId,
+            exerciseId: exercise.id,
+          })
+        );
+    }}
+  >
+    <svelte:component
+      this={ProgressRadial}
+      slot="spinner"
+      width="w-[48px]"
+      stroke={100}
+      meter="stroke-primary-50"
     />
-  </div>
-  {#if +averageWeight > 0 && +averageReps > 0}
-    <div
-      class="flex flex-row gap-2 flex-wrap justify-end align-end items-center !ml-0"
-    >
-      <div class="flex flex-row badge rounded-full pr-2.5 bg-white text-black">
-        <p>{averageReps} reps</p>
-      </div>
+    <div class="flex flex-col justify-between align-stretch items-start">
+      <Headline
+        style="small"
+        classes="break-words whitespace-normal line-clamp-3 max-w-[95%] text-start"
+      >
+        {exercise.type.name}
+      </Headline>
 
-      <div class="flex flex-row badge rounded-full pr-2.5 bg-white text-black">
-        <p>{averageWeight} kg</p>
-      </div>
-
-      {#if scoreImprovement && scoreImprovement < Infinity}
-        <div
-          class={clsx(
-            "flex flex-row badge rounded-full pr-2.5 bg-gradient-to-tr text-white",
-            {
-              "from-success-700 to-success-900": scoreImprovement >= 0,
-              "from-warning-700 to-warning-900":
-                scoreImprovement < 0 && scoreImprovement >= -5,
-              "from-error-700 to-error-900": scoreImprovement < 5,
-            }
-          )}
-        >
-          <p>{scoreImprovement.toFixed(1)}%</p>
-          {#if scoreImprovement > 0}
-            <TrendingUpIcon size="14" />
-          {:else if scoreImprovement === 0}
-            <MinusIcon size="14" />
-          {:else}
-            <TrendingDownIcon size="14" />
-          {/if}
-        </div>
-      {/if}
+      <time
+        use:svelteTime={{
+          timestamp: exercise.createdAt,
+          format: "HH:mm · MMMM D",
+        }}
+        class="font-light text-sm"
+      />
     </div>
-  {/if}
-</Button>
+    {#if +averageWeight > 0 && +averageReps > 0}
+      <div
+        class="flex flex-row gap-2 flex-wrap justify-end align-end items-center !ml-0"
+      >
+        <div
+          class="flex flex-row badge rounded-full pr-2.5 bg-white text-black"
+        >
+          <p>{averageReps} reps</p>
+        </div>
+
+        <div
+          class="flex flex-row badge rounded-full pr-2.5 bg-white text-black"
+        >
+          <p>{averageWeight} kg</p>
+        </div>
+
+        {#if scoreImprovement && scoreImprovement < Infinity}
+          <div
+            class={clsx(
+              "flex flex-row badge rounded-full pr-2.5 bg-gradient-to-tr text-white",
+              {
+                "from-success-700 to-success-900": scoreImprovement >= 0,
+                "from-warning-700 to-warning-900":
+                  scoreImprovement < 0 && scoreImprovement >= -5,
+                "from-error-700 to-error-900": scoreImprovement < 5,
+              }
+            )}
+          >
+            <p>{scoreImprovement.toFixed(1)}%</p>
+            {#if scoreImprovement > 0}
+              <TrendingUpIcon size="14" />
+            {:else if scoreImprovement === 0}
+              <MinusIcon size="14" />
+            {:else}
+              <TrendingDownIcon size="14" />
+            {/if}
+          </div>
+        {/if}
+      </div>
+    {/if}
+  </Button>
+</SwipeToAction>

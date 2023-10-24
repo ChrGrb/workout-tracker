@@ -13,7 +13,7 @@
 </script>
 
 <button
-  class={clsx(classes, "variant-filled-primary", {
+  class={clsx(classes, "variant-filled-primary active:scale-100 ", {
     "btn-icon !bg-transparent text-inherit": icon,
     "btn drop-shadow-lg": !icon,
     "variant-filled-primary drop-shadow-xl": highlight,
