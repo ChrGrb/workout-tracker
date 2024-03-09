@@ -39,6 +39,7 @@
   import ExerciseInfoCard from "./components/ExerciseInfoCard.svelte";
   import ExerciseOverviewGraph from "./components/ExerciseOverviewGraph.svelte";
   import { getPreviousExercisesOfType } from "$lib/utils/data/previousExercisesOfType";
+  import ExerciseCard from "$lib/components/ExerciseCard.svelte";
 
   export let data: PageData;
 
@@ -52,7 +53,7 @@
         getAddExerciseSetPath({
           sessionId: exercise.sessionId,
           exerciseId: exercise.id,
-        })
+        }),
       );
   }
 
@@ -86,7 +87,7 @@
   }
 
   $: currentExerciseTimer = $exerciseTimers.find(
-    (element) => element.exerciseId == exercise?.id
+    (element) => element.exerciseId == exercise?.id,
   );
 
   let previousExercises: ExerciseFull[] | null = null;
@@ -121,13 +122,13 @@
             isActive = !(JSON.parse(value?.toString()) as WorkoutSessionFull)
               .finished;
             exercise = filterDeleted(
-              (JSON.parse(value?.toString()) as WorkoutSessionFull).exercises
+              (JSON.parse(value?.toString()) as WorkoutSessionFull).exercises,
             )
               .filter((exercise) => exercise.id === data.exerciseId)
               .at(0);
           } catch {}
         },
-      }
+      },
     );
 
     getReplicache($userId ?? "").subscribe(
@@ -142,8 +143,8 @@
           try {
             previousExercises = filterDeleted(
               value.map((element) =>
-                JSON.parse(element!.toString())
-              ) as WorkoutSessionFull[]
+                JSON.parse(element!.toString()),
+              ) as WorkoutSessionFull[],
             )
               .filter((workoutSession) => workoutSession.id !== data.sessionId)
               .flatMap((workoutSession) => workoutSession.exercises);
@@ -151,7 +152,7 @@
             previousExercises = null;
           }
         },
-      }
+      },
     );
   });
 </script>
@@ -172,7 +173,7 @@
               }
             },
             "exercise",
-            () => {}
+            () => {},
           )}
         classes="btn !bg-transparent text-inherit transition-all drop-shadow-none"
       >
@@ -218,19 +219,28 @@
             <ExerciseInfoCard open={true}>
               <svelte:fragment slot="headline">Recommendations</svelte:fragment>
               <svelte:fragment slot="content">
-                <div class="flex flex-row w-full basis-1/2">
-                  <div class="flex flex-col basis-1/2 items-center">
-                    <p class="font-semibold">Reps</p>
-                    <p class="">{Math.round(recommendations.averageReps)}</p>
-                    <p />
+                <div class="flex flex-col gap-8">
+                  <div class="flex flex-row w-full basis-1/2">
+                    <div class="flex flex-col basis-1/2 items-center">
+                      <p class="font-semibold">Reps</p>
+                      <p class="">{Math.round(recommendations.averageReps)}</p>
+                      <p />
+                    </div>
+                    <div class="flex flex-col basis-1/2 items-center">
+                      <p class="font-semibold">Weight</p>
+                      <p class="">
+                        {Math.round(recommendations.averageWeight * 2) / 2} kg
+                      </p>
+                      <p />
+                    </div>
                   </div>
-                  <div class="flex flex-col basis-1/2 items-center">
-                    <p class="font-semibold">Weight</p>
-                    <p class="">
-                      {Math.round(recommendations.averageWeight * 2) / 2} kg
-                    </p>
-                    <p />
-                  </div>
+                  {#if previousExercisesOfType}
+                    <div class="flex flex-col gap-2">
+                      {#each previousExercisesOfType as previousExercise}
+                        <ExerciseCard exercise={previousExercise} />
+                      {/each}
+                    </div>
+                  {/if}
                 </div>
               </svelte:fragment>
             </ExerciseInfoCard>
@@ -292,7 +302,8 @@
                       exerciseTimers.update((exerciseTimers) => {
                         return exerciseTimers.filter(
                           (timer) =>
-                            timer.exerciseId != currentExerciseTimer?.exerciseId
+                            timer.exerciseId !=
+                            currentExerciseTimer?.exerciseId,
                         );
                       });
                     }}
