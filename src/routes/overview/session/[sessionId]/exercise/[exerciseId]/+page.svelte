@@ -40,6 +40,7 @@
   import ExerciseOverviewGraph from "./components/ExerciseOverviewGraph.svelte";
   import { getPreviousExercisesOfType } from "$lib/utils/data/previousExercisesOfType";
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
+  import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
 
   export let data: PageData;
 
@@ -236,7 +237,9 @@
                   </div>
                   {#if previousExercisesOfType}
                     <div class="flex flex-col gap-2">
-                      {#each previousExercisesOfType as previousExercise}
+                      {#each filterDeleted(previousExercisesOfType)
+                        .sort(sortByCreatedAt)
+                        .slice(0, 3) as previousExercise}
                         <ExerciseCard exercise={previousExercise} />
                       {/each}
                     </div>
