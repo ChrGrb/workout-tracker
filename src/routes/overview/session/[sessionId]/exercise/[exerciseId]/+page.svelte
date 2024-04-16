@@ -10,7 +10,7 @@
   import { MoreHorizontalIcon, Trash2Icon } from "svelte-feather-icons";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
-  import { Accordion, popup, type PopupSettings } from "@skeletonlabs/skeleton";
+  import { popup, type PopupSettings } from "@skeletonlabs/skeleton";
   import { fade } from "svelte/transition";
   import Header from "$lib/base/Header.svelte";
   import ExerciseTimer from "./components/ExerciseTimer.svelte";
@@ -31,7 +31,6 @@
   import deleteExerciseAction from "./actions/deleteExerciseAction";
   import deleteExerciseSetAction from "./actions/deleteExerciseSetAction";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
-  import ExerciseInfoCard from "./components/ExerciseInfoCard.svelte";
   import ExerciseOverviewGraph from "./components/ExerciseOverviewGraph.svelte";
   import { getPreviousExercisesOfType } from "$lib/utils/data/previousExercisesOfType";
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
@@ -101,8 +100,6 @@
     previousExercises && exercise
       ? getPreviousExercisesOfType(previousExercises, exercise)
       : null;
-
-  $: showInfoSection = exercise && exercise.type.description;
 
   onMount(() => {
     getReplicache($userId ?? "").subscribe(
@@ -201,18 +198,6 @@
         />
       </div>
 
-      {#if showInfoSection}
-        <Accordion>
-          {#if exercise.type.description}
-            <ExerciseInfoCard>
-              <svelte:fragment slot="headline">Description</svelte:fragment>
-              <article class="whitespace-pre-line">
-                {exercise.type.description}
-              </article>
-            </ExerciseInfoCard>
-          {/if}
-        </Accordion>
-      {/if}
       <div class="flex flex-col gap-12">
         <Headline style="small">Previous Performances</Headline>
         <div class="flex flex-col gap-6">
