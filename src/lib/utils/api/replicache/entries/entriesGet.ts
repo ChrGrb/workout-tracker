@@ -77,9 +77,6 @@ const utilsApiEntriesGet = async ({ tx, userId, versionAt }: { tx: Omit<PrismaCl
             } as PatchOperation))
         );
 
-    console.log("Version: ", versionAt);
-    console.log("Patches: ", patch);
-
     return { data: patch };
 }
 

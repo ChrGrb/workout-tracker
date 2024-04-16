@@ -6,8 +6,6 @@ import Pusher from "pusher"
 
 
 const utilsApiPokeSend = async (userId: string) => {
-    console.log('Poke channel ', userId)
-
     const pusher = new Pusher({
         appId: REPLICACHE_PUSHER_APP_ID,
         key: PUBLIC_REPLICACHE_PUSHER_KEY,

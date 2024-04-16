@@ -7,9 +7,6 @@ const utilsApiMutationsExerciseSetCreate = async ({ args, tx, versionNext }: { a
 
     if (prismaExerciseSetFindUnique) return
 
-    console.log("Started creating exercise");
-    console.log("Args: ", args);
-
     const prismaData = {
         versionUpdatedAt: versionNext,
         id: args.exerciseSet.id,

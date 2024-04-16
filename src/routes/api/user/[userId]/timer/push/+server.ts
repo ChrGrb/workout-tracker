@@ -12,9 +12,6 @@ export async function GET({ params, url }: RequestEvent) {
     const sessionId = url.searchParams.get('sessionId');
     const exerciseId = url.searchParams.get('exerciseId');
 
-    console.log("https://workout.zack-bumm.com" + ((sessionId && exerciseId) ? getExercisePath({ sessionId: sessionId!, exerciseId: exerciseId! }) : ""));
-
-
     const beamsClient = new PushNotifications({
         instanceId: PUBLIC_BEAMS_INSTANCE_ID,
         secretKey: BEAMS_SECRET_KEY

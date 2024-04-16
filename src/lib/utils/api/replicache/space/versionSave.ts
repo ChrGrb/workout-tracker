@@ -13,8 +13,6 @@ const utilsApiVersionSave = async ({ tx, userId, versionAt }: { tx: Omit<PrismaC
         console.error(err)
     }
 
-    console.log("Updated Version for user ", userId, " to ", versionAt);
-
     return { data: undefined }
 }
 

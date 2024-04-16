@@ -120,7 +120,7 @@ const handleAuth: Handle = (async (...args) => {
             }));
           }
         } catch (responseError) {
-          console.log(400, (responseError as Error).message);
+          console.error(400, (responseError as Error).message);
         }
       }
     },

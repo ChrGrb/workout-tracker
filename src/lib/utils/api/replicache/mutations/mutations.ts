@@ -20,21 +20,17 @@ const utilsApiMutations = async ({ replicacheClientGroupId, mutations, userId, t
             select: { lastMutationId: true }
         }) ?? { lastMutationId: 0 }
 
-        console.log("Found last mutation id: ", lastMutationId, "for clientID: ", mutation.clientID, "with version: ", versionNext);
 
         // Verify before processing mutation
         if (mutation.id < lastMutationId + 1) {
-            console.log(`Mutation ${mutation.id} has already been processed - skipping`)
             continue
         }
 
         if (mutation.id > lastMutationId + 1) {
-            console.warn(`Mutation ${mutation.id} is from the future - aborting`)
             break
         }
 
         try {
-            console.log('Processing mutation', lastMutationId + 1, JSON.stringify(mutation))
             let nextMutationId = lastMutationId + 1;
             let replicacheClientId = mutation.clientID as string;
 

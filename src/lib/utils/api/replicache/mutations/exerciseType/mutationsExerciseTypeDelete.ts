@@ -5,9 +5,6 @@ const utilsApiMutationsExerciseTypeDelete = async ({ args, tx, versionNext }: { 
 
     if (!prismaExerciseTypeFindUnique) return
 
-    console.log("Started deleting exercise type from user");
-    console.log("Args: ", args);
-
     try {
         await tx.user.update({
             where: {

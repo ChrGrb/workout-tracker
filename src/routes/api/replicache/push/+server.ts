@@ -32,8 +32,6 @@ export async function POST({ request, url }: RequestEvent) {
 
     const push = pushRequestSchema.parse(requestBody);
 
-    console.log('\nPush: ***', requestBody, '***\n');
-
     if (!userId)
         throw error(401, "Not authenticated");
 

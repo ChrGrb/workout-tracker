@@ -14,9 +14,6 @@ export async function POST({ request, url }: RequestEvent) {
     const requestBody = await request.json();
     const userId = url.searchParams.get('userId');
 
-
-    console.log('\nPull: ***', requestBody, '***\n');
-
     if (!userId) return json({});
 
     // Provided by Replicache
@@ -31,7 +28,6 @@ export async function POST({ request, url }: RequestEvent) {
                 // #1. Get `version` for space
                 const { data: version } = await utilsApiVersionGet({ tx, userId });
 
-                console.log("Version: ", version, " Cookie: ", cookie);
 
                 // #2. Get last mutation Id changes for the current replicache client group
                 let { data: mutationIdChanges } = await utilsApiLastMutationIdGet({
@@ -55,8 +51,6 @@ export async function POST({ request, url }: RequestEvent) {
                 timeout: 10000 // default: 5000
             }
         )
-
-        console.log("Last mutationIdChanges: ", lastMutationIdChanges);
 
         const response: PullResponse = { lastMutationIDChanges: lastMutationIdChanges, cookie: versionAt, patch }
 

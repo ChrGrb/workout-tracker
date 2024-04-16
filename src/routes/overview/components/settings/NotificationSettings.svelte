@@ -46,13 +46,6 @@
             .then(() => {
               if ($beamsClient) return $beamsClient.getDeviceId();
             })
-            .then((deviceId) => {
-              if (dev)
-                console.log(
-                  "Successfully registered with Beams. Device ID:",
-                  deviceId
-                );
-            })
             .then(() => {
               if ($beamsClient) $beamsClient.clearDeviceInterests();
             })
@@ -66,9 +59,6 @@
             })
             .then(() => {
               if ($beamsClient) return $beamsClient.getDeviceInterests();
-            })
-            .then((interests) => {
-              if (dev) console.log("Current interests:", interests);
             })
             .catch(console.error);
       }}

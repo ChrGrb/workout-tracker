@@ -10,8 +10,6 @@
   export let data: PageData;
 
   onMount(() => {
-    console.log(data.userId);
-
     goto(getOverviewPath);
   });
 
