@@ -13,6 +13,7 @@
   import { getReplicache, useUserId } from "$lib/stores/stores";
   import {
     getAddExerciseTypePath,
+    getExercisePath,
     getOverviewPath,
   } from "$lib/utils/routing/routes";
   import type { ExerciseType } from "@prisma/client";
@@ -42,14 +43,14 @@
         onData: (data) => {
           try {
             exerciseTypes = data.map((element) =>
-              JSON.parse(element!.toString())
+              JSON.parse(element!.toString()),
             ) as ExerciseType[];
             exerciseTypes = filterDeleted(exerciseTypes).sort((a, b) =>
-              a.name.localeCompare(b.name)
+              a.name.localeCompare(b.name),
             );
           } catch {}
         },
-      }
+      },
     );
   });
 </script>
@@ -57,7 +58,7 @@
 <Header>
   <svelte:fragment>Add Exercise</svelte:fragment>
   <svelte:fragment slot="action">
-    <ExitButton exitPath="/overview" />
+    <ExitButton exitPath={data.callback} />
   </svelte:fragment>
 </Header>
 
@@ -88,16 +89,26 @@
           action={async () => {
             let exerciseType = exerciseTypes
               .filter(
-                (exerciseType) => exerciseType.id === exerciseTypeSelection
+                (exerciseType) => exerciseType.id === exerciseTypeSelection,
               )
               .at(0);
 
             if (exerciseType) {
-              addExerciseAction(exerciseType, $userId ?? "", data.sessionId);
+              const newExerciseId = await addExerciseAction(
+                exerciseType,
+                $userId ?? "",
+                data.sessionId,
+              );
 
-              goto(getOverviewPath);
+              goto(
+                getExercisePath({
+                  sessionId: data.sessionId,
+                  exerciseId: newExerciseId,
+                }),
+              );
             }
           }}
+          loadingOnClick={true}
           disabled={isInvalid}
           classes="w-full"
         >

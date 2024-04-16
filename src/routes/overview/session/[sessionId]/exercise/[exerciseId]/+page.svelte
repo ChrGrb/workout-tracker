@@ -21,10 +21,7 @@
     useSettings,
     useUserId,
   } from "$lib/stores/stores";
-  import {
-    getAddExerciseSetPath,
-    getOverviewPath,
-  } from "$lib/utils/routing/routes";
+  import { getAddExerciseSetPath } from "$lib/utils/routing/routes";
   import { onMount } from "svelte";
   import type {
     ExerciseFull,
@@ -34,13 +31,14 @@
   import deleteExerciseAction from "./actions/deleteExerciseAction";
   import deleteExerciseSetAction from "./actions/deleteExerciseSetAction";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
-  import { getRecommendations } from "$lib/utils/data/recommendations";
-  import type { ExerciseAverage } from "$lib/types/exerciseAverage";
   import ExerciseInfoCard from "./components/ExerciseInfoCard.svelte";
   import ExerciseOverviewGraph from "./components/ExerciseOverviewGraph.svelte";
   import { getPreviousExercisesOfType } from "$lib/utils/data/previousExercisesOfType";
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
+  import { page } from "$app/stores";
+  import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
+  import clsx from "clsx";
 
   export let data: PageData;
 
@@ -51,10 +49,13 @@
   async function addSet() {
     if (exercise)
       goto(
-        getAddExerciseSetPath({
-          sessionId: exercise.sessionId,
-          exerciseId: exercise.id,
-        }),
+        addCallbackToUrl(
+          getAddExerciseSetPath({
+            sessionId: exercise.sessionId,
+            exerciseId: exercise.id,
+          }),
+          $page.url.pathname,
+        ),
       );
   }
 
@@ -85,6 +86,9 @@
         return exerciseTimers;
       });
     }
+    currentExerciseTimer = $exerciseTimers.find(
+      (element) => element.exerciseId == exercise?.id,
+    );
   }
 
   $: currentExerciseTimer = $exerciseTimers.find(
@@ -92,22 +96,13 @@
   );
 
   let previousExercises: ExerciseFull[] | null = null;
-  let recommendations: ExerciseAverage | null = null;
 
   $: previousExercisesOfType =
     previousExercises && exercise
       ? getPreviousExercisesOfType(previousExercises, exercise)
       : null;
 
-  $: recommendations =
-    exercise && previousExercisesOfType
-      ? getRecommendations(exercise, previousExercisesOfType)
-      : null;
-
-  $: showInfoSection =
-    recommendations ||
-    (exercise && exercise.type.description) ||
-    (previousExercisesOfType?.length ?? 0 > 0);
+  $: showInfoSection = exercise && exercise.type.description;
 
   onMount(() => {
     getReplicache($userId ?? "").subscribe(
@@ -170,7 +165,7 @@
             () => {
               if (exercise) {
                 deleteExerciseAction(exercise);
-                goto(getOverviewPath);
+                goto(data.callback);
               }
             },
             "exercise",
@@ -188,9 +183,8 @@
 {/if}
 
 <Header>
-  <svelte:fragment>{exercise?.type.name}</svelte:fragment>
   <svelte:fragment slot="action">
-    <ExitButton exitPath={getOverviewPath} />
+    <ExitButton exitPath={data.callback} />
   </svelte:fragment>
 </Header>
 
@@ -198,6 +192,7 @@
   {#if exercise}
     <div class="flex flex-col gap-12" in:fade={{ duration: 100 }}>
       <div class="flex flex-col gap-4 relative items-start">
+        <Headline>{exercise?.type.name}</Headline>
         <time
           use:svelteTime={{
             timestamp: exercise.createdAt,
@@ -216,51 +211,32 @@
               </article>
             </ExerciseInfoCard>
           {/if}
-          {#if recommendations}
-            <ExerciseInfoCard open={true}>
-              <svelte:fragment slot="headline">Recommendations</svelte:fragment>
-              <svelte:fragment slot="content">
-                <div class="flex flex-col gap-8">
-                  <div class="flex flex-row w-full basis-1/2">
-                    <div class="flex flex-col basis-1/2 items-center">
-                      <p class="font-semibold">Reps</p>
-                      <p class="">{Math.round(recommendations.averageReps)}</p>
-                      <p />
-                    </div>
-                    <div class="flex flex-col basis-1/2 items-center">
-                      <p class="font-semibold">Weight</p>
-                      <p class="">
-                        {Math.round(recommendations.averageWeight * 2) / 2} kg
-                      </p>
-                      <p />
-                    </div>
-                  </div>
-                  {#if previousExercisesOfType}
-                    <div class="flex flex-col gap-2">
-                      {#each filterDeleted(previousExercisesOfType)
-                        .sort(sortByCreatedAt)
-                        .slice(0, 3) as previousExercise}
-                        <ExerciseCard exercise={previousExercise} />
-                      {/each}
-                    </div>
-                  {/if}
-                </div>
-              </svelte:fragment>
-            </ExerciseInfoCard>
-          {/if}
+        </Accordion>
+      {/if}
+      <div class="flex flex-col gap-12">
+        <Headline style="small">Previous Performances</Headline>
+        <div class="flex flex-col gap-6">
           {#if previousExercisesOfType && (previousExercisesOfType.length ?? 0 > 0) && exercise}
-            <ExerciseInfoCard open>
-              <svelte:fragment slot="headline">Performance</svelte:fragment>
+            <div class="flex flex-col">
               <ExerciseOverviewGraph
                 previousExercises={previousExercisesOfType}
                 {exercise}
               />
-            </ExerciseInfoCard>
+            </div>
           {/if}
-        </Accordion>
+          {#if previousExercisesOfType}
+            <div class="flex flex-col gap-2">
+              {#each filterDeleted(previousExercisesOfType)
+                .sort(sortByCreatedAt)
+                .slice(0, 3) as previousExercise}
+                <ExerciseCard exercise={previousExercise} previous={true} />
+              {/each}
+            </div>
+          {/if}
+        </div>
+      </div>
 
-        <hr />
-      {/if}
+      <hr />
 
       <div
         class="flex flex-col w-full gap-4"
@@ -274,7 +250,13 @@
             </button>
           {/if}
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pb-56">
+        <div
+          class={clsx("grid grid-cols-1 md:grid-cols-2 gap-2", {
+            "mb-24": isActive,
+            "mb-8": !isActive,
+            "pb-16": currentExerciseTimer,
+          })}
+        >
           {#if exercise.sets}
             {#each filterDeleted(exercise.sets) as set (set.id)}
               <div

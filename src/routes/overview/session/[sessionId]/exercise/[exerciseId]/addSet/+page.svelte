@@ -69,7 +69,7 @@
               .at(0);
           } catch {}
         },
-      }
+      },
     );
   });
 </script>
@@ -77,12 +77,7 @@
 <Header>
   <svelte:fragment>Add Set</svelte:fragment>
   <svelte:fragment slot="action">
-    <ExitButton
-      exitPath={getExercisePath({
-        sessionId: data.sessionId,
-        exerciseId: data.exerciseId,
-      })}
-    />
+    <ExitButton exitPath={data.callback} />
   </svelte:fragment>
 </Header>
 
@@ -182,7 +177,7 @@
             action={() => {
               if (exercise) {
                 addExerciseSetAction(exercise, exerciseSet);
-                console.log(exerciseSet);
+
                 if ($settings.useTimer)
                   fetch("https://eoj3xsgtl8d1hzc.m.pipedream.net", {
                     method: "POST",

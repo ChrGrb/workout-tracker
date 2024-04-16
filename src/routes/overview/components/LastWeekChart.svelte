@@ -14,7 +14,7 @@
   };
 
   let dates = Array.from({ length: 7 }, (_, i) =>
-    addDays(new Date(Date.now()), -(i + 1))
+    addDays(new Date(Date.now()), -(i + 1)),
   ).reverse();
 
   $: weekData = dates.map((date) => {
@@ -29,7 +29,7 @@
 
     return {
       weekday: new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(
-        date
+        date,
       ),
       exerciseCount: workoutOnDate
         ? filterDeleted(workoutOnDate.exercises).length
@@ -48,7 +48,7 @@
           {#if dayData.exerciseCount != 0}
             <div class="relative inline-block">
               <div
-                class="badge-icon bg-gradient-to-tr from-secondary-300 to-tertiary-300 absolute -top-2 -right-2 z-10 font-mono text-xs"
+                class="badge-icon bg-tertiary-100 absolute -top-2 -right-2 z-10 font-mono text-xs"
               >
                 {dayData.exerciseCount}
               </div>

@@ -62,7 +62,7 @@
           new PusherPushNotifications.Client({
             instanceId: PUBLIC_BEAMS_INSTANCE_ID,
             serviceWorkerRegistration: serviceWorkerRegistration,
-          })
+          }),
         );
 
         if (beamsClient)
@@ -73,7 +73,7 @@
               if (dev)
                 console.log(
                   "Successfully registered with Beams. Device ID:",
-                  deviceId
+                  deviceId,
                 );
             })
             .then(() => {
@@ -88,7 +88,7 @@
               if (dev) console.log("Current interests:", interests);
             })
             .catch(console.error);
-      }
+      },
     );
   }
 
@@ -128,7 +128,7 @@
 <svelte:head>
   <title>Workout Tracker</title>
   <meta name="description" content="The minimal workout tracking app" />
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#FFFFFF" />
   {@html webManifestLink}
   <!-- Workaround for a svelte parsing error: https://github.com/sveltejs/eslint-plugin-svelte/issues/492 -->
   {@html `<\u{73}cript nonce="%sveltekit.nonce%">(${setInitialClassState.toString()})();</script>`}

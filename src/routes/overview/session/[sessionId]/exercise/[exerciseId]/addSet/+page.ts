@@ -1,7 +1,8 @@
 import { error } from "@sveltejs/kit";
 import type { PageLoadEvent } from "./$types";
+import { getCallbackFromQuery } from "$lib/utils/routing/callbacks";
 
-export async function load({ params }: PageLoadEvent) {
+export async function load({ params, url }: PageLoadEvent) {
     if (!params.exerciseId) {
         throw error(404, 'Workout not found');
     }
@@ -12,8 +13,11 @@ export async function load({ params }: PageLoadEvent) {
     }
     const sessionId = params.sessionId;
 
+    const callback = getCallbackFromQuery(url.searchParams.get("callback"));
+
     return {
         sessionId,
         exerciseId,
+        callback
     }
 }

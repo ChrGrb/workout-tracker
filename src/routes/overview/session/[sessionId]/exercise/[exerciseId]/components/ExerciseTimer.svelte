@@ -43,25 +43,18 @@
 
 <div
   class={clsx(
-    "card flex flex-col gap-8 justify-center py-4 px-4 md:p-6 variant-soft-primary bg-gradient-to-tr from-secondary-100 via-surface-50 to-tertiary-100 dark:from-secondary-900 dark:via-surface-900 dark:to-tertiary-900 relative shadow-sm"
+    "card flex flex-col gap-8 justify-center py-4 pl-8 px-4 md:p-6 variant-soft-primary relative shadow-sm",
   )}
 >
-  <div class="absolute top-2 right-2 z-50">
-    <Button action={finishAction} icon={true} loadingOnClick={true}>
-      <XIcon size="24" />
-    </Button>
-  </div>
-  <div class="flex flex-col md:flex-row gap-4 md:items-end justify-between">
-    <div class="flex flex-col gap-2">
-      <Headline style="small">Timer</Headline>
-      <p>Take a break until you start your next set</p>
-    </div>
-    <div
-      class="flex flex-row font-medium font-mono w-full md:w-auto justify-center md:justify-end"
-    >
+  <div class="absolute top-2 right-2 z-50"></div>
+  <div class="flex flex-row gap-4 items-center md:items-end justify-between">
+    <div class="flex flex-row font-medium font-mono">
       <Headline style="medium" classes="font-mono"
         >{minutes} : {seconds}</Headline
       >
     </div>
+    <Button action={finishAction} icon={true} loadingOnClick={true}>
+      <XIcon size="24" />
+    </Button>
   </div>
 </div>

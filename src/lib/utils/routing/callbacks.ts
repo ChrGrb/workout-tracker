@@ -1,8 +1,13 @@
+import { getOverviewPath } from "./routes";
+
 export const addCallbackToUrl = (url: string, callback: string) => {
-    console.log("Callback: ", callback);
     return `${url}?callback=${encodeURIComponent(callback)}`;
 }
 
-export const getCallbackFromQuery = (queryParam: string) => {
+export const getCallbackFromQuery = (queryParam: string | null) => {
+    if (!queryParam) {
+        return getOverviewPath;
+    }
+
     return decodeURIComponent(queryParam);
 }

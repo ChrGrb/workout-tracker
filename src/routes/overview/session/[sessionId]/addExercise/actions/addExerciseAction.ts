@@ -4,8 +4,10 @@ import type { ExerciseFull } from "$lib/utils/prismaTypes";
 import type { ExerciseType } from "@prisma/client";
 
 const addExerciseAction = async (type: ExerciseType, userId: string, sessionId: string) => {
-    getReplicacheAfterInit().mutate.createExercise({
-        id: generateId(),
+    const generatedId = generateId();
+
+    await getReplicacheAfterInit().mutate.createExercise({
+        id: generatedId,
         versionUpdatedAt: null,
         userId: userId,
         type: type,
@@ -18,6 +20,8 @@ const addExerciseAction = async (type: ExerciseType, userId: string, sessionId: 
         createdAt: new Date(),
         isDeleted: false,
     } as ExerciseFull);
+
+    return generatedId;
 };
 
 export default addExerciseAction;

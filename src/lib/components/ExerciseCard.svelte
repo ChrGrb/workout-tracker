@@ -21,18 +21,25 @@
   import { svelteTime } from "svelte-time";
   import deleteExerciseAction from "../../routes/overview/session/[sessionId]/exercise/[exerciseId]/actions/deleteExerciseAction";
   import { useMotionValue } from "svelte-motion";
+  import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
+  import { page } from "$app/stores";
 
   export let exercise: ExerciseFull;
+  export let previous = false;
 
   let userId = useUserId();
 
-  getExerciseTypePreviousScore(exercise.type, $userId ?? "").then((value) => {
+  getExerciseTypePreviousScore(
+    exercise.type,
+    $userId ?? "",
+    exercise.createdAt,
+  ).then((value) => {
     previousScore = value ?? 0;
   });
 
   $: exerciseSets = filterDeleted(exercise.sets);
   $: workoutSets = exerciseSets.filter(
-    (set) => set.exerciseSetType === "WORKOUT"
+    (set) => set.exerciseSetType === "WORKOUT",
   );
 
   $: previousScore = 0;
@@ -42,7 +49,7 @@
     ? Math.round(
         (previousScore && score < previousScore
           ? -(1 - score / previousScore) * 100
-          : ((score / previousScore! ?? 0) - 1) * 100) * 100
+          : ((score / previousScore! ?? 0) - 1) * 100) * 100,
       ) / 100
     : null;
 
@@ -51,10 +58,10 @@
       ? Math.round(
           (workoutSets.reduce(
             (acc, set) => acc + getExerciseSetWeight(set),
-            0
+            0,
           ) /
             workoutSets.length) *
-            2
+            2,
         ) / 2
       : 0;
 
@@ -62,14 +69,17 @@
     workoutSets.length > 0
       ? Math.round(
           workoutSets.reduce((acc, set) => acc + set.reps, 0) /
-            workoutSets.length
+            workoutSets.length,
         )
       : 0;
+
+  $: setAmount = workoutSets.length;
 
   let x = useMotionValue(0);
 </script>
 
 <SwipeToAction
+  disabled={previous}
   deleteAction={() =>
     confirmDeleteWithAction(
       () => {
@@ -79,7 +89,7 @@
         }
       },
       "exercise",
-      () => {}
+      () => {},
     )}
   bind:x
 >
@@ -89,17 +99,20 @@
       {
         "variant-soft bg-white": !exercise.sets || exerciseSets.length === 0,
         "variant-filled-primary": exercise.sets && exerciseSets.length > 0,
+        "variant-soft": previous,
         "active:scale-100 active:brightness-100": $x !== 0,
-      }
+      },
     )}
     action={() => {
-      console.log($x);
       if ($x === 0 || $x === undefined)
         goto(
-          getExercisePath({
-            sessionId: exercise.sessionId,
-            exerciseId: exercise.id,
-          })
+          addCallbackToUrl(
+            getExercisePath({
+              sessionId: exercise.sessionId,
+              exerciseId: exercise.id,
+            }),
+            $page.url.pathname,
+          ),
         );
     }}
   >
@@ -110,7 +123,7 @@
       stroke={100}
       meter="stroke-primary-50"
     />
-    <div class="flex flex-col justify-between align-stretch items-start">
+    <div class="flex flex-col justify-between align-stretch items-start w-full">
       <Headline
         style="small"
         classes="break-words whitespace-normal line-clamp-3 max-w-[95%] text-start"
@@ -118,40 +131,53 @@
         {exercise.type.name}
       </Headline>
 
-      <time
-        use:svelteTime={{
-          timestamp: exercise.createdAt,
-          format: "HH:mm · MMMM D",
-        }}
-        class="font-light text-sm"
-      />
+      {#if previous}
+        <time
+          use:svelteTime={{
+            timestamp: exercise.createdAt,
+            format: "MMMM D",
+          }}
+          class="font-light text-sm"
+        />
+      {/if}
     </div>
     {#if +averageWeight > 0 && +averageReps > 0}
       <div
-        class="flex flex-row gap-2 flex-wrap justify-end align-end items-center !ml-0"
+        class={clsx(
+          "flex flex-row gap-2 flex-wrap justify-end align-end items-center !ml-0 w-full",
+          {
+            "opacity-60": previous,
+          },
+        )}
       >
         <div
-          class="flex flex-row badge rounded-full pr-2.5 bg-white text-black"
+          class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
         >
           <p>{averageReps} reps</p>
         </div>
 
         <div
-          class="flex flex-row badge rounded-full pr-2.5 bg-white text-black"
+          class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
         >
           <p>{averageWeight} kg</p>
+        </div>
+
+        <div
+          class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
+        >
+          <p>{setAmount} sets</p>
         </div>
 
         {#if scoreImprovement && scoreImprovement < Infinity}
           <div
             class={clsx(
-              "flex flex-row badge rounded-full pr-2.5 bg-gradient-to-tr text-white",
+              "flex flex-row badge rounded-full pr-2.5 text-white basis-1/3",
               {
-                "from-success-700 to-success-900": scoreImprovement >= 0,
-                "from-warning-700 to-warning-900":
+                "bg-success-700": scoreImprovement >= 0,
+                "bg-warning-700":
                   scoreImprovement < 0 && scoreImprovement >= -5,
-                "from-error-700 to-error-900": scoreImprovement < 5,
-              }
+                "bg-error-700": scoreImprovement < 5,
+              },
             )}
           >
             <p>{scoreImprovement.toFixed(1)}%</p>

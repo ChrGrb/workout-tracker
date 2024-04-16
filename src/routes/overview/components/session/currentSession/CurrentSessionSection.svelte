@@ -24,6 +24,8 @@
   import { getAddTemplatePath } from "$lib/utils/routing/routes";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
+  import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
+  import { page } from "$app/stores";
 
   export let currentSession: WorkoutSessionFull | null;
   export let workoutSessionTemplates:
@@ -37,7 +39,12 @@
   };
 
   async function addExercise() {
-    goto(`/overview/session/${currentSession?.id}/addExercise`);
+    goto(
+      addCallbackToUrl(
+        `/overview/session/${currentSession?.id}/addExercise`,
+        $page.url.pathname,
+      ),
+    );
   }
 
   $: workoutSessionTemplates =

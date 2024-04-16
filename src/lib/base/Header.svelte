@@ -10,14 +10,14 @@
 <div class="fixed z-50 w-full isolate">
   <div
     class={clsx("z-50 relative transition-all duration-500", {
-      "bg-slate-100/90 dark:bg-primary-700/90 backdrop-blur-sm": $scroll > 20,
+      "bg-white dark:bg-primary-700/90 backdrop-blur-xl": $scroll > 20,
     })}
   >
     <Container>
       <div class="flex justify-start items-center align-middle gap-4">
         <slot name="action" />
         <slot name="content">
-          <Headline><slot /></Headline>
+          <Headline classes="line-clamp-1"><slot /></Headline>
         </slot>
         <div class="absolute right-4 top-4">
           <slot name="actionEnd" />
@@ -33,7 +33,7 @@
       <div class="flex justify-start gap-8">
         <slot name="action" />
         <slot name="content">
-          <Headline><slot /></Headline>
+          <Headline classes="line-clamp-1"><slot /></Headline>
         </slot>
         <div class="absolute right-4 top-4">
           <slot name="actionEnd" />
