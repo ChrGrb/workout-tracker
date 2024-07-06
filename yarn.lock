@@ -1032,6 +1032,11 @@
     "@babel/helper-validator-identifier" "^7.22.5"
     to-fast-properties "^2.0.0"
 
+"@badrap/valita@^0.3.0":
+  version "0.3.8"
+  resolved "https://registry.npmjs.org/@badrap/valita/-/valita-0.3.8.tgz#4bde8127699da74ab4c90ec1fc3a31d95a8e2d3d"
+  integrity sha512-aqzw+V8XSOkYlu7Aq1QhXqfxz5V6Vm6e0p6XZYZDEaGwSc6ac9OJ4B7U4BOo3mm7FzzRRHJ5yizeGKnj+REjBQ==
+
 "@canvas/image-data@^1.0.0":
   version "1.0.0"
   resolved "https://registry.npmjs.org/@canvas/image-data/-/image-data-1.0.0.tgz#3bd2cd856e13fc9e2c25feff360a4056857b0367"
@@ -2066,22 +2071,22 @@
   resolved "https://registry.npmjs.org/@pusher/push-notifications-web/-/push-notifications-web-2.0.0-beta.2.tgz#56084d921f97c21cc7d73b46008c0972c89d7ed6"
   integrity sha512-hRdLLgQOsFXD+voxkWxiYT7VXfLfceWicIslrwFZ7IZd+7rEVyUnuBo4FQPB0hBEUtlt4TZYum38FbwpshemCg==
 
-"@rocicorp/lock@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@rocicorp/lock/-/lock-1.0.1.tgz#d4e1b5111ed433512f3b518264968eb1aefecef2"
-  integrity sha512-sYbcbiyEf61guk2DfcA6zzgDrW6ncJJW11JIFNSbByqYx80olhyp0IyXUMA3xmNK0YQSkAuufWvLExaWQXuzUQ==
+"@rocicorp/lock@^1.0.3":
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/@rocicorp/lock/-/lock-1.0.4.tgz#d9f4b6fb0161955e1d5a1499d5a4998f252f1bb6"
+  integrity sha512-FavTiO8ETXFXDVfA87IThGduTTTR8iqzBnr/c60gUUmbk7knGEXPmf2B+yiNuluJD0ku0fL2V2r62UXnsLXl6w==
   dependencies:
-    "@rocicorp/resolver" "^1.0.0"
+    "@rocicorp/resolver" "^1.0.2"
 
-"@rocicorp/logger@^5.2.0":
-  version "5.2.0"
-  resolved "https://registry.npmjs.org/@rocicorp/logger/-/logger-5.2.0.tgz#14c73ee0d41ca55c99d412e7dd7e855fb91ca2ef"
-  integrity sha512-PhnXnTxq8EdD/5e+eI/BQv1aSMG7bjVDI7Ngkje9rbo7RepsppdbwYW1CYfMXr2ZYmA46yhQbFz8bceTyRwRfA==
+"@rocicorp/logger@^5.2.1":
+  version "5.2.2"
+  resolved "https://registry.npmjs.org/@rocicorp/logger/-/logger-5.2.2.tgz#169644e3dbf49483db936576e83c3e5f5b1950ed"
+  integrity sha512-lqS/SUUBdiGzsIPD2awMiOzwo0DpAjMriPtqpALausplVHDjyJjUyScrB0Y7QcvxDfSPFkJzT5FncgIU3uBF2g==
 
-"@rocicorp/resolver@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@rocicorp/resolver/-/resolver-1.0.0.tgz#aa3e94fcd72b421516c9f076981e75e838c4ebf4"
-  integrity sha512-iK0QW74BKR0ogY4QwBEAMoevqypi5S/jjKqL6mc7KH7z2PFuOinOebsD1Ol8VIxrh23IPrMNwDNSrnfhKga9Vw==
+"@rocicorp/resolver@^1.0.1", "@rocicorp/resolver@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/@rocicorp/resolver/-/resolver-1.0.2.tgz#8b64e12ec448e74009f2c7cf5b5959bd99b21365"
+  integrity sha512-TfjMTQp9cNNqNtHFfa+XHEGdA7NnmDRu+ZJH4YF3dso0Xk/b9DMhg/sl+b6CR4ThFZArXXDsG1j8Mwl34wcOZQ==
 
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
@@ -6190,14 +6195,15 @@ replace-string@3.1.0:
   resolved "https://registry.npmjs.org/replace-string/-/replace-string-3.1.0.tgz#77a087d88580fbac59851237891aa4b0e283db72"
   integrity sha512-yPpxc4ZR2makceA9hy/jHNqc7QVkd4Je/N0WRHm6bs3PtivPuPynxE5ejU/mp5EhnCv8+uZL7vhz8rkluSlx+Q==
 
-replicache@^13.0.1:
-  version "13.0.1"
-  resolved "https://registry.npmjs.org/replicache/-/replicache-13.0.1.tgz#a4a2f04b490aac4d232fdb9e0f60802148ef446c"
-  integrity sha512-dgGHxpCubx2woDyXsh6AeqZ3KwU0IEqyXU6IZ13f6YAH+Ik5P969CxsnTmxZmPdX7WQseZ4jQotCkWLeJlEeJg==
+replicache@^14.2.2:
+  version "14.2.2"
+  resolved "https://registry.npmjs.org/replicache/-/replicache-14.2.2.tgz#b23bd2cc2c2db13756c89d4b167e00a147fb3f9f"
+  integrity sha512-PBlt6C2X7wSPVUUVBKumHPTXXmPZYO/rqoTQXYLgvzPabYkKBdJbCEHjh9hXNUU5vpkzDeEmOPQqlVus9zCiBg==
   dependencies:
-    "@rocicorp/lock" "^1.0.1"
-    "@rocicorp/logger" "^5.2.0"
-    "@rocicorp/resolver" "^1.0.0"
+    "@badrap/valita" "^0.3.0"
+    "@rocicorp/lock" "^1.0.3"
+    "@rocicorp/logger" "^5.2.1"
+    "@rocicorp/resolver" "^1.0.1"
 
 require-directory@^2.1.1:
   version "2.1.1"

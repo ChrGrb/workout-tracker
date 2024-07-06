@@ -62,7 +62,7 @@
           new PusherPushNotifications.Client({
             instanceId: PUBLIC_BEAMS_INSTANCE_ID,
             serviceWorkerRegistration: serviceWorkerRegistration,
-          }),
+          })
         );
 
         if (beamsClient)
@@ -78,7 +78,7 @@
             })
             .then(() => $beamsClient!.getDeviceInterests())
             .catch(console.error);
-      },
+      }
     );
   }
 
