@@ -10,12 +10,11 @@
   import { useUserId } from "$lib/stores/stores";
   import { goto } from "$app/navigation";
   import RadioSelect from "$lib/base/input/RadioSelect.svelte";
-  import { ExerciseTypeCategory } from "@prisma/client";
 
   export let data: PageData;
 
   let exerciseTypeName = "";
-  let exerciseCategory = ExerciseTypeCategory.WEIGHT;
+  let exerciseCategory = "WEIGHT";
   $: isInvalid = exerciseTypeName.length === 0;
 
   let userId = useUserId();
@@ -33,8 +32,8 @@
     <div class="flex flex-col gap-4">
       <RadioSelect
         items={[
-          { name: "Weight", value: ExerciseTypeCategory.WEIGHT },
-        { name: "Time", value: ExerciseTypeCategory.TIME },
+          { name: "Weight", value: "WEIGHT" },
+          { name: "Time", value: "TIME" },
         ]}
         name="exerciseCategory"
         label="Category"
@@ -52,7 +51,8 @@
 
     <Button
       action={async () => {
-        if ($userId) createExerciseTypeAction($userId, exerciseTypeName, exerciseCategory);
+        if ($userId)
+          createExerciseTypeAction($userId, exerciseTypeName, exerciseCategory);
 
         goto(data.callback);
       }}

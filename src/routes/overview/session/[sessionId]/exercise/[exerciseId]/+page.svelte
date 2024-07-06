@@ -43,7 +43,7 @@
   import { page } from "$app/stores";
   import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
   import clsx from "clsx";
-  import { ExerciseSetType, ExerciseTypeCategory } from "@prisma/client";
+  import { ExerciseSetType } from "@prisma/client";
   import ExerciseCooldownTimer from "./components/ExerciseCooldownTimer.svelte";
   import ExerciseTimer from "./components/ExerciseTimer.svelte";
   import addExerciseSetAction from "./addSet/actions/addExerciseSetAction";
@@ -297,7 +297,7 @@
                 </div>
               {/if}
 
-              {#if exercise.type.category === ExerciseTypeCategory.WEIGHT}
+              {#if exercise.type.category === "WEIGHT"}
                 <Button
                   action={() => {
                     addSet();
@@ -311,7 +311,7 @@
                 </Button>
               {/if}
 
-              {#if exercise.type.category === ExerciseTypeCategory.TIME}
+              {#if exercise.type.category === "TIME"}
                 {#if currentExerciseTimer}
                   <div transition:fade={{ duration: 200, easing: sineInOut }}>
                     <ExerciseTimer
