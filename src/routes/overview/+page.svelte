@@ -14,7 +14,7 @@
   import Header from "$lib/base/Header.svelte";
   import {
     getReplicache,
-    useExerciseTimers,
+    useExerciseCooldownTimers,
     useSettings,
     useUserId,
   } from "$lib/stores/stores";
@@ -51,7 +51,7 @@
 
   let userId = useUserId();
 
-  useExerciseTimers();
+  useExerciseCooldownTimers();
 
   $: activeSession =
     sessions.filter((session) => !session.finished).at(0) ?? null;

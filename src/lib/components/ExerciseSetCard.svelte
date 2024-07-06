@@ -27,29 +27,46 @@
         exerciseSet.exerciseSetType == "COOLDOWN",
     })}
   >
-    <div class="flex flex-row items-start justify-between">
+    <div class="flex flex-row items-center justify-between">
       <Headline style="small">
         {exerciseSetTypeString}
       </Headline>
+      {#if exerciseSet.time > 0.0}
+        <div class="flex flex-row justify-between">
+          <div
+            class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
+              "bg-white text-primary-900":
+                exerciseSet.exerciseSetType == "WORKOUT",
+            })}
+          >
+            <p class="font-medium">{(exerciseSet.time / 1000).toFixed(0)}</p>
+            <p>s</p>
+          </div>
+        </div>
+      {/if}
     </div>
-    <div class="flex flex-row justify-between">
-      <div
-        class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
-          "bg-white text-primary-900": exerciseSet.exerciseSetType == "WORKOUT",
-        })}
-      >
-        <p class="font-medium">{exerciseSet.reps}</p>
-        <p>reps</p>
+    {#if exerciseSet.weight > 0.0}
+      <div class="flex flex-row justify-between">
+        <div
+          class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
+            "bg-white text-primary-900":
+              exerciseSet.exerciseSetType == "WORKOUT",
+          })}
+        >
+          <p class="font-medium">{exerciseSet.reps}</p>
+          <p>reps</p>
+        </div>
+        <div
+          class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
+            "bg-white text-primary-900":
+              exerciseSet.exerciseSetType == "WORKOUT",
+          })}
+        >
+          <p class="font-medium">{getExerciseSetWeight(exerciseSet)}</p>
+          <p>kg</p>
+        </div>
       </div>
-      <div
-        class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
-          "bg-white text-primary-900": exerciseSet.exerciseSetType == "WORKOUT",
-        })}
-      >
-        <p class="font-medium">{getExerciseSetWeight(exerciseSet)}</p>
-        <p>kg</p>
-      </div>
-    </div>
+    {/if}
     {#if exerciseSet.additionalWeight > 0.0}
       <div class="flex flex-col gap-2">
         <p class="font-semibold">Weight Split</p>

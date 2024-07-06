@@ -6,35 +6,34 @@
   import { XIcon } from "svelte-feather-icons";
 
   export let timer: { exerciseId: string; startTime: number };
-  export let finishAction: (elapsedTime: number) => void;
-  export let onFinish: () => void;
+  export let finishAction: () => void;
 
-  export let elapsedTime = 0;
+  export let timerLength = 30000;
+  let remainingTime = 0;
 
   const updateTime = () => {
-    elapsedTime = Date.now() - timer.startTime;
+    remainingTime = timer.startTime + timerLength - Date.now();
+
+    if (remainingTime <= 0 && timerInterval) {
+      clearInterval(timerInterval);
+      finishAction();
+    }
   };
 
   let timerInterval = setInterval(updateTime, 1000);
 
-  onMount(() => {
-    updateTime();
-    onFinish = () => {
-      clearInterval(timerInterval);
-      finishAction(elapsedTime);
-    };
-  });
+  onMount(() => updateTime());
 
   let minutes = "00";
   let seconds = "00";
 
   $: {
-    if (elapsedTime <= 0) {
+    if (remainingTime <= 0) {
       minutes = "00";
       seconds = "00";
     } else {
-      let secondsTemp = Math.floor((elapsedTime / 1000) % 60);
-      let minutesTemp = Math.floor((elapsedTime / (1000 * 60)) % 60);
+      let secondsTemp = Math.floor((remainingTime / 1000) % 60);
+      let minutesTemp = Math.floor((remainingTime / (1000 * 60)) % 60);
 
       minutes = (minutesTemp < 10 ? "0" : "") + minutesTemp;
       seconds = (secondsTemp < 10 ? "0" : "") + secondsTemp;
@@ -44,7 +43,7 @@
 
 <div
   class={clsx(
-    "card flex flex-col gap-8 justify-center py-4 pl-8 px-4 md:p-6 variant-soft-primary relative shadow-sm"
+    "card flex flex-col gap-8 justify-center py-4 pl-8 px-4 md:p-6 variant-soft-primary relative shadow-sm",
   )}
 >
   <div class="absolute top-2 right-2 z-50"></div>
@@ -54,11 +53,7 @@
         >{minutes} : {seconds}</Headline
       >
     </div>
-    <Button
-      action={() => finishAction(elapsedTime)}
-      icon={true}
-      loadingOnClick={true}
-    >
+    <Button action={finishAction} icon={true} loadingOnClick={true}>
       <XIcon size="24" />
     </Button>
   </div>

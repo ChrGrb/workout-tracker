@@ -32,14 +32,14 @@
   getExerciseTypePreviousScore(
     exercise.type,
     $userId ?? "",
-    exercise.createdAt,
+    exercise.createdAt
   ).then((value) => {
     previousScore = value ?? 0;
   });
 
   $: exerciseSets = filterDeleted(exercise.sets);
   $: workoutSets = exerciseSets.filter(
-    (set) => set.exerciseSetType === "WORKOUT",
+    (set) => set.exerciseSetType === "WORKOUT"
   );
 
   $: previousScore = 0;
@@ -49,7 +49,7 @@
     ? Math.round(
         (previousScore && score < previousScore
           ? -(1 - score / previousScore) * 100
-          : ((score / previousScore! ?? 0) - 1) * 100) * 100,
+          : ((score / previousScore! ?? 0) - 1) * 100) * 100
       ) / 100
     : null;
 
@@ -58,10 +58,10 @@
       ? Math.round(
           (workoutSets.reduce(
             (acc, set) => acc + getExerciseSetWeight(set),
-            0,
+            0
           ) /
             workoutSets.length) *
-            2,
+            2
         ) / 2
       : 0;
 
@@ -69,7 +69,15 @@
     workoutSets.length > 0
       ? Math.round(
           workoutSets.reduce((acc, set) => acc + set.reps, 0) /
-            workoutSets.length,
+            workoutSets.length
+        )
+      : 0;
+
+  $: averageTime =
+    workoutSets.length > 0
+      ? Math.round(
+          workoutSets.reduce((acc, set) => acc + set.time, 0) /
+            workoutSets.length
         )
       : 0;
 
@@ -89,7 +97,7 @@
         }
       },
       "exercise",
-      () => {},
+      () => {}
     )}
   bind:x
 >
@@ -101,7 +109,7 @@
         "variant-filled-primary": exercise.sets && exerciseSets.length > 0,
         "variant-soft": previous,
         "active:scale-100 active:brightness-100": $x !== 0,
-      },
+      }
     )}
     action={() => {
       if ($x === 0 || $x === undefined)
@@ -111,8 +119,8 @@
               sessionId: exercise.sessionId,
               exerciseId: exercise.id,
             }),
-            $page.url.pathname,
-          ),
+            $page.url.pathname
+          )
         );
     }}
   >
@@ -141,26 +149,38 @@
         />
       {/if}
     </div>
-    {#if +averageWeight > 0 && +averageReps > 0}
+
+    {#if (+averageWeight > 0 && +averageReps > 0) || +averageTime > 0}
       <div
         class={clsx(
           "flex flex-row gap-2 flex-wrap justify-end align-end items-center !ml-0 w-full",
           {
             "opacity-60": previous,
-          },
+          }
         )}
       >
-        <div
-          class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
-        >
-          <p>{averageReps} reps</p>
-        </div>
+        {#if +averageTime > 0}
+          <div
+            class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
+          >
+            <p>{(averageTime / 1000).toFixed(0)}</p>
+            <p>s</p>
+          </div>
+        {/if}
 
-        <div
-          class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
-        >
-          <p>{averageWeight} kg</p>
-        </div>
+        {#if +averageWeight > 0 && +averageReps > 0}
+          <div
+            class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
+          >
+            <p>{averageReps} reps</p>
+          </div>
+
+          <div
+            class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
+          >
+            <p>{averageWeight} kg</p>
+          </div>
+        {/if}
 
         <div
           class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
@@ -177,7 +197,7 @@
                 "bg-warning-700":
                   scoreImprovement < 0 && scoreImprovement >= -5,
                 "bg-error-700": scoreImprovement < 5,
-              },
+              }
             )}
           >
             <p>{scoreImprovement.toFixed(1)}%</p>

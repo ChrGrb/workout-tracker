@@ -1,0 +1,166 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = []
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                      String                   @id @default(cuid())
+  name                    String?
+  email                   String?                  @unique
+  emailVerified           DateTime?
+  image                   String?
+  settingsId              String                   @default("")
+  versionUpdatedAt        Int?                     @default(0)
+  accounts                Account[]
+  exercises               Exercise[]
+  replicacheSpace         ReplicacheSpace?
+  sessions                Session[]
+  settings                Settings?
+  workoutSessions         WorkoutSession[]
+  workoutSessionTemplates WorkoutSessionTemplate[]
+  exerciseTypes           ExerciseType[]           @relation("ExerciseTypeToUser")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Settings {
+  id               String  @id @default(cuid())
+  userId           String  @unique
+  useTimer         Boolean @default(true)
+  timerValue       Float   @default(180000)
+  versionUpdatedAt Int?    @default(0)
+  user             User    @relation(fields: [userId], references: [id])
+}
+
+model WorkoutSession {
+  id               String     @id @unique @default(cuid())
+  userId           String
+  finished         Boolean    @default(false)
+  createdAt        DateTime   @default(now())
+  name             String     @default("Session")
+  isDeleted        Boolean    @default(false)
+  versionUpdatedAt Int?       @default(0)
+  exercises        Exercise[]
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model WorkoutSessionTemplate {
+  versionUpdatedAt Int?           @default(0)
+  createdAt        DateTime       @default(now())
+  isDeleted        Boolean        @default(false)
+  id               String         @id
+  userId           String
+  name             String         @default("Template")
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseTypes    ExerciseType[] @relation("ExerciseTypeToWorkoutSessionTemplate")
+}
+
+model Exercise {
+  id               String         @id @default(cuid())
+  userId           String
+  averageWeight    Float?
+  averageReps      Int?
+  typeId           String
+  sessionId        String
+  createdAt        DateTime       @default(now())
+  previousScore    Float?
+  score            Float          @default(0)
+  isDeleted        Boolean        @default(false)
+  versionUpdatedAt Int?           @default(0)
+  session          WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  type             ExerciseType   @relation(fields: [typeId], references: [id])
+  user             User           @relation(fields: [userId], references: [id])
+  sets             ExerciseSet[]
+}
+
+model ExerciseType {
+  id                      String                   @id @default(cuid())
+  name                    String                   @unique
+  category                ExerciseTypeCategory     @default(WEIGHT)
+  description             String?
+  isDeleted               Boolean                  @default(false)
+  versionUpdatedAt        Int?                     @default(0)
+  exercise                Exercise[]
+  users                   User[]                   @relation("ExerciseTypeToUser")
+  workoutSessionTemplates WorkoutSessionTemplate[] @relation("ExerciseTypeToWorkoutSessionTemplate")
+}
+
+enum ExerciseTypeCategory {
+  TIME
+  WEIGHT
+}
+
+model ExerciseSet {
+  id               String          @id @default(cuid())
+  exerciseId       String
+  exerciseSetType  ExerciseSetType @default(WORKOUT)
+  reps             Int             @default(1)
+  weight           Float           @default(0.0)
+  notes            String          @default("")
+  createdAt        DateTime        @default(now())
+  isDeleted        Boolean         @default(false)
+  versionUpdatedAt Int?            @default(0)
+  additionalWeight Float           @default(0.0)
+  time             Float           @default(0.0)
+  exercise         Exercise        @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+}
+
+model ReplicacheSpace {
+  versionAt Int    @default(0)
+  userId    String @id
+  user      User   @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model ReplicacheClient {
+  id                  String @unique
+  userId              String
+  clientGroupId       String
+  lastMutationId      Int    @default(0)
+  lastModifiedVersion Int    @default(0)
+}
+
+enum ExerciseSetType {
+  WARMUP
+  WORKOUT
+  COOLDOWN
+}
