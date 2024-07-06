@@ -43,7 +43,6 @@
   import { page } from "$app/stores";
   import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
   import clsx from "clsx";
-  import { ExerciseSetType } from "@prisma/client";
   import ExerciseCooldownTimer from "./components/ExerciseCooldownTimer.svelte";
   import ExerciseTimer from "./components/ExerciseTimer.svelte";
   import addExerciseSetAction from "./addSet/actions/addExerciseSetAction";
@@ -327,7 +326,7 @@
                         if (exercise !== undefined) {
                           addExerciseSetAction(exercise, {
                             time: elapsedTime,
-                            exerciseSetType: ExerciseSetType.WORKOUT,
+                            exerciseSetType: "WORKOUT",
                           });
                         }
                       }}
