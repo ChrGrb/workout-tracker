@@ -5,5 +5,10 @@ export const getExerciseSetWeight = (exerciseSet: ExerciseSet) => {
 };
 
 export const getExerciseSetScore = (exerciseSet: ExerciseSet) => {
-  return exerciseSet.weight + exerciseSet.additionalWeight + exerciseSet.time;
+  return (
+    exerciseSet.weight ??
+    0 + exerciseSet.additionalWeight ??
+    0 + exerciseSet.time ??
+    0
+  );
 };

@@ -16,7 +16,7 @@ const getExerciseTypePreviousScore = async (
     ) as WorkoutSessionFull[]
   );
 
-  let exercise = filterDeleted(
+  let exercises = filterDeleted(
     sessions
       .sort(sortByCreatedAt)
       .reduce(
@@ -32,11 +32,13 @@ const getExerciseTypePreviousScore = async (
         : true;
     })
     .sort(sortByCreatedAt)
-    .at(0);
+    .slice(0, 3)
+    .map((exercise) => calculateExerciseScore(exercise));
 
-  if (!exercise) return null;
+  const exerciseScoreAverage =
+    exercises.reduce((score, acc) => score + acc, 0) / exercises.length;
 
-  return calculateExerciseScore(exercise);
+  return exerciseScoreAverage;
 };
 
 export default getExerciseTypePreviousScore;
