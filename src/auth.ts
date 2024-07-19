@@ -106,4 +106,5 @@ export const { handle } = SvelteKitAuth({
     },
   },
   secret: AUTH_SECRET,
+  trustHost: true,
 });
