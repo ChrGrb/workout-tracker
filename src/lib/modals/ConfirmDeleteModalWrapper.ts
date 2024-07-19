@@ -1,8 +1,7 @@
-
 import {
   type ModalComponent,
   type ModalSettings,
-  modalStore,
+  type ModalStore,
 } from "@skeletonlabs/skeleton";
 import ConfirmDeleteModal from "./ConfirmDeleteModal.svelte";
 
@@ -11,7 +10,12 @@ const modalComponent: ModalComponent = {
   props: {},
 };
 
-export function confirmDelete(form: HTMLFormElement, toDeleteName: string, cancelAction: () => void): void {
+export function confirmDelete(
+  modalStore: ModalStore,
+  form: HTMLFormElement,
+  toDeleteName: string,
+  cancelAction: () => void
+): void {
   const modal: ModalSettings = {
     type: "component",
     title: "Confirm delete",
@@ -28,7 +32,12 @@ export function confirmDelete(form: HTMLFormElement, toDeleteName: string, cance
   modalStore.trigger(modal);
 }
 
-export function confirmDeleteWithAction(action: () => void, toDeleteName: string, cancelAction: () => void): void {
+export function confirmDeleteWithAction(
+  modalStore: ModalStore,
+  action: () => void,
+  toDeleteName: string,
+  cancelAction: () => void
+): void {
   const modal: ModalSettings = {
     type: "component",
     title: "Confirm delete",

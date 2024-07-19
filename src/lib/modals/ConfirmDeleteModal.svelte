@@ -1,7 +1,9 @@
 <script lang="ts">
   import Button from "$lib/base/Button.svelte";
-  import { modalStore } from "@skeletonlabs/skeleton";
+  import { getModalStore } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
+
+  const modalStore = getModalStore();
 </script>
 
 {#if $modalStore[0]}

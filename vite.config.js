@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import { resolve } from "path";
 import svg from "@poppanator/sveltekit-svg";
 import { SvelteKitPWA } from "@vite-pwa/sveltekit";
+import { purgeCss } from "vite-plugin-tailwind-purgecss";
 
 export default defineConfig({
   server: {
@@ -24,6 +25,7 @@ export default defineConfig({
   },
   plugins: [
     sveltekit(),
+    purgeCss(),
     mkcert(),
     svg({
       includePaths: ["./src/lib/icons/"],

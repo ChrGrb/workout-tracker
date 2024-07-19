@@ -11,7 +11,7 @@
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
   import getExerciseTypePreviousScore from "$lib/utils/replicache/getters/getExerciseTypePreviousScore";
   import { getExercisePath, getOverviewPath } from "$lib/utils/routing/routes";
-  import { ProgressRadial } from "@skeletonlabs/skeleton";
+  import { getModalStore, ProgressRadial } from "@skeletonlabs/skeleton";
   import clsx from "clsx";
   import {
     MinusIcon,
@@ -84,12 +84,15 @@
   $: setAmount = workoutSets.length;
 
   let x = useMotionValue(0);
+
+  const modalStore = getModalStore();
 </script>
 
 <SwipeToAction
   disabled={previous}
   deleteAction={() =>
     confirmDeleteWithAction(
+      modalStore,
       () => {
         if (exercise) {
           deleteExerciseAction(exercise);

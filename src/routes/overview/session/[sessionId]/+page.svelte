@@ -21,6 +21,7 @@
   import { getOverviewPath } from "$lib/utils/routing/routes";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
+  import { getModalStore } from "@skeletonlabs/skeleton";
 
   export let data: PageData;
 
@@ -45,6 +46,8 @@
       }
     );
   });
+
+  const modalStore = getModalStore();
 </script>
 
 <Header>
@@ -97,6 +100,7 @@
       <Button
         action={() => {
           confirmDeleteWithAction(
+            modalStore,
             () => {
               if (session) {
                 deleteSessionAction(session);

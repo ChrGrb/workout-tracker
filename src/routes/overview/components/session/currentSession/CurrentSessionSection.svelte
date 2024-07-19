@@ -26,6 +26,7 @@
   import { sineInOut } from "svelte/easing";
   import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
   import { page } from "$app/stores";
+  import { getModalStore } from "@skeletonlabs/skeleton";
 
   export let currentSession: WorkoutSessionFull | null;
   export let workoutSessionTemplates:
@@ -42,8 +43,8 @@
     goto(
       addCallbackToUrl(
         `/overview/session/${currentSession?.id}/addExercise`,
-        $page.url.pathname,
-      ),
+        $page.url.pathname
+      )
     );
   }
 
@@ -54,6 +55,8 @@
   export let finishSessionAction: () => void;
   export let deleteSessionAction: () => void;
   export let updateSessionNameAction: () => void;
+
+  const modalStore = getModalStore();
 </script>
 
 <div class="flex flex-col gap-12" in:fade={{ duration: 100, delay: 120 }}>
@@ -93,7 +96,12 @@
 
       <Button
         action={() => {
-          confirmDeleteWithAction(deleteSessionAction, "session", () => {});
+          confirmDeleteWithAction(
+            modalStore,
+            deleteSessionAction,
+            "session",
+            () => {}
+          );
         }}
         icon={true}
       >

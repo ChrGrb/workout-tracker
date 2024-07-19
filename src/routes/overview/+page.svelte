@@ -1,12 +1,11 @@
 <script lang="ts">
   import Container from "$lib/base/Container.svelte";
-  import type { PageData } from "./$types";
   import { MoreVerticalIcon } from "svelte-feather-icons";
   import Button from "$lib/base/Button.svelte";
   import PreviousSessions from "./components/session/PreviousSessions.svelte";
   import SettingsDrawer from "./components/settings/SettingsDrawer.svelte";
   import {
-    modalStore,
+    getModalStore,
     type ModalComponent,
     type ModalSettings,
   } from "@skeletonlabs/skeleton";
@@ -33,6 +32,7 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { ReadTransaction } from "replicache";
   import createWorkoutSessionTemplateAction from "./actions/createWorkoutSessionTemplate";
+
   let sessions: WorkoutSessionFull[] = [];
   let user: UserWithSettings | null = null;
   let sessionTemplates: WorkoutSessionTemplateWithExerciseTypes[] = [];
@@ -40,6 +40,8 @@
   let settings = useSettings();
 
   let modalSettingsComponent: ModalComponent;
+
+  const modalStore = getModalStore();
 
   function openSettings() {
     const modal: ModalSettings = {

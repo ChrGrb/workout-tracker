@@ -7,6 +7,7 @@
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import { getExerciseSetWeight } from "$lib/utils/data/getExerciseSetWeight";
   import SwipeToAction from "$lib/base/SwipeToAction.svelte";
+  import { getModalStore } from "@skeletonlabs/skeleton";
 
   export let exerciseSet: ExerciseSet;
   export let deleteAction: () => void;
@@ -14,10 +15,13 @@
   $: exerciseSetTypeString =
     exerciseSet.exerciseSetType.charAt(0).toUpperCase() +
     exerciseSet.exerciseSetType.slice(1).toLowerCase();
+
+  const modalStore = getModalStore();
 </script>
 
 <SwipeToAction
-  deleteAction={() => confirmDeleteWithAction(deleteAction, "set", () => {})}
+  deleteAction={() =>
+    confirmDeleteWithAction(modalStore, deleteAction, "set", () => {})}
 >
   <div
     class={clsx("card flex flex-col gap-8 justify-center p-6", {

@@ -3,7 +3,7 @@
   import Headline from "$lib/base/Headline.svelte";
   import { useUserId } from "$lib/stores/stores";
   import type { WorkoutSessionTemplateWithExerciseTypes } from "$lib/utils/prismaTypes";
-  import { ProgressRadial } from "@skeletonlabs/skeleton";
+  import { getModalStore, ProgressRadial } from "@skeletonlabs/skeleton";
   import createSessionFromTemplateAction from "../../../../actions/createSessionFromTemplateAction";
   import { useMotionValue } from "svelte-motion";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
@@ -15,11 +15,14 @@
 
   let userId = useUserId();
   let x = useMotionValue(0);
+
+  const modalStore = getModalStore();
 </script>
 
 <SwipeToAction
   deleteAction={() => {
     confirmDeleteWithAction(
+      modalStore,
       () => {
         deleteWorkoutSessionTemplateAction(workoutSessionTemplate);
       },

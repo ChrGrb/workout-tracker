@@ -1,7 +1,7 @@
 <script lang="ts">
   import Button from "$lib/base/Button.svelte";
   import { LogOutIcon, XIcon } from "svelte-feather-icons";
-  import { Avatar, SlideToggle, modalStore } from "@skeletonlabs/skeleton";
+  import { Avatar, getModalStore, SlideToggle } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
   import LightSwitch from "$lib/base/LightSwitch.svelte";
   import TimerSettings from "./TimerSettings.svelte";
@@ -12,6 +12,8 @@
 
   // Props
   export let user: UserWithSettings;
+
+  const modalStore = getModalStore();
 
   let initials = user.name
     ?.split(" ")

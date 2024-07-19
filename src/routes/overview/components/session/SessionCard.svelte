@@ -11,15 +11,19 @@
   import Button from "$lib/base/Button.svelte";
   import { useMotionValue } from "svelte-motion";
   import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
+  import { getModalStore } from "@skeletonlabs/skeleton";
 
   export let session: WorkoutSessionFull;
 
   let x = useMotionValue(0);
+
+  const modalStore = getModalStore();
 </script>
 
 <SwipeToAction
   deleteAction={() => {
     confirmDeleteWithAction(
+      modalStore,
       () => {
         if (session) {
           deleteSessionAction(session);

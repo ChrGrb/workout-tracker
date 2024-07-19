@@ -1,11 +1,10 @@
 <script lang="ts">
-  import "../theme.postcss";
-  import "@skeletonlabs/skeleton/styles/skeleton.css";
   import "../app.css";
   import {
     AppShell,
     Modal,
     Toast,
+    initializeStores,
     setInitialClassState,
   } from "@skeletonlabs/skeleton";
   import {
@@ -46,6 +45,8 @@
 
   export let data: PageData;
 
+  initializeStores();
+
   useSettings();
   let userId = useUserId();
   let scroll = useScroll();
@@ -54,7 +55,7 @@
   $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : "";
 
   function scrollHandler(event: ComponentEvents<AppShell>["scroll"]) {
-    scroll.set(event.currentTarget.scrollTop);
+    // scroll.set(event.currentTarget.scrollTop);
   }
 
   function startBeamsClient(userId: string) {

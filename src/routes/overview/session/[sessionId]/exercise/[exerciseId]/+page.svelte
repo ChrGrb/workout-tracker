@@ -15,7 +15,11 @@
   } from "svelte-feather-icons";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
-  import { popup, type PopupSettings } from "@skeletonlabs/skeleton";
+  import {
+    getModalStore,
+    popup,
+    type PopupSettings,
+  } from "@skeletonlabs/skeleton";
   import { fade } from "svelte/transition";
   import Header from "$lib/base/Header.svelte";
   import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
@@ -165,6 +169,8 @@
       }
     );
   });
+
+  const modalStore = getModalStore();
 </script>
 
 {#if exercise}
@@ -176,6 +182,7 @@
       <Button
         action={() =>
           confirmDeleteWithAction(
+            modalStore,
             () => {
               if (exercise) {
                 deleteExerciseAction(exercise);

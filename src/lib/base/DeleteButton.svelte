@@ -3,16 +3,19 @@
   import { Trash2Icon } from "svelte-feather-icons";
   import Button from "./Button.svelte";
   import clsx from "clsx";
+  import { getModalStore } from "@skeletonlabs/skeleton";
 
   let isLoading = false;
   export let form: HTMLFormElement;
   export let toDeleteName: string;
   export let classes = "";
+
+  const modalStore = getModalStore();
 </script>
 
 <Button
   action={() =>
-    confirmDelete(form, toDeleteName, () => {
+    confirmDelete(modalStore, form, toDeleteName, () => {
       isLoading = false;
     })}
   classes={clsx(classes, {

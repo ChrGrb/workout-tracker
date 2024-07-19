@@ -8,11 +8,11 @@
   } from "svelte-feather-icons";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import {
-    modalStore,
     type ModalSettings,
     type ModalComponent,
     type PopupSettings,
     popup,
+    getModalStore,
   } from "@skeletonlabs/skeleton";
   import WorkoutDescriptionModal from "$lib/modals/WorkoutDescriptionModal.svelte";
   import type { ExerciseType } from "@prisma/client";
@@ -48,6 +48,8 @@
       offset: { crossAxis: -24, mainAxis: -10 },
     },
   };
+
+  const modalStore = getModalStore();
 </script>
 
 <div
@@ -58,6 +60,7 @@
     <Button
       action={() =>
         confirmDeleteWithAction(
+          modalStore,
           () => {
             if ($userId) deleteExerciseTypeAction($userId, exerciseType);
           },
