@@ -32,7 +32,7 @@ export async function POST({ request, params }: RequestEvent) {
             }
         })).id;
     } catch (responseError) {
-        throw error(400, (responseError as Error).message);
+        error(400, (responseError as Error).message);
     }
 
     return json(updatedExerciseId);

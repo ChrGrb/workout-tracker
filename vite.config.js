@@ -7,11 +7,11 @@ import { SvelteKitPWA } from "@vite-pwa/sveltekit";
 
 export default defineConfig({
   server: {
-    https: true,
     host: "dev.workout-tracker.com",
     watch: {
       usePolling: true,
     },
+    proxy: {},
   },
   resolve: {
     alias: {

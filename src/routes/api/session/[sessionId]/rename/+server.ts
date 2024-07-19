@@ -21,7 +21,7 @@ export async function PUT({ params, request }: RequestEvent) {
             }
         });
     } catch (responseError) {
-        throw error(400, (responseError as Error).message);
+        error(400, (responseError as Error).message);
     }
 
     return json(updatedWorkoutSession);

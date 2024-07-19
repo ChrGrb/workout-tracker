@@ -3,7 +3,7 @@ import type { PageLoadEvent } from "./$types";
 
 export async function load({ params }: PageLoadEvent) {
     if (!params.sessionId) {
-        throw error(404, 'Session not found');
+        error(404, 'Session not found');
     }
 
     return {

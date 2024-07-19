@@ -37,6 +37,6 @@ export async function POST({ request }: RequestEvent) {
             data: { exercises: { create: exercise } }
         });
     } catch (responseError) {
-        throw error(400, (responseError as Error).message);
+        error(400, (responseError as Error).message);
     }
 }

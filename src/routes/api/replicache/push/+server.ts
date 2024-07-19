@@ -33,13 +33,13 @@ export async function POST({ request, url }: RequestEvent) {
     const push = pushRequestSchema.parse(requestBody);
 
     if (!userId)
-        throw error(401, "Not authenticated");
+        error(401, "Not authenticated");
 
     // Provided by Replicache
     const { clientGroupID, mutations } = push;
 
     if (!clientGroupID || !mutations)
-        throw error(401, "No clientID");
+        error(401, "No clientID");
 
     try {
         const { data: versionLatest } = await prisma.$transaction(
@@ -81,6 +81,6 @@ export async function POST({ request, url }: RequestEvent) {
     } catch (err) {
         console.error(err)
 
-        throw error(401, err as Error)
+        error(401, err as Error);
     }
 }

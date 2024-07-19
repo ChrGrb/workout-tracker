@@ -48,7 +48,7 @@ export async function POST({ request, params }: RequestEvent) {
             },
         }) as { exercises: Exercise[] }).exercises[0].id;
     } catch (responseError) {
-        throw error(400, (responseError as Error).message);
+        error(400, (responseError as Error).message);
     }
 
     return json(newExerciseId);

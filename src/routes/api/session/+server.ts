@@ -26,7 +26,7 @@ export async function POST({ request }: RequestEvent) {
             }
         });
     } catch (responseError) {
-        throw error(400, (responseError as Error).message);
+        error(400, (responseError as Error).message);
     }
 
     return json(createdSession);

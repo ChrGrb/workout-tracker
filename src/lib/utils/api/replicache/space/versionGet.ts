@@ -8,7 +8,7 @@ const utilsApiVersionGet = async ({ tx, userId }: { tx: Omit<PrismaClient, "$con
 		select: { versionAt: true }
 	})
 
-	if (!prismaSpaceFindFirst) throw error(404, "Space not found");
+	if (!prismaSpaceFindFirst) error(404, "Space not found");
 
 	return { data: prismaSpaceFindFirst.versionAt }
 }

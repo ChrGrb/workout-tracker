@@ -22,7 +22,7 @@ export const actions: Actions = {
                 }
             );
         } catch (responseError) {
-            throw error(400, 'Could not finish current session');
+            error(400, 'Could not finish current session');
         }
     }
 }

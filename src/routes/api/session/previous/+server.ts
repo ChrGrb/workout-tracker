@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export async function GET({ url }: RequestEvent) {
     if (!url.searchParams.get('userId')) {
-        throw error(400, "No user id provided");
+        error(400, "No user id provided");
     }
     const userId = url.searchParams.get('userId') ?? "";
 
