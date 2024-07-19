@@ -40,7 +40,7 @@
   import { dev } from "$app/environment";
   import type { PageData } from "./$types";
   import type { ComponentEvents } from "svelte";
-  import { afterNavigate, onNavigate } from "$app/navigation";
+  import { onNavigate } from "$app/navigation";
 
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 

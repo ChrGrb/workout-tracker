@@ -1,6 +1,5 @@
 <script lang="ts">
   import Button from "$lib/base/Button.svelte";
-  import { signOut } from "@auth/sveltekit/client";
   import { LogOutIcon, XIcon } from "svelte-feather-icons";
   import { Avatar, SlideToggle, modalStore } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
@@ -9,6 +8,7 @@
   import NotificationSettings from "./NotificationSettings.svelte";
   import SettingsCard from "./components/SettingsCard.svelte";
   import type { UserWithSettings } from "$lib/utils/prismaTypes";
+  import { signOut } from "@auth/sveltekit/client";
 
   // Props
   export let user: UserWithSettings;
