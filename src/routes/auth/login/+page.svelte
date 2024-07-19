@@ -7,9 +7,11 @@
   import SocialButton from "./components/SocialButton.svelte";
   import { ConfiguredProviders } from "$lib/types/provider";
   import type { PageData } from "./$types";
-  import { toastStore, type ToastSettings } from "@skeletonlabs/skeleton";
+  import { getToastStore, type ToastSettings } from "@skeletonlabs/skeleton";
 
   export let data: PageData;
+
+  const toastStore = getToastStore();
 
   if (data.error) {
     const errorToast: ToastSettings = {

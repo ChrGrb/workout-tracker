@@ -24,8 +24,6 @@
   import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
   import { page } from "$app/stores";
 
-  export let data: PageData;
-
   let userId = useUserId();
   let exerciseTypes: (ExerciseType & { isChecked: boolean })[] = [];
   let exerciseTemplateName = "";
