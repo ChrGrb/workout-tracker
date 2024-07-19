@@ -3,13 +3,13 @@
   import TextInput from "$lib/base/input/TextInput.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
   import Header from "$lib/base/Header.svelte";
-  import { getAddExercisePath } from "$lib/utils/routing/routes";
   import type { PageData } from "./$types";
   import Button from "$lib/base/Button.svelte";
   import createExerciseTypeAction from "./actions/createExerciseTypeAction";
   import { useUserId } from "$lib/stores/stores";
   import { goto } from "$app/navigation";
   import RadioSelect from "$lib/base/input/RadioSelect.svelte";
+  import { addForcedBackToUrl } from "$lib/utils/routing/callbacks";
 
   export let data: PageData;
 
@@ -54,7 +54,7 @@
         if ($userId)
           createExerciseTypeAction($userId, exerciseTypeName, exerciseCategory);
 
-        goto(data.callback);
+        goto(addForcedBackToUrl(data.callback));
       }}
       disabled={isInvalid}
     >

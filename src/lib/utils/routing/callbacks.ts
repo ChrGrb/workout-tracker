@@ -1,13 +1,17 @@
 import { getOverviewPath } from "./routes";
 
 export const addCallbackToUrl = (url: string, callback: string) => {
-    return `${url}?callback=${encodeURIComponent(callback)}`;
-}
+  return `${url}?callback=${encodeURIComponent(callback)}`;
+};
 
 export const getCallbackFromQuery = (queryParam: string | null) => {
-    if (!queryParam) {
-        return getOverviewPath;
-    }
+  if (!queryParam) {
+    return getOverviewPath;
+  }
 
-    return decodeURIComponent(queryParam);
-}
+  return decodeURIComponent(queryParam);
+};
+
+export const addForcedBackToUrl = (url: string) => {
+  return `${url}?back=true`;
+};

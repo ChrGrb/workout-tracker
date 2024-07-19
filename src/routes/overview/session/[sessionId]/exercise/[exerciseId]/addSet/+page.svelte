@@ -12,7 +12,12 @@
   import addExerciseSetAction from "./actions/addExerciseSetAction";
   import { goto } from "$app/navigation";
   import { getExercisePath } from "$lib/utils/routing/routes";
-  import { getReplicache, useSettings, useUserId } from "$lib/stores/stores";
+  import {
+    getReplicache,
+    useBackNavigation,
+    useSettings,
+    useUserId,
+  } from "$lib/stores/stores";
   import type {
     ExerciseFull,
     WorkoutSessionFull,
@@ -72,6 +77,8 @@
       }
     );
   });
+
+  const backNavigation = useBackNavigation();
 </script>
 
 <Header>
@@ -195,6 +202,7 @@
                     exerciseId: data.exerciseId,
                   }) + ($settings.useTimer ? "?hasTimer=true" : "");
 
+                backNavigation.set(true);
                 goto(exercisePath);
               }
             }}

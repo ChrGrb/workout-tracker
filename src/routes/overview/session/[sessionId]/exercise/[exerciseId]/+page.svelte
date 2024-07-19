@@ -41,7 +41,10 @@
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
   import { page } from "$app/stores";
-  import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
+  import {
+    addCallbackToUrl,
+    addForcedBackToUrl,
+  } from "$lib/utils/routing/callbacks";
   import clsx from "clsx";
   import ExerciseCooldownTimer from "./components/ExerciseCooldownTimer.svelte";
   import ExerciseTimer from "./components/ExerciseTimer.svelte";
@@ -176,7 +179,7 @@
             () => {
               if (exercise) {
                 deleteExerciseAction(exercise);
-                goto(data.callback);
+                goto(addForcedBackToUrl(data.callback));
               }
             },
             "exercise",

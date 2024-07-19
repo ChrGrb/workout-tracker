@@ -1,7 +1,6 @@
 <script lang="ts">
   import "../theme.postcss";
   import "@skeletonlabs/skeleton/styles/skeleton.css";
-  import { fade } from "svelte/transition";
   import "../app.css";
   import {
     AppShell,
@@ -21,7 +20,9 @@
   import { storePopup } from "@skeletonlabs/skeleton";
   import {
     getReplicacheAfterInit,
+    useBackNavigation,
     useBeamsClient,
+    useForwardNavigation,
     useScroll,
     useSettings,
     useUserId,
@@ -39,6 +40,7 @@
   import { dev } from "$app/environment";
   import type { PageData } from "./$types";
   import type { ComponentEvents } from "svelte";
+  import { afterNavigate, onNavigate } from "$app/navigation";
 
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
@@ -113,6 +115,34 @@
       replicache.pull();
     });
   }
+
+  const backNavigation = useBackNavigation();
+  const forwardNavigation = useForwardNavigation();
+
+  onNavigate((navigation) => {
+    if ($backNavigation) {
+      backNavigation.set(false);
+      document.documentElement.dataset.back = "true";
+    } else {
+      document.documentElement.removeAttribute("data-back");
+    }
+
+    if (navigation.to?.url.searchParams.get("callback") || $forwardNavigation) {
+      forwardNavigation.set(false);
+      document.documentElement.dataset.forward = "true";
+    } else {
+      document.documentElement.removeAttribute("data-forward");
+    }
+
+    if (!document.startViewTransition) return;
+
+    return new Promise((resolve) => {
+      document.startViewTransition(async () => {
+        resolve();
+        await navigation.complete;
+      });
+    });
+  });
 </script>
 
 <svelte:head>
@@ -131,9 +161,5 @@
 <Toast />
 
 <AppShell on:scroll={scrollHandler}>
-  {#key data.url}
-    <div in:fade={{ duration: 100, delay: 100 }} out:fade={{ duration: 100 }}>
-      <slot />
-    </div>
-  {/key}
+  <slot />
 </AppShell>

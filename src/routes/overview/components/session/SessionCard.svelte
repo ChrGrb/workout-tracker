@@ -10,6 +10,7 @@
   import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
   import Button from "$lib/base/Button.svelte";
   import { useMotionValue } from "svelte-motion";
+  import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
 
   export let session: WorkoutSessionFull;
 
@@ -33,7 +34,10 @@
 >
   <Button
     action={() => {
-      if ($x === 0 || $x === undefined) goto("/overview/session/" + session.id);
+      if ($x === 0 || $x === undefined)
+        goto(
+          addCallbackToUrl("/overview/session/" + session.id, getOverviewPath)
+        );
     }}
     classes="card variant-soft-primary bg-white p-4 flex flex-row items-center justify-between gap-2 w-full"
   >

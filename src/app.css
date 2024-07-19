@@ -1,3 +1,61 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Lilita+One&display=swap');
-html, body { @apply h-full overflow-hidden; }
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Lilita+One&display=swap");
+html,
+body {
+  @apply h-full overflow-hidden;
+}
+
+:root::view-transition-old(root) {
+  animation: none;
+}
+
+:root::view-transition-new(root) {
+  animation: none;
+}
+
+@keyframes fade-out-to-left {
+  to {
+    transform: translateX(-10%);
+  }
+}
+
+@keyframes slide-from-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+:root[data-forward]::view-transition-old(root) {
+  pointer-events: none;
+  animation: 300ms cubic-bezier(0.76, 0, 0.24, 1) both fade-out-to-left;
+}
+
+:root[data-forward]::view-transition-new(root) {
+  pointer-events: none;
+  animation: 300ms cubic-bezier(0.76, 0, 0.24, 1) both slide-from-right;
+}
+
+/* "back" navigation */
+@keyframes fade-out-to-right {
+  to {
+    /* opacity: 0%; */
+    transform: translateX(100%);
+  }
+}
+
+@keyframes slide-from-left {
+  from {
+    transform: translateX(-10%);
+  }
+}
+
+:root[data-back]::view-transition-old(root) {
+  pointer-events: none;
+  animation: 300ms cubic-bezier(0.76, 0, 0.24, 1) both fade-out-to-right;
+  z-index: 1000;
+}
+
+:root[data-back]::view-transition-new(root) {
+  pointer-events: none;
+  animation: 300ms cubic-bezier(0.76, 0, 0.24, 1) both slide-from-left;
+}

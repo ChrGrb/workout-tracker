@@ -50,3 +50,9 @@ export const useBeamsClient = () =>
     "beamsClient",
     undefined
   );
+
+export const useBackNavigation = () =>
+  useWritable<boolean>("backNavigation", false);
+
+export const useForwardNavigation = () =>
+  useWritable<boolean>("forwardNavigation", false);
