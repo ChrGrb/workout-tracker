@@ -18,6 +18,9 @@ const config = {
     files: {
       serviceWorker: "src/service-worker.ts",
     },
+    alias: {
+      "@/*": "./path/to/lib/*",
+    },
   },
 };
 

@@ -31,7 +31,7 @@
   } from "$lib/utils/prismaTypes";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { ReadTransaction } from "replicache";
-  import createWorkoutSessionTemplateAction from "./actions/createWorkoutSessionTemplate";
+  import * as Drawer from "$lib/components/ui/drawer";
 
   let sessions: WorkoutSessionFull[] = [];
   let user: UserWithSettings | null = null;
@@ -114,41 +114,54 @@
       }
     );
   });
+
+  $: initials = user?.name
+    ?.split(" ")
+    .map((word) => word.at(0))
+    .join("")
+    .slice(0, 2);
 </script>
 
-<Header>
-  <svelte:fragment>Overview</svelte:fragment>
-  <svelte:fragment slot="actionEnd">
-    <Button action={openSettings} icon={true}>
-      <MoreVerticalIcon size="24" />
-    </Button>
-  </svelte:fragment>
-</Header>
+<Drawer.Root shouldScaleBackground>
+  <Header>
+    <svelte:fragment>Overview</svelte:fragment>
+    <svelte:fragment slot="actionEnd">
+      <Drawer.Trigger>
+        <Button icon={true}>
+          <MoreVerticalIcon size="24" />
+        </Button>
+      </Drawer.Trigger>
+    </svelte:fragment>
+  </Header>
+  <Container>
+    <div class="flex flex-col gap-12">
+      <CurrentSessionSection
+        bind:workoutSessionTemplates={sessionTemplates}
+        bind:currentSession={activeSession}
+        createSessionAction={() => {
+          if ($userId) createSessionAction($userId);
+        }}
+        finishSessionAction={() => {
+          if (activeSession) finishSessionAction(activeSession);
+        }}
+        deleteSessionAction={() => {
+          if (activeSession) deleteSessionAction(activeSession);
+        }}
+        updateSessionNameAction={() => {
+          if (activeSession) updateSessionNameAction(activeSession);
+        }}
+      />
 
-<Container>
-  <div class="flex flex-col gap-12">
-    <CurrentSessionSection
-      bind:workoutSessionTemplates={sessionTemplates}
-      bind:currentSession={activeSession}
-      createSessionAction={() => {
-        if ($userId) createSessionAction($userId);
-      }}
-      finishSessionAction={() => {
-        if (activeSession) finishSessionAction(activeSession);
-      }}
-      deleteSessionAction={() => {
-        if (activeSession) deleteSessionAction(activeSession);
-      }}
-      updateSessionNameAction={() => {
-        if (activeSession) updateSessionNameAction(activeSession);
-      }}
-    />
+      <hr />
 
-    <hr />
-
-    <div in:fade={{ duration: 100, delay: 120 }} class="flex flex-col gap-12">
-      <LastWeekChart workoutSessions={inactiveSessions} />
-      <PreviousSessions previousSessions={inactiveSessions} />
+      <div in:fade={{ duration: 100, delay: 120 }} class="flex flex-col gap-12">
+        <LastWeekChart workoutSessions={inactiveSessions} />
+        <PreviousSessions previousSessions={inactiveSessions} />
+      </div>
     </div>
-  </div>
-</Container>
+  </Container>
+
+  {#if user}
+    <SettingsDrawer {user} />
+  {/if}
+</Drawer.Root>

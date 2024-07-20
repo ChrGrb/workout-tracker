@@ -159,6 +159,8 @@
 <Modal />
 <Toast />
 
-<AppShell on:scroll={scrollHandler}>
+<!-- <AppShell on:scroll={scrollHandler}> -->
+<div data-vaul-drawer-wrapper class="bg-white">
   <slot />
-</AppShell>
+</div>
+<!-- </AppShell> -->
