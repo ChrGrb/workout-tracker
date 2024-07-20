@@ -53,6 +53,7 @@
 		"@sveltejs/adapter-vercel": "^4.0.0",
 		"@vercel/analytics": "^1.0.2",
 		"@vercel/postgres": "^0.4.0",
+		"bits-ui": "^0.21.12",
 		"clsx": "^2.1.1",
 		"nanoid": "^4.0.2",
 		"prisma": "^5.16.1",

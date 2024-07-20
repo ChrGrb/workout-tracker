@@ -114,12 +114,6 @@
       }
     );
   });
-
-  $: initials = user?.name
-    ?.split(" ")
-    .map((word) => word.at(0))
-    .join("")
-    .slice(0, 2);
 </script>
 
 <Drawer.Root shouldScaleBackground>

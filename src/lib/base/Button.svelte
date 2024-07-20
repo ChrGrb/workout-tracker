@@ -10,15 +10,30 @@
   export let disabled = false;
   export let isLoading = false;
   export let loadingOnClick = false;
+
+  let clicked = false;
+
+  let clickAnimation = () => {
+    clicked = true;
+    setTimeout(() => {
+      clicked = false;
+    }, 100);
+  };
 </script>
 
 <button
-  class={clsx(classes, "variant-filled-primary active:scale-100 ", {
-    "btn-icon !bg-transparent text-inherit": icon,
-    "btn drop-shadow-lg": !icon,
-    "variant-filled-primary drop-shadow-xl": highlight,
-  })}
+  class={clsx(
+    classes,
+    "variant-filled-primary drop-shadow-none transition-transform active:scale-100 ",
+    {
+      "scale-75": clicked,
+      "btn-icon !bg-transparent text-inherit": icon,
+      "btn border": !icon,
+      "variant-filled-primary": highlight,
+    }
+  )}
   on:click={() => {
+    clickAnimation();
     if (loadingOnClick === true) {
       isLoading = true;
     }

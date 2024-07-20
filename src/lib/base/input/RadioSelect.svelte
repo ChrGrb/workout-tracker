@@ -15,7 +15,9 @@
 <div class="flex flex-col gap-3">
   <p class="label">{label}</p>
 
-  <div class="flex flex-row w-full justify-center drop-shadow-lg">
+  <div
+    class="flex flex-row w-full gap-1 justify-center p-1 variant-soft-primary rounded-token"
+  >
     {#each items as item, index (item.value)}
       <div class="grow">
         <input
@@ -30,11 +32,7 @@
         <label
           for={item.name}
           class={clsx(
-            "card rounded-none justify-center p-2 text-center text-sm variant-soft-primary peer-checked:variant-filled-primary text-primary-700 peer-checked:text-white transition-all relative",
-            {
-              "rounded-tl-token rounded-bl-token": index === 0,
-              "rounded-tr-token rounded-br-token": index === items.length - 1,
-            }
+            "justify-center p-2 text-center text-black/50 text-sm drop-shadow-none border-none rounded-token bg-transparent peer-checked:bg-black text-primary-700 peer-checked:text-white transition-all relative"
           )}
         >
           <p>{item.name}</p>

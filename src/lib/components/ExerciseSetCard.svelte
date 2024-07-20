@@ -26,7 +26,7 @@
   <div
     class={clsx("card flex flex-col gap-8 justify-center p-6", {
       "variant-filled-primary": exerciseSet.exerciseSetType == "WORKOUT",
-      "variant-soft-surface bg-white":
+      "variant-soft-surface bg-white border":
         exerciseSet.exerciseSetType == "WARMUP" ||
         exerciseSet.exerciseSetType == "COOLDOWN",
     })}

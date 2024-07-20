@@ -84,39 +84,23 @@
               name="weightType"
               bind:group={weightType}
             />
-            {#if weightType === "UNIFIED"}
-              <div
-                transition:fade={{
-                  delay: weightType === "UNIFIED" ? 0 : 210,
-                  duration: 200,
-                }}
-              >
-                <TextInput
-                  name="weight"
-                  id="weight"
-                  type="number"
-                  step={0.01}
-                  bind:input={weightMain}
-                  required={true}
-                  metric="kg"
-                />
-              </div>
-            {:else if weightType === "BILATERAL"}
-              <div
-                class="flex flex-row justify-between gap-4"
-                transition:fade={{
-                  duration: 200,
-                }}
-              >
-                <TextInput
-                  name="weight"
-                  id="weight"
-                  type="number"
-                  step={0.01}
-                  bind:input={weightMain}
-                  required={true}
-                  metric="kg"
-                />
+
+            <div
+              class="flex flex-row justify-between gap-4"
+              transition:fade={{
+                duration: 200,
+              }}
+            >
+              <TextInput
+                name="weight"
+                id="weight"
+                type="number"
+                step={0.01}
+                bind:input={weightMain}
+                required={true}
+                metric="kg"
+              />
+              {#if weightType === "BILATERAL"}
                 <TextInput
                   name="weight"
                   id="weight"
@@ -126,8 +110,8 @@
                   required={true}
                   metric="kg"
                 />
-              </div>
-            {/if}
+              {/if}
+            </div>
           </div>
         </div>
         <TextArea

@@ -45,7 +45,7 @@
     }}
   >
     <div
-      class="card absolute w-1/2 top-0 bottom-0 right-0 variant-filled-error flex justify-end align-middle"
+      class="card absolute w-1/2 top-[1px] bottom-[1px] right-[1px] variant-filled-error flex justify-end align-middle"
     >
       <slot name="actionItems">
         <Button

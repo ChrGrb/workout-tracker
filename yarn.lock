@@ -2641,7 +2641,7 @@ bindings@^1.4.0:
   dependencies:
     file-uri-to-path "1.0.0"
 
-bits-ui@^0.21.7:
+bits-ui@^0.21.12, bits-ui@^0.21.7:
   version "0.21.12"
   resolved "https://registry.npmjs.org/bits-ui/-/bits-ui-0.21.12.tgz#5227d6e15b7f65dd09ab8af70bc9caf21c0468c0"
   integrity sha512-Cf0iB+ZKwA0ZjkpixrhrZK9PC6pGPFleW/65Xc/z0lpGvWaFtdOhiYEntCHHxZ0VihP3aJaG0OBhUBIbmAePaA==
