@@ -30,6 +30,7 @@
       type="text"
       id="sessionName"
       name="sessionName"
+      inputClasses="h4"
       bind:input={workoutSession.name}
     />
     <Button

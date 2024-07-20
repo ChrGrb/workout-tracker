@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
   import Headline from "$lib/base/Headline.svelte";
   import Container from "$lib/base/Container.svelte";
   import { svelteTime } from "svelte-time";
@@ -16,7 +17,7 @@
   import Button from "$lib/base/Button.svelte";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import deleteSessionAction from "../../actions/deleteSessionAction";
-  import { Trash2Icon } from "svelte-feather-icons";
+  import { MoreHorizontalIcon, Trash2Icon } from "svelte-feather-icons";
   import { goto } from "$app/navigation";
   import { getOverviewPath } from "$lib/utils/routing/routes";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
@@ -79,8 +80,39 @@
         />
       </div>
       <div class="flex flex-col w-full gap-4">
-        <div class="flex flex-row justify-start">
+        <div class="flex flex-row justify-between items-center">
           <Headline style="small">Exercises</Headline>
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger>
+              <MoreHorizontalIcon size="24" />
+            </DropdownMenu.Trigger>
+
+            <DropdownMenu.Content class="w-56">
+              <DropdownMenu.Item>
+                <Button
+                  action={() => {
+                    confirmDeleteWithAction(
+                      modalStore,
+                      () => {
+                        if (session) {
+                          deleteSessionAction(session);
+                          goto(getOverviewPath);
+                        }
+                      },
+                      "session",
+                      () => {}
+                    );
+                  }}
+                  classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none"
+                >
+                  <div class="flex flex-row gap-4 justify-center items-center">
+                    Delete Session
+                    <Trash2Icon size="18" />
+                  </div>
+                </Button>
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
         </div>
         <div class="flex flex-col gap-2">
           {#if session.exercises && filterDeleted(session.exercises).length > 0}
@@ -96,25 +128,6 @@
           {/if}
         </div>
       </div>
-
-      <Button
-        action={() => {
-          confirmDeleteWithAction(
-            modalStore,
-            () => {
-              if (session) {
-                deleteSessionAction(session);
-                goto(getOverviewPath);
-              }
-            },
-            "session",
-            () => {}
-          );
-        }}
-      >
-        <p>Delete</p>
-        <Trash2Icon size="18" />
-      </Button>
     </div>
   {/if}
 </Container>

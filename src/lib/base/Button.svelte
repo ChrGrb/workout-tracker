@@ -10,15 +10,6 @@
   export let disabled = false;
   export let isLoading = false;
   export let loadingOnClick = false;
-
-  let clicked = false;
-
-  let clickAnimation = () => {
-    clicked = true;
-    setTimeout(() => {
-      clicked = false;
-    }, 100);
-  };
 </script>
 
 <button
@@ -26,14 +17,12 @@
     classes,
     "variant-filled-primary drop-shadow-none transition-transform active:scale-100 ",
     {
-      "scale-75": clicked,
       "btn-icon !bg-transparent text-inherit": icon,
-      "btn border": !icon,
+      "btn border active:border hover:border-primary-500": !icon,
       "variant-filled-primary": highlight,
     }
   )}
   on:click={() => {
-    clickAnimation();
     if (loadingOnClick === true) {
       isLoading = true;
     }

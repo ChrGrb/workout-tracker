@@ -1,9 +1,12 @@
 <script lang="ts">
+  import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+
   import Headline from "$lib/base/Headline.svelte";
   import Container from "$lib/base/Container.svelte";
   import { svelteTime } from "svelte-time";
   import type { PageData } from "./$types";
   import Button from "$lib/base/Button.svelte";
+  import { Button as ShadButton } from "$lib/components/ui/button";
   import { goto } from "$app/navigation";
   import ExerciseSetCard from "$lib/components/ExerciseSetCard.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
@@ -257,9 +260,38 @@
           <div class="flex flex-row justify-between items-center">
             <Headline style="small">Sets</Headline>
             {#if isActive}
-              <button use:popup={popupFeatured} type="button">
-                <MoreHorizontalIcon size="24" />
-              </button>
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                  <MoreHorizontalIcon size="24" />
+                </DropdownMenu.Trigger>
+
+                <DropdownMenu.Content class="w-56">
+                  <DropdownMenu.Item>
+                    <Button
+                      action={() =>
+                        confirmDeleteWithAction(
+                          modalStore,
+                          () => {
+                            if (exercise) {
+                              deleteExerciseAction(exercise);
+                              goto(addForcedBackToUrl(data.callback));
+                            }
+                          },
+                          "exercise",
+                          () => {}
+                        )}
+                      classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none"
+                    >
+                      <div
+                        class="flex flex-row gap-4 justify-center items-center"
+                      >
+                        Delete Exercise
+                        <Trash2Icon size="18" />
+                      </div>
+                    </Button>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Root>
             {/if}
           </div>
           <div
