@@ -52,7 +52,9 @@
   import clsx from "clsx";
   import ExerciseCooldownTimer from "./components/ExerciseCooldownTimer.svelte";
   import ExerciseTimer from "./components/ExerciseTimer.svelte";
-  import addExerciseSetAction from "./addSet/actions/addExerciseSetAction";
+  import addExerciseSetAction from "./actions/addExerciseSetAction";
+  import * as Drawer from "$lib/components/ui/drawer";
+  import AddExerciseDrawer from "./components/AddExerciseDrawer.svelte";
 
   export let data: PageData;
 
@@ -173,218 +175,224 @@
   const modalStore = getModalStore();
 </script>
 
-{#if exercise}
-  <div
-    class="card variant-filled-surface p-2 pr-0 shadow-xl z-50"
-    data-popup="popupFeatured"
-  >
-    <div class="flex flex-col items-end">
-      <Button
-        action={() =>
-          confirmDeleteWithAction(
-            modalStore,
-            () => {
-              if (exercise) {
-                deleteExerciseAction(exercise);
-                goto(addForcedBackToUrl(data.callback));
-              }
-            },
-            "exercise",
-            () => {}
-          )}
-        classes="btn !bg-transparent text-inherit transition-all drop-shadow-none"
-      >
-        <div class="flex flex-row gap-4 justify-center items-center">
-          Delete Exercise
-          <Trash2Icon size="18" />
-        </div>
-      </Button>
-    </div>
-  </div>
-{/if}
-
-<Header>
-  <svelte:fragment slot="action">
-    <ExitButton exitPath={data.callback} />
-  </svelte:fragment>
-</Header>
-
-<Container>
+<Drawer.Root>
   {#if exercise}
-    <div class="flex flex-col gap-12" in:fade={{ duration: 100 }}>
-      <div class="flex flex-col gap-4 relative items-start">
-        <Headline>{exercise?.type.name}</Headline>
-        <time
-          use:svelteTime={{
-            timestamp: exercise.createdAt,
-            format: "MMMM D, YYYY · h:mm A ",
-          }}
-        />
-      </div>
-
-      {#if previousExercisesOfType?.length}
-        <div class="flex flex-col gap-12">
-          <Headline style="small">Previous Performances</Headline>
-          <div class="flex flex-col gap-6">
-            {#if previousExercisesOfType && previousExercisesOfType?.length && exercise}
-              <div class="flex flex-col">
-                <ExerciseOverviewGraph
-                  previousExercises={previousExercisesOfType}
-                  {exercise}
-                />
-              </div>
-            {/if}
-            <div class="flex flex-col gap-2">
-              {#each filterDeleted(previousExercisesOfType)
-                .sort(sortByCreatedAt)
-                .slice(0, 3) as previousExercise}
-                <ExerciseCard exercise={previousExercise} previous={true} />
-              {/each}
-            </div>
-          </div>
-        </div>
-      {/if}
-
-      <hr />
-
-      <div
-        class="flex flex-col w-full gap-4"
-        in:fade={{ duration: 100, delay: 120 }}
-      >
-        <div class="flex flex-row justify-between items-center">
-          <Headline style="small">Sets</Headline>
-          {#if isActive}
-            <button use:popup={popupFeatured} type="button">
-              <MoreHorizontalIcon size="24" />
-            </button>
-          {/if}
-        </div>
-        <div
-          class={clsx("grid grid-cols-1 md:grid-cols-2 gap-2", {
-            "mb-24": isActive,
-            "mb-8": !isActive,
-            "pb-16": currentExerciseCooldownTimer,
-          })}
+    <div
+      class="card variant-filled-surface p-2 pr-0 shadow-xl z-50"
+      data-popup="popupFeatured"
+    >
+      <div class="flex flex-col items-end">
+        <Button
+          action={() =>
+            confirmDeleteWithAction(
+              modalStore,
+              () => {
+                if (exercise) {
+                  deleteExerciseAction(exercise);
+                  goto(addForcedBackToUrl(data.callback));
+                }
+              },
+              "exercise",
+              () => {}
+            )}
+          classes="btn !bg-transparent text-inherit transition-all drop-shadow-none"
         >
-          {#if exercise.sets}
-            {#each filterDeleted(exercise.sets) as set (set.id)}
-              <div
-                animate:flip={{ delay: 100, duration: 250, easing: sineInOut }}
-                transition:fade
-              >
-                <ExerciseSetCard
-                  exerciseSet={set}
-                  deleteAction={() => {
-                    if (exercise) deleteExerciseSetAction(exercise, set);
-                  }}
-                />
-              </div>
-            {/each}
-          {/if}
-        </div>
+          <div class="flex flex-row gap-4 justify-center items-center">
+            Delete Exercise
+            <Trash2Icon size="18" />
+          </div>
+        </Button>
       </div>
+    </div>
+  {/if}
 
-      {#if isActive}
-        <FloatBottomWrapper>
-          <Container>
-            <div class="flex flex-col gap-4">
-              {#if currentExerciseCooldownTimer}
-                <div transition:fade={{ duration: 200, easing: sineInOut }}>
-                  <ExerciseCooldownTimer
-                    timer={currentExerciseCooldownTimer}
-                    finishAction={() => {
-                      exerciseCooldownTimers.update((exerciseTimers) => {
-                        return exerciseTimers.filter(
-                          (timer) =>
-                            timer.exerciseId !=
-                            currentExerciseCooldownTimer?.exerciseId
-                        );
-                      });
-                    }}
-                    timerLength={$settings.timerValue}
+  <Header>
+    <svelte:fragment slot="action">
+      <ExitButton exitPath={data.callback} />
+    </svelte:fragment>
+  </Header>
+
+  <Container>
+    {#if exercise}
+      <div class="flex flex-col gap-12" in:fade={{ duration: 100 }}>
+        <div class="flex flex-col gap-4 relative items-start">
+          <Headline>{exercise?.type.name}</Headline>
+          <time
+            use:svelteTime={{
+              timestamp: exercise.createdAt,
+              format: "MMMM D, YYYY · h:mm A ",
+            }}
+          />
+        </div>
+
+        {#if previousExercisesOfType?.length}
+          <div class="flex flex-col gap-12">
+            <Headline style="small">Previous Performances</Headline>
+            <div class="flex flex-col gap-6">
+              {#if previousExercisesOfType && previousExercisesOfType?.length && exercise}
+                <div class="flex flex-col">
+                  <ExerciseOverviewGraph
+                    previousExercises={previousExercisesOfType}
+                    {exercise}
                   />
                 </div>
               {/if}
+              <div class="flex flex-col gap-2">
+                {#each filterDeleted(previousExercisesOfType)
+                  .sort(sortByCreatedAt)
+                  .slice(0, 3) as previousExercise}
+                  <ExerciseCard exercise={previousExercise} previous={true} />
+                {/each}
+              </div>
+            </div>
+          </div>
+        {/if}
 
-              {#if exercise.type.category === "WEIGHT"}
-                <Button
-                  action={() => {
-                    addSet();
+        <hr />
+
+        <div
+          class="flex flex-col w-full gap-4"
+          in:fade={{ duration: 100, delay: 120 }}
+        >
+          <div class="flex flex-row justify-between items-center">
+            <Headline style="small">Sets</Headline>
+            {#if isActive}
+              <button use:popup={popupFeatured} type="button">
+                <MoreHorizontalIcon size="24" />
+              </button>
+            {/if}
+          </div>
+          <div
+            class={clsx("grid grid-cols-1 md:grid-cols-2 gap-2", {
+              "mb-24": isActive,
+              "mb-8": !isActive,
+              "pb-16": currentExerciseCooldownTimer,
+            })}
+          >
+            {#if exercise.sets}
+              {#each filterDeleted(exercise.sets) as set (set.id)}
+                <div
+                  animate:flip={{
+                    delay: 100,
+                    duration: 250,
+                    easing: sineInOut,
                   }}
-                  loadingOnClick={true}
-                  classes="w-full variant-filled-primary"
+                  transition:fade
                 >
-                  <div class="flex flex-row gap-4 items-center">
-                    <p class="text-bold">Add set</p>
-                  </div>
-                </Button>
-              {/if}
+                  <ExerciseSetCard
+                    exerciseSet={set}
+                    deleteAction={() => {
+                      if (exercise) deleteExerciseSetAction(exercise, set);
+                    }}
+                  />
+                </div>
+              {/each}
+            {/if}
+          </div>
+        </div>
 
-              {#if exercise.type.category === "TIME"}
-                {#if currentExerciseTimer}
+        {#if isActive}
+          <FloatBottomWrapper>
+            <Container>
+              <div class="flex flex-col gap-4">
+                {#if currentExerciseCooldownTimer}
                   <div transition:fade={{ duration: 200, easing: sineInOut }}>
-                    <ExerciseTimer
-                      timer={currentExerciseTimer}
-                      finishAction={(elapsedTime) => {
-                        exerciseTimers.update((exerciseTimers) => {
+                    <ExerciseCooldownTimer
+                      timer={currentExerciseCooldownTimer}
+                      finishAction={() => {
+                        exerciseCooldownTimers.update((exerciseTimers) => {
                           return exerciseTimers.filter(
                             (timer) =>
                               timer.exerciseId !=
-                              currentExerciseTimer?.exerciseId
+                              currentExerciseCooldownTimer?.exerciseId
                           );
                         });
-                        if (exercise !== undefined) {
-                          addExerciseSetAction(exercise, {
-                            time: elapsedTime,
-                            exerciseSetType: "WORKOUT",
-                          });
-                        }
                       }}
-                      bind:onFinish={finishExerciseTimer}
+                      timerLength={$settings.timerValue}
                     />
                   </div>
                 {/if}
-                {#if !currentExerciseTimer}
-                  <Button
-                    action={() => {
-                      if (!currentExerciseTimer && exercise !== undefined) {
-                        exerciseTimers.update((exerciseTimers) => {
-                          if (exercise !== undefined)
-                            exerciseTimers.push({
-                              exerciseId: exercise.id,
-                              startTime: Date.now(),
-                            });
-                          return exerciseTimers;
-                        });
-                      }
-                    }}
-                    loadingOnClick={true}
-                    classes="w-full variant-filled-primary"
+
+                {#if exercise.type.category === "WEIGHT"}
+                  <Drawer.Trigger>
+                    <Button classes="w-full variant-filled-primary">
+                      <div class="flex flex-row gap-4 items-center">
+                        <p class="text-bold">Add set</p>
+                      </div>
+                    </Button></Drawer.Trigger
                   >
-                    <div class="flex flex-row gap-4 items-center -ml-4">
-                      <PlayIcon size="16" />
-                      <p class="text-bold">Start Timer</p>
-                    </div>
-                  </Button>
-                {:else}
-                  <Button
-                    action={() => {
-                      finishExerciseTimer();
-                    }}
-                    loadingOnClick={true}
-                    classes="w-full variant-filled-primary"
-                  >
-                    <div class="flex flex-row gap-4 items-center -ml-4">
-                      <PauseIcon size="16" />
-                      <p class="text-bold">Stop Timer</p>
-                    </div>
-                  </Button>
                 {/if}
-              {/if}
-            </div>
-          </Container>
-        </FloatBottomWrapper>
-      {/if}
-    </div>
+
+                {#if exercise.type.category === "TIME"}
+                  {#if currentExerciseTimer}
+                    <div transition:fade={{ duration: 200, easing: sineInOut }}>
+                      <ExerciseTimer
+                        timer={currentExerciseTimer}
+                        finishAction={(elapsedTime) => {
+                          exerciseTimers.update((exerciseTimers) => {
+                            return exerciseTimers.filter(
+                              (timer) =>
+                                timer.exerciseId !=
+                                currentExerciseTimer?.exerciseId
+                            );
+                          });
+                          if (exercise !== undefined) {
+                            addExerciseSetAction(exercise, {
+                              time: elapsedTime,
+                              exerciseSetType: "WORKOUT",
+                            });
+                          }
+                        }}
+                        bind:onFinish={finishExerciseTimer}
+                      />
+                    </div>
+                  {/if}
+                  {#if !currentExerciseTimer}
+                    <Button
+                      action={() => {
+                        if (!currentExerciseTimer && exercise !== undefined) {
+                          exerciseTimers.update((exerciseTimers) => {
+                            if (exercise !== undefined)
+                              exerciseTimers.push({
+                                exerciseId: exercise.id,
+                                startTime: Date.now(),
+                              });
+                            return exerciseTimers;
+                          });
+                        }
+                      }}
+                      loadingOnClick={true}
+                      classes="w-full variant-filled-primary"
+                    >
+                      <div class="flex flex-row gap-4 items-center -ml-4">
+                        <PlayIcon size="16" />
+                        <p class="text-bold">Start Timer</p>
+                      </div>
+                    </Button>
+                  {:else}
+                    <Button
+                      action={() => {
+                        finishExerciseTimer();
+                      }}
+                      loadingOnClick={true}
+                      classes="w-full variant-filled-primary"
+                    >
+                      <div class="flex flex-row gap-4 items-center -ml-4">
+                        <PauseIcon size="16" />
+                        <p class="text-bold">Stop Timer</p>
+                      </div>
+                    </Button>
+                  {/if}
+                {/if}
+              </div>
+            </Container>
+          </FloatBottomWrapper>
+        {/if}
+      </div>
+    {/if}
+  </Container>
+
+  {#if exercise}
+    <AddExerciseDrawer {exercise} />
   {/if}
-</Container>
+</Drawer.Root>
