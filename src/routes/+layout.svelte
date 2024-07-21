@@ -40,6 +40,7 @@
   import type { PageData } from "./$types";
   import type { ComponentEvents } from "svelte";
   import { onNavigate } from "$app/navigation";
+  import { page } from "$app/stores";
 
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
@@ -160,7 +161,9 @@
 <Toast />
 
 <!-- <AppShell on:scroll={scrollHandler}> -->
-<div data-vaul-drawer-wrapper class="bg-white">
-  <slot />
-</div>
+{#key $page.url.pathname}
+  <div data-vaul-drawer-wrapper class="bg-white">
+    <slot />
+  </div>
+{/key}
 <!-- </AppShell> -->

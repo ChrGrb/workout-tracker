@@ -21,6 +21,8 @@
 
   let weightType = "UNIFIED";
 
+  export let hasTimer: boolean;
+
   $: exerciseSet = {
     reps: +repetitions,
     weight: +weightMain,
@@ -131,6 +133,7 @@
               action={() => {
                 if (exercise) {
                   addExerciseSetAction(exercise, exerciseSet);
+                  hasTimer = true;
 
                   if ($settings.useTimer)
                     fetch("https://eoj3xsgtl8d1hzc.m.pipedream.net", {

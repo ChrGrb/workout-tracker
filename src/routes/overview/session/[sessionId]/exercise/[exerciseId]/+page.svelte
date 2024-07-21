@@ -95,11 +95,14 @@
   let exerciseTimers = useExerciseTimers();
   let finishExerciseTimer: () => void;
 
+  let hasTimer = false;
+
   $: currentExerciseTimer = $exerciseTimers.find(
     (element) => element.exerciseId == exercise?.id
   );
 
-  $: if (data.hasTimer && $settings.useTimer) {
+  $: if (hasTimer && $settings.useTimer) {
+    hasTimer = false;
     let thisExerciseTimer = currentExerciseCooldownTimer;
     if (thisExerciseTimer === undefined) {
       exerciseCooldownTimers.update((exerciseTimers) => {
@@ -425,6 +428,6 @@
   </Container>
 
   {#if exercise}
-    <AddExerciseDrawer {exercise} />
+    <AddExerciseDrawer {exercise} bind:hasTimer />
   {/if}
 </Drawer.Root>

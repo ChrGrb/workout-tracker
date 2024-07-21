@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
+  import { goto, invalidate } from "$app/navigation";
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import SwipeToAction from "$lib/base/SwipeToAction.svelte";
@@ -115,7 +115,7 @@
       }
     )}
     action={() => {
-      if ($x === 0 || $x === undefined)
+      if ($x === 0 || $x === undefined) {
         goto(
           addCallbackToUrl(
             getExercisePath({
@@ -123,8 +123,13 @@
               exerciseId: exercise.id,
             }),
             $page.url.pathname
-          )
+          ),
+          {
+            replaceState: true,
+            invalidateAll: true,
+          }
         );
+      }
     }}
   >
     <svelte:component

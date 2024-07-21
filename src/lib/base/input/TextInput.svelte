@@ -21,7 +21,7 @@
   $: showRequiredIndicator = required && !(input !== "");
 </script>
 
-<div class="sm:col-span-4">
+<div class="w-full">
   {#if label.length > 0}
     <label for="reps" class="label">{label}</label>
   {/if}
