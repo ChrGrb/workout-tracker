@@ -18,8 +18,16 @@
   let weightAdditional = "";
   let notes = "";
   let exerciseSetType = "WORKOUT";
-
   let weightType = "UNIFIED";
+
+  const reset = () => {
+    repetitions = "";
+    weightMain = "";
+    weightAdditional = "";
+    notes = "";
+    exerciseSetType = "WORKOUT";
+    weightType = "UNIFIED";
+  };
 
   export let hasTimer: boolean;
 
@@ -45,7 +53,7 @@
 </script>
 
 <Drawer.Content
-  class="bg-white flex flex-col fixed bottom-0 left-0 right-0 max-h-[96%] rounded-t-[10px]"
+  class="bg-white flex flex-col fixed bottom-0 left-0 right-0 max-h-[96vh] rounded-t-[10px]"
 >
   <Drawer.Header>
     <Drawer.Title>Add Set</Drawer.Title>
@@ -145,6 +153,8 @@
                         exerciseId: exercise.id,
                       }),
                     });
+
+                  reset();
                 }
               }}
               disabled={isInvalid}
