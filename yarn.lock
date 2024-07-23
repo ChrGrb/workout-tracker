@@ -4735,10 +4735,10 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-lucide-svelte@^0.411.0:
-  version "0.411.0"
-  resolved "https://registry.npmjs.org/lucide-svelte/-/lucide-svelte-0.411.0.tgz#7bbce67b0bb412a09b5e9b24101687a3a17b2a44"
-  integrity sha512-cPitBSKJzY7ce91IJNUlzUaC/A8Ph79hRripx6Fci7e5Hpdn/FuthapiiN1XMGliH28z7r4Qgz8XA5fXYj2hpw==
+lucide-svelte@^0.414.0:
+  version "0.414.0"
+  resolved "https://registry.npmjs.org/lucide-svelte/-/lucide-svelte-0.414.0.tgz#96eb5f965c6df0c339f3155c6c410ce633fcf5fd"
+  integrity sha512-LTEzcm5rix345H2rLxH0nBNZRaFx4I2yL48yDgiIkM9jtUb4LZ629e0MuUmeosS35dGnLFmnGeGNDOt9SKouDA==
 
 magic-string@^0.25.0, magic-string@^0.25.7:
   version "0.25.9"

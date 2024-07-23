@@ -55,7 +55,7 @@
 		"@vercel/postgres": "^0.4.0",
 		"bits-ui": "^0.21.12",
 		"clsx": "^2.1.1",
-		"lucide-svelte": "^0.411.0",
+		"lucide-svelte": "^0.414.0",
 		"nanoid": "^4.0.2",
 		"prisma": "^5.16.1",
 		"pusher": "^5.1.3",

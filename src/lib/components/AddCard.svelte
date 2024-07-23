@@ -7,11 +7,12 @@
 
   export let addAction = () => {};
   export let isInline = false;
+  export let loadingOnClick = true;
 </script>
 
 <Button
   classes={clsx(
-    "card variant-filled-primary flex gap-4 p-4 drop-shadow-xl relative",
+    "card variant-filled-primary w-full flex gap-4 p-4 drop-shadow-xl relative",
     {
       "justify-between items-center flex-row mt-4": isInline,
       "aspect-square text-center justify-center items-center flex-col":
@@ -19,7 +20,7 @@
     }
   )}
   action={addAction}
-  loadingOnClick={true}
+  {loadingOnClick}
 >
   <svelte:component
     this={ProgressRadial}

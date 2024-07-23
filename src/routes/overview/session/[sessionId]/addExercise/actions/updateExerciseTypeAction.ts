@@ -1,14 +1,14 @@
 import { getReplicacheAfterInit } from "$lib/stores/stores";
 import type { ExerciseType } from "@prisma/client";
 
-const deleteExerciseTypeAction = (
-  userId: string,
-  exerciseType: ExerciseType
+const updateExerciseTypeAction = (
+  exerciseType: Partial<ExerciseType>,
+  userId: string
 ) => {
   getReplicacheAfterInit().mutate.updateExerciseType({
+    exerciseType,
     userId,
-    exerciseType: { ...exerciseType, isDeleted: true },
   });
 };
 
-export default deleteExerciseTypeAction;
+export default updateExerciseTypeAction;

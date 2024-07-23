@@ -1,6 +1,6 @@
 import type { ExerciseType, PrismaClient } from "@prisma/client";
 
-const utilsApiMutationsExerciseTypeDelete = async ({
+const utilsApiMutationsExerciseTypeUpdate = async ({
   args,
   tx,
   versionNext,
@@ -18,18 +18,12 @@ const utilsApiMutationsExerciseTypeDelete = async ({
 
   if (!prismaExerciseTypeFindUnique) return;
 
-  try {
-    await tx.exerciseType.update({
-      where: {
-        id: args.exerciseType.id,
-      },
-      data: {
-        // --- SYSTEM ---
-        versionUpdatedAt: versionNext,
-        isDeleted: true,
-      },
-    });
+  const prismaData = {
+    ...prismaExerciseTypeFindUnique,
+    ...args.exerciseType,
+  } as ExerciseType;
 
+  try {
     await tx.user.update({
       where: {
         id: args.userId,
@@ -38,7 +32,15 @@ const utilsApiMutationsExerciseTypeDelete = async ({
         // --- SYSTEM ---
         versionUpdatedAt: versionNext,
         exerciseTypes: {
-          disconnect: { id: args.exerciseType.id },
+          update: {
+            where: {
+              id: args.exerciseType.id,
+            },
+            data: {
+              ...prismaData,
+              versionUpdatedAt: versionNext,
+            },
+          },
         },
       },
       include: {
@@ -52,4 +54,4 @@ const utilsApiMutationsExerciseTypeDelete = async ({
   return;
 };
 
-export default utilsApiMutationsExerciseTypeDelete;
+export default utilsApiMutationsExerciseTypeUpdate;

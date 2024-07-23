@@ -1,43 +1,22 @@
 <script lang="ts">
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
-  import {
-    InfoIcon,
-    MoreHorizontalIcon,
-    Trash2Icon,
-  } from "svelte-feather-icons";
+  import { MoreHorizontalIcon, Trash2Icon } from "svelte-feather-icons";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
-  import {
-    type ModalSettings,
-    type ModalComponent,
-    type PopupSettings,
-    popup,
-    getModalStore,
-  } from "@skeletonlabs/skeleton";
-  import WorkoutDescriptionModal from "$lib/modals/WorkoutDescriptionModal.svelte";
   import deleteExerciseTypeAction from "../actions/deleteExerciseTypeAction";
   import type { ExerciseType } from "@prisma/client";
   import { useUserId } from "$lib/stores/stores";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+  import { getModalStore } from "@skeletonlabs/skeleton";
 
   export let group: string;
   export let required: boolean;
   export let exerciseType: ExerciseType;
+  export let onEditClicked: (exerciseId: string) => void;
+
+  let dropdownMenuOpen = false;
 
   let userId = useUserId();
-
-  const workoutDescriptionModal: ModalComponent = {
-    ref: WorkoutDescriptionModal,
-    props: {},
-  };
-
-  const workoutDescriptionModalSettings: ModalSettings = {
-    type: "component",
-    component: workoutDescriptionModal,
-    title: exerciseType.name,
-    body: exerciseType.description ?? "",
-    buttonTextCancel: "Close",
-  };
 
   const modalStore = getModalStore();
 </script>
@@ -60,7 +39,7 @@
       <Headline style="small">{exerciseType.name}</Headline>
 
       <div class="absolute bottom-2 right-2">
-        <DropdownMenu.Root>
+        <DropdownMenu.Root bind:open={dropdownMenuOpen}>
           <DropdownMenu.Trigger
             class=" btn-icon flex flex-row justify-center items-center"
           >
@@ -68,23 +47,22 @@
           </DropdownMenu.Trigger>
 
           <DropdownMenu.Content>
-            {#if exerciseType.description}
-              <DropdownMenu.Item class="w-full justify-end">
-                <Button
-                  action={() =>
-                    modalStore.trigger(workoutDescriptionModalSettings)}
-                  classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none"
-                  type="button"
+            <DropdownMenu.Item>
+              <Button
+                action={() => {
+                  dropdownMenuOpen = false;
+                  onEditClicked(exerciseType.id);
+                }}
+                classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none w-full"
+              >
+                <div
+                  class="flex flex-row gap-4 justify-between items-center w-full"
                 >
-                  <div
-                    class="flex flex-row gap-4 justify-between w-full items-center"
-                  >
-                    <p>Info</p>
-                    <InfoIcon size="18" />
-                  </div>
-                </Button>
-              </DropdownMenu.Item>
-            {/if}
+                  Edit
+                  <Trash2Icon size="18" />
+                </div>
+              </Button>
+            </DropdownMenu.Item>
 
             <DropdownMenu.Item>
               <Button
@@ -100,7 +78,9 @@
                   )}
                 classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none"
               >
-                <div class="flex flex-row gap-4 justify-center items-center">
+                <div
+                  class="flex flex-row gap-4 justify-between items-center w-full"
+                >
                   Delete
                   <Trash2Icon size="18" />
                 </div>

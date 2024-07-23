@@ -1,13 +1,14 @@
-import type { ExerciseType, WorkoutSession } from "@prisma/client";
+import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
+import type { ExerciseType } from "@prisma/client";
 import type { WriteTransaction } from "replicache";
 
 // Mutations
-const mutationsExerciseTypeDelete = async ({
+const mutationsExerciseTypeUpdate = async ({
   tx,
   args,
 }: {
   tx: WriteTransaction;
-  args: { exerciseType: ExerciseType; userId: string };
+  args: { exerciseType: Partial<ExerciseType>; userId: string };
 }) => {
   const key = `user/${args.userId}/exerciseType/${args.exerciseType.id}`;
 
@@ -18,9 +19,10 @@ const mutationsExerciseTypeDelete = async ({
   if (exerciseType.id !== args.exerciseType.id)
     throw new Error("Exercise type does not exist");
 
-  exerciseType.isDeleted = true;
-
-  return await tx.set(key, JSON.stringify({ ...exerciseType }));
+  return await tx.set(
+    key,
+    JSON.stringify({ ...exerciseType, ...args.exerciseType })
+  );
 };
 
-export default mutationsExerciseTypeDelete;
+export default mutationsExerciseTypeUpdate;
