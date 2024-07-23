@@ -18,6 +18,7 @@
   import deleteExerciseTypeAction from "../actions/deleteExerciseTypeAction";
   import type { ExerciseType } from "@prisma/client";
   import { useUserId } from "$lib/stores/stores";
+  import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 
   export let group: string;
   export let required: boolean;
@@ -38,58 +39,8 @@
     buttonTextCancel: "Close",
   };
 
-  const popupFeatured: PopupSettings = {
-    // Represents the type of event that opens/closed the popup
-    event: "click",
-    // Matches the data-popup value on your popup element
-    target: "popupFeatured" + exerciseType.name,
-    // Defines which side of your trigger the popup will appear
-    placement: "top",
-    middleware: {
-      offset: { crossAxis: -24, mainAxis: -10 },
-    },
-  };
-
   const modalStore = getModalStore();
 </script>
-
-<div
-  class="card variant-filled-surface p-2 pr-0 shadow-xl z-50"
-  data-popup={"popupFeatured" + exerciseType.name}
->
-  <div class="flex flex-col items-end">
-    <Button
-      action={() =>
-        confirmDeleteWithAction(
-          modalStore,
-          () => {
-            if ($userId) deleteExerciseTypeAction($userId, exerciseType);
-          },
-          "exercise type",
-          () => {}
-        )}
-      classes="btn !bg-transparent variant-filled-surface text-inherit transition-all drop-shadow-none"
-    >
-      <div class="flex flex-row gap-4 justify-center items-center">
-        Delete
-        <Trash2Icon size="18" />
-      </div>
-    </Button>
-
-    {#if exerciseType.description}
-      <Button
-        action={() => modalStore.trigger(workoutDescriptionModalSettings)}
-        classes="variant-filled-surface transition-all drop-shadow-none"
-        type="button"
-      >
-        <div class="flex flex-row gap-4 justify-center items-center">
-          <p>Info</p>
-          <InfoIcon size="18" />
-        </div>
-      </Button>
-    {/if}
-  </div>
-</div>
 
 <div>
   <input
@@ -109,15 +60,54 @@
       <Headline style="small">{exerciseType.name}</Headline>
 
       <div class="absolute bottom-2 right-2">
-        <button
-          class="variant-filled-surface !bg-transparent text-inherit transition-all dark:text-primary-50"
-          type="button"
-          use:popup={popupFeatured}
-        >
-          <div class="btn-icon flex flex-row justify-center items-center">
-            <MoreHorizontalIcon size="18" />
-          </div>
-        </button>
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger
+            class=" btn-icon flex flex-row justify-center items-center"
+          >
+            <MoreHorizontalIcon size="24" />
+          </DropdownMenu.Trigger>
+
+          <DropdownMenu.Content>
+            {#if exerciseType.description}
+              <DropdownMenu.Item class="w-full justify-end">
+                <Button
+                  action={() =>
+                    modalStore.trigger(workoutDescriptionModalSettings)}
+                  classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none"
+                  type="button"
+                >
+                  <div
+                    class="flex flex-row gap-4 justify-between w-full items-center"
+                  >
+                    <p>Info</p>
+                    <InfoIcon size="18" />
+                  </div>
+                </Button>
+              </DropdownMenu.Item>
+            {/if}
+
+            <DropdownMenu.Item>
+              <Button
+                action={() =>
+                  confirmDeleteWithAction(
+                    modalStore,
+                    () => {
+                      if ($userId)
+                        deleteExerciseTypeAction($userId, exerciseType);
+                    },
+                    "exercise type",
+                    () => {}
+                  )}
+                classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none"
+              >
+                <div class="flex flex-row gap-4 justify-center items-center">
+                  Delete
+                  <Trash2Icon size="18" />
+                </div>
+              </Button>
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
       </div>
     </div>
   </label>

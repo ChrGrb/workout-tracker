@@ -20,7 +20,7 @@
   let userId = useUserId();
 </script>
 
-<Header>
+<Header contentAlwaysVisible={true}>
   <svelte:fragment>Add Exercise Type</svelte:fragment>
   <svelte:fragment slot="action">
     <ExitButton exitPath={data.callback} />

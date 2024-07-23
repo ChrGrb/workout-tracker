@@ -32,6 +32,7 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { ReadTransaction } from "replicache";
   import * as Drawer from "$lib/components/ui/drawer";
+  import Headline from "$lib/base/Headline.svelte";
 
   let sessions: WorkoutSessionFull[] = [];
   let user: UserWithSettings | null = null;
@@ -117,7 +118,7 @@
 </script>
 
 <Drawer.Root shouldScaleBackground>
-  <Header>
+  <Header contentAlwaysVisible={true} headlineStyle="medium">
     <svelte:fragment>Overview</svelte:fragment>
     <svelte:fragment slot="actionEnd">
       <Drawer.Trigger>

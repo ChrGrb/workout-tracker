@@ -123,11 +123,7 @@
               exerciseId: exercise.id,
             }),
             $page.url.pathname
-          ),
-          {
-            replaceState: true,
-            invalidateAll: true,
-          }
+          )
         );
       }
     }}

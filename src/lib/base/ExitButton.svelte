@@ -10,7 +10,7 @@
 
   function redirect() {
     backNavigation.set(true);
-    goto(exitPath);
+    goto(exitPath, { replaceState: true });
   }
 </script>
 

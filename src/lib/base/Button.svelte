@@ -18,7 +18,8 @@
     "variant-filled-primary drop-shadow-none transition-transform active:scale-100 ",
     {
       "btn-icon !bg-transparent text-inherit": icon,
-      "btn border active:border hover:border-primary-500": !icon,
+      btn: !icon,
+      "border active:border hover:border-primary-500": !icon && !highlight,
       "variant-filled-primary": highlight,
     }
   )}

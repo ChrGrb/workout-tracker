@@ -25,6 +25,7 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
   import { page } from "$app/stores";
+  import Headline from "$lib/base/Headline.svelte";
 
   export let data: PageData;
 
@@ -69,6 +70,7 @@
 
 <Container>
   <div class="flex flex-col gap-12">
+    <Headline style="medium">Add Exercise</Headline>
     <div class="flex flex-col gap-4 pb-24">
       {#each exerciseTypes as exerciseType (exerciseType.id)}
         <div animate:flip={{ duration: 100, easing: sineInOut }}>

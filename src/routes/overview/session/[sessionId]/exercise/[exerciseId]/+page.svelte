@@ -213,6 +213,7 @@
   {/if}
 
   <Header>
+    {exercise?.type.name}
     <svelte:fragment slot="action">
       <ExitButton exitPath={data.callback} />
     </svelte:fragment>

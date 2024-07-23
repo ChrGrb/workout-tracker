@@ -53,13 +53,7 @@
 
 <Header>
   {#if session}
-    <SessionHeadlineEditable
-      bind:workoutSession={session}
-      updateSessionNameAction={() => {
-        if (session) updateSessionNameAction(session);
-      }}
-      slot="content"
-    />
+    {session.name}
   {:else}
     Session
   {/if}
@@ -71,6 +65,12 @@
 <Container>
   {#if session}
     <div class="flex flex-col gap-12">
+      <SessionHeadlineEditable
+        bind:workoutSession={session}
+        updateSessionNameAction={() => {
+          if (session) updateSessionNameAction(session);
+        }}
+      />
       <div class="flex flex-col gap-4 items-start">
         <time
           use:svelteTime={{
