@@ -42,7 +42,6 @@
   import { getPreviousExercisesOfType } from "$lib/utils/data/previousExercisesOfType";
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
-  import { addForcedBackToUrl } from "$lib/utils/routing/callbacks";
   import clsx from "clsx";
   import ExerciseCooldownTimer from "./components/ExerciseCooldownTimer.svelte";
   import ExerciseTimer from "./components/ExerciseTimer.svelte";
