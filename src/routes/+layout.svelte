@@ -39,7 +39,7 @@
   import { dev } from "$app/environment";
   import type { PageData } from "./$types";
   import type { ComponentEvents } from "svelte";
-  import { onNavigate } from "$app/navigation";
+  import { afterNavigate, onNavigate, preloadData } from "$app/navigation";
   import { page } from "$app/stores";
 
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
@@ -118,6 +118,10 @@
 
   const backNavigation = useBackNavigation();
   const forwardNavigation = useForwardNavigation();
+
+  afterNavigate(({ from }) => {
+    preloadData(from?.url.pathname ?? "");
+  });
 
   onNavigate((navigation) => {
     if ($backNavigation) {
