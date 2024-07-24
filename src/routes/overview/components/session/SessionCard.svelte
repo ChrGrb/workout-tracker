@@ -10,14 +10,16 @@
   import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
   import Button from "$lib/base/Button.svelte";
   import { useMotionValue } from "svelte-motion";
-  import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
   import { getModalStore } from "@skeletonlabs/skeleton";
+  import { useBackNavigation, useForwardNavigation } from "$lib/stores/stores";
 
   export let session: WorkoutSessionFull;
 
   let x = useMotionValue(0);
 
   const modalStore = getModalStore();
+  const forwardNavigation = useForwardNavigation();
+  const backNavigation = useBackNavigation();
 </script>
 
 <SwipeToAction
@@ -27,6 +29,8 @@
       () => {
         if (session) {
           deleteSessionAction(session);
+
+          backNavigation.set(true);
           goto(getOverviewPath);
         }
       },
@@ -38,10 +42,10 @@
 >
   <Button
     action={() => {
-      if ($x === 0 || $x === undefined)
-        goto(
-          addCallbackToUrl("/overview/session/" + session.id, getOverviewPath)
-        );
+      if ($x === 0 || $x === undefined) {
+        forwardNavigation.set(true);
+        goto("/overview/session/" + session.id);
+      }
     }}
     classes="card variant-soft-primary bg-white p-4 flex flex-row items-center justify-between gap-2 w-full"
   >

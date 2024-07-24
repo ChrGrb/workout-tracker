@@ -6,7 +6,6 @@
   import { svelteTime } from "svelte-time";
   import type { PageData } from "./$types";
   import Button from "$lib/base/Button.svelte";
-  import { Button as ShadButton } from "$lib/components/ui/button";
   import { goto } from "$app/navigation";
   import ExerciseSetCard from "$lib/components/ExerciseSetCard.svelte";
   import ExitButton from "$lib/base/ExitButton.svelte";
@@ -18,22 +17,18 @@
   } from "svelte-feather-icons";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
-  import {
-    getModalStore,
-    popup,
-    type PopupSettings,
-  } from "@skeletonlabs/skeleton";
+  import { getModalStore } from "@skeletonlabs/skeleton";
   import { fade } from "svelte/transition";
   import Header from "$lib/base/Header.svelte";
   import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
   import {
     getReplicache,
+    useBackNavigation,
     useExerciseCooldownTimers,
     useExerciseTimers,
     useSettings,
     useUserId,
   } from "$lib/stores/stores";
-  import { getAddExerciseSetPath } from "$lib/utils/routing/routes";
   import { onMount } from "svelte";
   import type {
     ExerciseFull,
@@ -47,11 +42,7 @@
   import { getPreviousExercisesOfType } from "$lib/utils/data/previousExercisesOfType";
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
-  import { page } from "$app/stores";
-  import {
-    addCallbackToUrl,
-    addForcedBackToUrl,
-  } from "$lib/utils/routing/callbacks";
+  import { addForcedBackToUrl } from "$lib/utils/routing/callbacks";
   import clsx from "clsx";
   import ExerciseCooldownTimer from "./components/ExerciseCooldownTimer.svelte";
   import ExerciseTimer from "./components/ExerciseTimer.svelte";
@@ -64,31 +55,6 @@
   let userId = useUserId();
   let exercise: ExerciseFull | undefined;
   let isActive = false;
-
-  async function addSet() {
-    if (exercise)
-      goto(
-        addCallbackToUrl(
-          getAddExerciseSetPath({
-            sessionId: exercise.sessionId,
-            exerciseId: exercise.id,
-          }),
-          $page.url.pathname
-        )
-      );
-  }
-
-  const popupFeatured: PopupSettings = {
-    // Represents the type of event that opens/closed the popup
-    event: "click",
-    // Matches the data-popup value on your popup element
-    target: "popupFeatured",
-    // Defines which side of your trigger the popup will appear
-    placement: "bottom",
-    middleware: {
-      offset: { crossAxis: -80 },
-    },
-  };
 
   let settings = useSettings();
   let exerciseCooldownTimers = useExerciseCooldownTimers();
@@ -179,43 +145,15 @@
   });
 
   const modalStore = getModalStore();
+
+  const backNavigation = useBackNavigation();
 </script>
 
 <Drawer.Root>
-  {#if exercise}
-    <div
-      class="card variant-filled-surface p-2 pr-0 shadow-xl z-50"
-      data-popup="popupFeatured"
-    >
-      <div class="flex flex-col items-end">
-        <Button
-          action={() =>
-            confirmDeleteWithAction(
-              modalStore,
-              () => {
-                if (exercise) {
-                  deleteExerciseAction(exercise);
-                  goto(addForcedBackToUrl(data.callback));
-                }
-              },
-              "exercise",
-              () => {}
-            )}
-          classes="btn !bg-transparent text-inherit transition-all drop-shadow-none"
-        >
-          <div class="flex flex-row gap-4 justify-center items-center">
-            Delete Exercise
-            <Trash2Icon size="18" />
-          </div>
-        </Button>
-      </div>
-    </div>
-  {/if}
-
   <Header>
     {exercise?.type.name}
     <svelte:fragment slot="action">
-      <ExitButton exitPath={data.callback} />
+      <ExitButton />
     </svelte:fragment>
   </Header>
 
@@ -278,7 +216,9 @@
                           () => {
                             if (exercise) {
                               deleteExerciseAction(exercise);
-                              goto(addForcedBackToUrl(data.callback));
+
+                              backNavigation.set(true);
+                              history.back();
                             }
                           },
                           "exercise",

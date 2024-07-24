@@ -1,7 +1,6 @@
 <script lang="ts">
   import "../app.css";
   import {
-    AppShell,
     Modal,
     Toast,
     initializeStores,
@@ -37,8 +36,6 @@
     PUBLIC_BEAMS_INSTANCE_ID,
   } from "$env/static/public";
   import { dev } from "$app/environment";
-  import type { PageData } from "./$types";
-  import type { ComponentEvents } from "svelte";
   import { afterNavigate, onNavigate, preloadData } from "$app/navigation";
   import { page } from "$app/stores";
 
@@ -52,10 +49,6 @@
   let beamsClient = useBeamsClient();
 
   $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : "";
-
-  function scrollHandler(event: ComponentEvents<AppShell>["scroll"]) {
-    // scroll.set(event.currentTarget.scrollTop);
-  }
 
   function startBeamsClient(userId: string) {
     window.navigator.serviceWorker.ready.then(

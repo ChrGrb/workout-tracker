@@ -4,7 +4,7 @@
   import Headline from "$lib/base/Headline.svelte";
   import SwipeToAction from "$lib/base/SwipeToAction.svelte";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
-  import { useUserId } from "$lib/stores/stores";
+  import { useForwardNavigation, useUserId } from "$lib/stores/stores";
   import calculateExerciseScore from "$lib/utils/data/calculateExerciseScore";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import { getExerciseSetWeight } from "$lib/utils/data/getExerciseSetWeight";
@@ -21,8 +21,6 @@
   import { svelteTime } from "svelte-time";
   import deleteExerciseAction from "../../routes/overview/session/[sessionId]/exercise/[exerciseId]/actions/deleteExerciseAction";
   import { useMotionValue } from "svelte-motion";
-  import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
-  import { page } from "$app/stores";
 
   export let exercise: ExerciseFull;
   export let previous = false;
@@ -86,6 +84,8 @@
   let x = useMotionValue(0);
 
   const modalStore = getModalStore();
+
+  const forwardNavigation = useForwardNavigation();
 </script>
 
 <SwipeToAction
@@ -116,14 +116,12 @@
     )}
     action={() => {
       if ($x === 0 || $x === undefined) {
+        forwardNavigation.set(true);
         goto(
-          addCallbackToUrl(
-            getExercisePath({
-              sessionId: exercise.sessionId,
-              exerciseId: exercise.id,
-            }),
-            $page.url.pathname
-          )
+          getExercisePath({
+            sessionId: exercise.sessionId,
+            exerciseId: exercise.id,
+          })
         );
       }
     }}

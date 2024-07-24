@@ -8,7 +8,7 @@
   } from "svelte-feather-icons";
   import type { Exercise } from "@prisma/client";
   import { fade } from "svelte/transition";
-  import { goto } from "$app/navigation";
+  import { goto, replaceState } from "$app/navigation";
   import AddExerciseCard from "$lib/components/AddCard.svelte";
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
@@ -24,9 +24,8 @@
   import { getAddTemplatePath } from "$lib/utils/routing/routes";
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
-  import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
-  import { page } from "$app/stores";
   import { getModalStore } from "@skeletonlabs/skeleton";
+  import { useForwardNavigation } from "$lib/stores/stores";
 
   export let currentSession: WorkoutSessionFull | null;
   export let workoutSessionTemplates:
@@ -39,13 +38,11 @@
     return exercises.length > 0;
   };
 
+  const forwardNavigation = useForwardNavigation();
+
   async function addExercise() {
-    goto(
-      addCallbackToUrl(
-        `/overview/session/${currentSession?.id}/addExercise`,
-        $page.url.pathname
-      )
-    );
+    forwardNavigation.set(true);
+    goto(`/overview/session/${currentSession?.id}/addExercise`);
   }
 
   $: workoutSessionTemplates =

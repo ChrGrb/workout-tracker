@@ -58,7 +58,7 @@
     Session
   {/if}
   <svelte:fragment slot="action">
-    <ExitButton exitPath={getOverviewPath} />
+    <ExitButton />
   </svelte:fragment>
 </Header>
 

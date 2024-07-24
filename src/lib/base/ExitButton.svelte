@@ -4,13 +4,17 @@
   import Button from "./Button.svelte";
   import { ChevronLeftIcon } from "svelte-feather-icons";
 
-  export let exitPath: string;
+  export let exitPath: string | undefined = undefined;
 
   const backNavigation = useBackNavigation();
 
   function redirect() {
     backNavigation.set(true);
-    goto(exitPath, { replaceState: true });
+    if (exitPath) {
+      goto(exitPath, { replaceState: true });
+    } else {
+      history.back();
+    }
   }
 </script>
 

@@ -8,7 +8,12 @@
   import AddCard from "$lib/components/AddCard.svelte";
   import Header from "$lib/base/Header.svelte";
   import Button from "$lib/base/Button.svelte";
-  import { getReplicache, useUserId } from "$lib/stores/stores";
+  import {
+    getReplicache,
+    useBackNavigation,
+    useForwardNavigation,
+    useUserId,
+  } from "$lib/stores/stores";
   import {
     getAddExerciseTypePath,
     getOverviewPath,
@@ -21,8 +26,6 @@
   import createWorkoutSessionTemplateAction from "../../actions/createWorkoutSessionTemplate";
   import Headline from "$lib/base/Headline.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
-  import { addCallbackToUrl } from "$lib/utils/routing/callbacks";
-  import { page } from "$app/stores";
 
   let userId = useUserId();
   let exerciseTypes: (ExerciseType & { isChecked: boolean })[] = [];
@@ -59,6 +62,9 @@
       }
     );
   });
+
+  const forwardNavigation = useForwardNavigation();
+  const backNavigation = useBackNavigation();
 </script>
 
 <Header>
@@ -93,8 +99,10 @@
         {/each}
         <AddCard
           isInline={true}
-          addAction={() =>
-            goto(addCallbackToUrl(getAddExerciseTypePath, $page.url.pathname))}
+          addAction={() => {
+            forwardNavigation.set(true);
+            goto(getAddExerciseTypePath);
+          }}
         >
           Add Type
         </AddCard>
@@ -110,6 +118,8 @@
               checkedTypes,
               exerciseTemplateName
             );
+
+            backNavigation.set(true);
             goto(getOverviewPath);
           }}
           disabled={isInvalid}

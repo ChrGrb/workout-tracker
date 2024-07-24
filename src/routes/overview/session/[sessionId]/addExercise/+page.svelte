@@ -116,7 +116,7 @@
   <Header>
     <svelte:fragment>Add Exercise</svelte:fragment>
     <svelte:fragment slot="action">
-      <ExitButton exitPath={data.callback} />
+      <ExitButton />
     </svelte:fragment>
   </Header>
 
