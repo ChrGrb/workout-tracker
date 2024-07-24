@@ -176,7 +176,10 @@
                   getExercisePath({
                     sessionId: data.sessionId,
                     exerciseId: newExerciseId,
-                  })
+                  }),
+                  {
+                    replaceState: true,
+                  }
                 );
               }
             }}
