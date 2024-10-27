@@ -4,11 +4,7 @@
   import Button from "$lib/base/Button.svelte";
   import PreviousSessions from "./components/session/PreviousSessions.svelte";
   import SettingsDrawer from "./components/settings/SettingsDrawer.svelte";
-  import {
-    getModalStore,
-    type ModalComponent,
-    type ModalSettings,
-  } from "@skeletonlabs/skeleton";
+  import { type ModalComponent } from "@skeletonlabs/skeleton";
   import { fade } from "svelte/transition";
   import Header from "$lib/base/Header.svelte";
   import {
@@ -32,25 +28,12 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { ReadTransaction } from "replicache";
   import * as Drawer from "$lib/components/ui/drawer";
-  import Headline from "$lib/base/Headline.svelte";
 
   let sessions: WorkoutSessionFull[] = [];
   let user: UserWithSettings | null = null;
   let sessionTemplates: WorkoutSessionTemplateWithExerciseTypes[] = [];
 
   let settings = useSettings();
-
-  let modalSettingsComponent: ModalComponent;
-
-  const modalStore = getModalStore();
-
-  function openSettings() {
-    const modal: ModalSettings = {
-      type: "component",
-      component: modalSettingsComponent,
-    };
-    modalStore.trigger(modal);
-  }
 
   let userId = useUserId();
 
@@ -103,11 +86,6 @@
         onData: (value) => {
           try {
             user = JSON.parse(value!.toString()) as UserWithSettings;
-
-            modalSettingsComponent = {
-              ref: SettingsDrawer,
-              props: { user: user },
-            } as ModalComponent;
 
             settings.set(user.settings);
           } catch {}

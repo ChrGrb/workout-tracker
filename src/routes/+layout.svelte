@@ -113,7 +113,7 @@
   const forwardNavigation = useForwardNavigation();
 
   afterNavigate(({ from }) => {
-    preloadData(from?.url.pathname ?? "");
+    preloadData(from?.url?.pathname ?? "");
   });
 
   onNavigate((navigation) => {

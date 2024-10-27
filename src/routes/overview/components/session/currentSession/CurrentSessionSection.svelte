@@ -67,8 +67,13 @@
         {#if currentSession.exercises}
           {#each filterDeleted(currentSession.exercises).sort(sortByCreatedAt) as exercise (exercise.id)}
             <div
+              id={exercise.id}
               animate:flip={{ delay: 100, duration: 250, easing: sineInOut }}
               transition:fade
+              class="transition-[height] duration-300"
+              on:outrostart={() => {
+                document.getElementById(exercise.id)?.classList.add("height-0");
+              }}
             >
               <ExerciseCard {exercise} />
             </div>
