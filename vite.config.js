@@ -50,7 +50,7 @@ export default defineConfig({
         short_name: "Workout Tracker",
         name: "Workout Tracker",
         description: "The minimal workout tracking app",
-        start_url: "/",
+        start_url: "/auth/login",
         scope: "/",
         display: "standalone",
         theme_color: "#000000",
