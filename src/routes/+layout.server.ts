@@ -4,7 +4,11 @@ import type { LayoutServerLoad } from "./$types";
 export const load: LayoutServerLoad = async (event) => {
   const session = await event.locals.auth();
 
+  console.log("Hello world");
+  console.log(session);
+
   if (!session?.user && !event.url.pathname.startsWith("/auth")) {
+    console.log("Redirecting to login");
     redirect(303, `/auth/login`);
   }
 

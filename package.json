@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
+		"dev:host": "vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
@@ -62,6 +63,7 @@
 		"pusher-js": "^8.3.0",
 		"replicache": "^14.2.2",
 		"svelte-motion": "^0.12.2",
+		"svelte-persisted-store": "^0.12.0",
 		"tailwind-merge": "^2.4.0",
 		"tailwind-variants": "^0.2.1",
 		"vaul-svelte": "^0.3.2",

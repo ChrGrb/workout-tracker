@@ -47,7 +47,7 @@
     ? Math.round(
         (previousScore && score < previousScore
           ? -(1 - score / previousScore) * 100
-          : ((score / previousScore! ?? 0) - 1) * 100) * 100
+          : (score / previousScore - 1) * 100) * 100
       ) / 100
     : null;
 
@@ -111,7 +111,7 @@
         "variant-soft bg-white": !exercise.sets || exerciseSets.length === 0,
         "variant-filled-primary": exercise.sets && exerciseSets.length > 0,
         "variant-soft": previous,
-        "active:scale-100 active:brightness-100": $x !== 0,
+        "active:scale-100": $x !== 0,
       }
     )}
     action={() => {

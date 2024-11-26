@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "Z6QTL53XX6.com.christophgruber.workoutracker"
+        ],
+        "components": [
+          {
+            "/": "/*",
+            "comment": "Matches any URL whose path starts with /open/"
+          }
+        ]
+      }
+    ]
+  }
+}
