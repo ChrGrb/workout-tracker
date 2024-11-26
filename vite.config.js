@@ -35,10 +35,10 @@ export default defineConfig({
       strategies: "injectManifest",
       filename: "service-worker.ts",
       scope: "/",
-      // devOptions: {
-      // 	enabled: true,
-      // 	type: 'module',
-      // },
+      devOptions: {
+        enabled: true,
+        type: "module",
+      },
       injectManifest: {
         globPatterns: ["client/**/*.{js,css,ico,png,svg,webp,woff,woff2}"],
       },
