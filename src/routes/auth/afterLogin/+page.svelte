@@ -10,7 +10,7 @@
   export let data: PageData;
 
   onMount(() => {
-    goto(getOverviewPath);
+    goto(getOverviewPath, { replaceState: true });
   });
 
   useUserId().set(data.userId);
