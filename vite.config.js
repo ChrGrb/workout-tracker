@@ -31,10 +31,9 @@ export default defineConfig({
       includePaths: ["./src/lib/icons/"],
     }),
     SvelteKitPWA({
-      srcDir: "src",
+      srcDir: "./src",
       strategies: "injectManifest",
       filename: "service-worker.ts",
-      scope: "/",
       devOptions: {
         enabled: true,
         type: "module",
@@ -50,8 +49,8 @@ export default defineConfig({
         short_name: "Workout Tracker",
         name: "Workout Tracker",
         description: "The minimal workout tracking app",
-        start_url: "/",
-        scope: "/",
+        start_url: "/auth/login",
+        scope: "/overview",
         display: "standalone",
         theme_color: "#000000",
         background_color: "#ffffff",
