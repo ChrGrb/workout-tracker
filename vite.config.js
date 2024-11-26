@@ -34,6 +34,7 @@ export default defineConfig({
       srcDir: "./src",
       strategies: "injectManifest",
       filename: "service-worker.ts",
+      base: "/",
       devOptions: {
         enabled: true,
         type: "module",
