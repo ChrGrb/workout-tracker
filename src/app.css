@@ -74,6 +74,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* -webkit-transform: translate3d(0, 0, 0); */
   }
 
   :root::view-transition-old(root) {
@@ -131,6 +132,10 @@
     animation: 300ms cubic-bezier(0.76, 0, 0.24, 1) both slide-from-left;
   }
 
+  .header-fix {
+    padding-top: env(safe-area-inset-top);
+  }
+
   html,
   body {
     -webkit-overflow-scrolling: touch !important;
@@ -141,7 +146,7 @@
 
   html {
     min-height: calc(100% + env(safe-area-inset-top));
-    padding: env(safe-area-inset-top) env(safe-area-inset-right)
-      env(safe-area-inset-bottom) env(safe-area-inset-left);
+    /* padding: env(safe-area-inset-top) env(safe-area-inset-right)
+      env(safe-area-inset-bottom) env(safe-area-inset-left); */
   }
 }

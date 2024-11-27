@@ -12,7 +12,7 @@
 
 <div class="fixed z-50 w-full isolate">
   <div
-    class={clsx("z-50 relative bg-white")}
+    class={clsx("z-50 relative bg-white header-fix")}
     style="box-shadow: 0px 5px 5px rgba(0, 0, 0, {Math.min(scroll / 90, 0.3)})"
   >
     <Container>
@@ -39,7 +39,7 @@
 </div>
 
 <div class="relative isolate opacity-0">
-  <div class="z-50 relative">
+  <div class="z-50 relative header-fix">
     <Container>
       <div class="flex justify-start gap-8">
         <slot name="action" />
