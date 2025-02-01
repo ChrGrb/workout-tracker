@@ -1,7 +1,6 @@
 <script lang="ts">
   import Headline from "$lib/base/Headline.svelte";
   import SessionCard from "./SessionCard.svelte";
-  import { Paginator, type PaginationSettings } from "@skeletonlabs/skeleton";
   import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
   import { fade } from "svelte/transition";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
@@ -15,20 +14,6 @@
 
   const itemsPerPage = 4;
   let selectedPage = 1;
-
-  $: paginatedSource = previousSessionsSorted.slice(
-    selectedPage * itemsPerPage,
-    (selectedPage + 1) * itemsPerPage
-  );
-
-  let paginationSettings = {
-    page: 0,
-    limit: 4,
-    size: previousSessions.length,
-    amounts: [4],
-  } satisfies PaginationSettings;
-
-  $: paginationSettings.size = previousSessions.length;
 </script>
 
 <div class="flex flex-col gap-4">
@@ -46,23 +31,13 @@
     {/each}
   </div>
 
-  <!-- <Paginator
-    bind:settings={paginationSettings}
-    select="hidden"
-    justify="justify-center"
-    controlVariant="variant-filled-primary"
-    controlSeparator="justify-between w-full h-12"
-    buttonClasses="fill-current !px-3 !py-1.5 !border-none w-full"
-    showFirstLastButtons={false}
-    showPreviousNextButtons={true}
-  /> -->
-
   <Pagination.Root
     count={previousSessions.length}
     perPage={itemsPerPage}
     let:pages
     let:currentPage
     bind:page={selectedPage}
+    class="px-4"
   >
     <Pagination.Content>
       <Pagination.Item>

@@ -107,7 +107,7 @@
     </svelte:fragment>
   </Header>
   <Container>
-    <div class="flex flex-col gap-12">
+    <div class="flex flex-col gap-12 pb-20">
       <CurrentSessionSection
         bind:workoutSessionTemplates={sessionTemplates}
         bind:currentSession={activeSession}
