@@ -52,9 +52,7 @@
   let userId = useUserId();
 </script>
 
-<Drawer.Content
-  class="bg-white flex flex-col fixed bottom-0 left-0 right-0 max-h-[90vh] rounded-t-[10px] overscroll-contain"
->
+<div>
   <Drawer.Header>
     <Drawer.Title>Add Set</Drawer.Title>
   </Drawer.Header>
@@ -168,4 +166,4 @@
       </Container>
     </div>
   </div>
-</Drawer.Content>
+</div>

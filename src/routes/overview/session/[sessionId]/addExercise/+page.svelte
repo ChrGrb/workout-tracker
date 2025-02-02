@@ -194,11 +194,15 @@
     </div>
   </Container>
 
-  <AddExerciseTypeDrawer
-    exerciseTypeId={selectedExerciseTypeToEdit?.id}
-    exerciseTypeName={selectedExerciseTypeToEdit?.name}
-    exerciseCategory={selectedExerciseTypeToEdit?.category}
-    isOpen={addOpen}
-    {editMode}
-  />
+  <Drawer.Content
+    class="bg-white flex flex-col fixed bottom-0 left-0 right-0 max-h-[96vh] rounded-t-[10px]"
+  >
+    <AddExerciseTypeDrawer
+      exerciseTypeId={selectedExerciseTypeToEdit?.id}
+      exerciseTypeName={selectedExerciseTypeToEdit?.name}
+      exerciseCategory={selectedExerciseTypeToEdit?.category}
+      isOpen={addOpen}
+      {editMode}
+    />
+  </Drawer.Content>
 </Drawer.Root>

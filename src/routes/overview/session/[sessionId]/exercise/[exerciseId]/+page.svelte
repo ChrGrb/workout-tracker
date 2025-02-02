@@ -368,6 +368,10 @@
   </Container>
 
   {#if exercise}
-    <AddExerciseDrawer {exercise} bind:hasTimer />
+    <Drawer.Content
+      class="bg-white flex flex-col fixed bottom-0 left-0 right-0 max-h-[90vh] rounded-t-[10px] overscroll-contain"
+    >
+      <AddExerciseDrawer {exercise} bind:hasTimer />
+    </Drawer.Content>
   {/if}
 </Drawer.Root>
