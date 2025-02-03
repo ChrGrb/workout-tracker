@@ -24,6 +24,7 @@
   import * as Drawer from "$lib/components/ui/drawer";
   import AddExerciseTypeDrawer from "./components/AddExerciseTypeDrawer.svelte";
   import * as Select from "$lib/components/ui/select";
+  import { Check } from "lucide-svelte";
 
   interface Props {
     data: PageData;
@@ -99,14 +100,6 @@
       .at(0)
   );
   let isInvalid = $derived(exerciseTypeSelection.length === 0);
-  let sortTypeSelection = $derived(
-    sortType
-      ? {
-          label: sortType.toString(),
-          value: sortType,
-        }
-      : undefined
-  );
   let sortedExerciseTypes = $derived(
     exerciseTypes.toSorted((a, b) => {
       if (sortType === SortType.createdAt) {
@@ -136,16 +129,21 @@
 
       <div class="flex flex-col gap-4 pb-24">
         <Select.Root
-          selected={sortTypeSelection}
-          onSelectedChange={(e: any) => e && (sortType = e.value)}
+          type="single"
+          onValueChange={(value: string) => (sortType = value)}
+          bind:value={sortType}
         >
           <Select.Trigger class="ml-auto w-[180px] border-none">
             <p class="text-primary-200">Sort by</p>
-            <Select.Value placeholder="Sort by" class="border-none" />
+            {sortType}
           </Select.Trigger>
           <Select.Content>
-            <Select.Item value={SortType.createdAt}>Created at</Select.Item>
-            <Select.Item value={SortType.name}>Name</Select.Item>
+            <Select.Item value={SortType.createdAt} label="Created at">
+              {SortType.createdAt}
+            </Select.Item>
+            <Select.Item value={SortType.name} label="Created at">
+              {SortType.name}
+            </Select.Item>
           </Select.Content>
         </Select.Root>
 

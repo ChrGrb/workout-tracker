@@ -6302,7 +6302,7 @@ svelte-time@^0.9.0:
 
 svelte-toolbelt@^0.4.4:
   version "0.4.6"
-  resolved "https://registry.npmjs.org/svelte-toolbelt/-/svelte-toolbelt-0.4.6.tgz#71f726f67d3ca0ab189b98a43bbdb4ae701cec98"
+  resolved "https://registry.npmjs.org/svelte-toolbelt/-/svelte-toolbelt-0.4.6.tgz"
   integrity sha512-k8OUvXBUifHZcAlWeY/HLg/4J0v5m2iOfOhn8fDmjt4AP8ZluaDh9eBFus9lFiLX6O5l6vKqI1dKL5wy7090NQ==
   dependencies:
     clsx "^2.1.1"
@@ -6369,7 +6369,7 @@ tailwind-variants@^0.2.1:
 
 tailwindcss-animate@^1.0.7:
   version "1.0.7"
-  resolved "https://registry.npmjs.org/tailwindcss-animate/-/tailwindcss-animate-1.0.7.tgz#318b692c4c42676cc9e67b19b78775742388bef4"
+  resolved "https://registry.npmjs.org/tailwindcss-animate/-/tailwindcss-animate-1.0.7.tgz"
   integrity sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==
 
 tailwindcss@^3.4.4:

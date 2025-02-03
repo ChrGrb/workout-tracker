@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
 	import Check from "lucide-svelte/icons/check";
-	import { Select as SelectPrimitive } from "bits-ui";
+	import { Select as SelectPrimitive, type WithoutChild } from "bits-ui";
 	import { cn } from "$lib/utils.js";
 
 	let {
@@ -10,7 +10,7 @@
 		label,
 		children: childrenProp,
 		...restProps
-	} = $props();
+	}: WithoutChild<SelectPrimitive.ItemProps> = $props();
 </script>
 
 <SelectPrimitive.Item

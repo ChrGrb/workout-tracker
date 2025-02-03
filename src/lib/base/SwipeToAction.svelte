@@ -4,6 +4,7 @@
   import { ChevronLeftIcon, Trash2Icon } from "svelte-feather-icons";
   import { fade } from "svelte/transition";
   import generateId from "$lib/utils/generateId";
+  import type { Action } from "svelte/action";
 
   interface Props {
     buttonWidth?: number;
@@ -100,7 +101,7 @@
         animate(x, $x < -(buttonWidth * 0.8) ? -buttonWidth : 0);
       }}
     >
-      {#snippet children({ motion })}
+      {#snippet children({ motion }: { motion: Action })}
         <div use:motion>
           {@render children_render?.()}
         </div>

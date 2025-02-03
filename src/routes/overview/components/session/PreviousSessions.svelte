@@ -7,6 +7,7 @@
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
   import * as Pagination from "$lib/components/ui/pagination";
+  import { ChevronLeft, ChevronRight } from "lucide-svelte";
 
   interface Props {
     previousSessions?: WorkoutSessionFull[];
@@ -44,7 +45,9 @@
     {#snippet children({ pages, currentPage }: any)}
       <Pagination.Content>
         <Pagination.Item>
-          <Pagination.PrevButton />
+          <Pagination.PrevButton>
+            <ChevronLeft class="size-4" />
+          </Pagination.PrevButton>
         </Pagination.Item>
         {#each pages as page (page.key)}
           {#if page.type === "ellipsis"}
@@ -52,10 +55,10 @@
               <Pagination.Ellipsis />
             </Pagination.Item>
           {:else}
-            <Pagination.Item isVisible={currentPage == page.value}>
-              <Pagination.Link {page} isActive={currentPage == page.value}>
-                {page.value}
-              </Pagination.Link>
+            <Pagination.Item>
+              <Pagination.NextButton>
+                <ChevronRight class="size-4" />
+              </Pagination.NextButton>
             </Pagination.Item>
           {/if}
         {/each}

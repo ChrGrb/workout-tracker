@@ -1,8 +1,15 @@
-<script>
+<script lang="ts">
 	import { cn } from "$lib/utils.js";
 	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
 
-	let { ref = $bindable(null), class: className, inset, ...restProps } = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		inset,
+		...restProps
+	}: DropdownMenuPrimitive.ItemProps & {
+		inset?: boolean;
+	} = $props();
 </script>
 
 <DropdownMenuPrimitive.Item
