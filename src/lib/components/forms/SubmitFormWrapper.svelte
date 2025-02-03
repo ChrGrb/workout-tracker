@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <script lang="ts">
   import { applyAction, enhance } from "$app/forms";
   import Button from "$lib/base/Button.svelte";

@@ -9,12 +9,16 @@
   import SwipeToAction from "$lib/base/SwipeToAction.svelte";
   import { getModalStore } from "@skeletonlabs/skeleton";
 
-  export let exerciseSet: ExerciseSet;
-  export let deleteAction: () => void;
+  interface Props {
+    exerciseSet: ExerciseSet;
+    deleteAction: () => void;
+  }
 
-  $: exerciseSetTypeString =
-    exerciseSet.exerciseSetType.charAt(0).toUpperCase() +
-    exerciseSet.exerciseSetType.slice(1).toLowerCase();
+  let { exerciseSet, deleteAction }: Props = $props();
+
+  let exerciseSetTypeString =
+    $derived(exerciseSet.exerciseSetType.charAt(0).toUpperCase() +
+    exerciseSet.exerciseSetType.slice(1).toLowerCase());
 
   const modalStore = getModalStore();
 </script>

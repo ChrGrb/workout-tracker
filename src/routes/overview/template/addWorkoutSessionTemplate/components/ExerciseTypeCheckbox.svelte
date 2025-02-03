@@ -19,8 +19,12 @@
   import { useUserId } from "$lib/stores/stores";
   import deleteExerciseTypeAction from "../../../session/[sessionId]/addExercise/actions/deleteExerciseTypeAction";
 
-  export let checked: boolean;
-  export let exerciseType: ExerciseType;
+  interface Props {
+    checked: boolean;
+    exerciseType: ExerciseType;
+  }
+
+  let { checked = $bindable(), exerciseType }: Props = $props();
 
   let userId = useUserId();
 

@@ -2,7 +2,21 @@
   import { AccordionItem } from "@skeletonlabs/skeleton";
   import { InfoIcon } from "svelte-feather-icons";
 
-  export let open = false;
+  interface Props {
+    open?: boolean;
+    headline?: import('svelte').Snippet;
+    content?: import('svelte').Snippet;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    open = false,
+    headline,
+    content,
+    children
+  }: Props = $props();
+
+  const content_render = $derived(content);
 </script>
 
 <AccordionItem
@@ -12,10 +26,16 @@
   hover=""
   {open}
 >
-  <svelte:fragment slot="lead"><InfoIcon size="18" /></svelte:fragment>
-  <svelte:fragment slot="summary"><slot name="headline" /></svelte:fragment>
-  <svelte:fragment slot="content">
-    <slot name="content" />
-    <slot />
-  </svelte:fragment>
+  {#snippet lead()}
+    <InfoIcon size="18" />
+  {/snippet}
+  {#snippet summary()}
+    {@render headline?.()}
+  {/snippet}
+  {#snippet content()}
+  
+      {@render content_render?.()}
+      {@render children?.()}
+    
+  {/snippet}
 </AccordionItem>

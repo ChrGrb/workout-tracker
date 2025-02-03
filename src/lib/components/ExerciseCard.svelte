@@ -22,8 +22,12 @@
   import deleteExerciseAction from "../../routes/overview/session/[sessionId]/exercise/[exerciseId]/actions/deleteExerciseAction";
   import { useMotionValue } from "svelte-motion";
 
-  export let exercise: ExerciseFull;
-  export let previous = false;
+  interface Props {
+    exercise: ExerciseFull;
+    previous?: boolean;
+  }
+
+  let { exercise, previous = false }: Props = $props();
 
   let userId = useUserId();
 
@@ -35,23 +39,26 @@
     previousScore = value ?? 0;
   });
 
-  $: exerciseSets = filterDeleted(exercise.sets);
-  $: workoutSets = exerciseSets.filter(
-    (set) => set.exerciseSetType === "WORKOUT"
+  let exerciseSets = $derived(filterDeleted(exercise.sets));
+  let workoutSets = $derived(
+    exerciseSets.filter((set) => set.exerciseSetType === "WORKOUT")
   );
 
-  $: previousScore = 0;
-  $: score = exerciseSets ? calculateExerciseScore(exercise) : null;
+  let previousScore = $state(0);
 
-  $: scoreImprovement = score
-    ? Math.round(
-        (previousScore && score < previousScore
-          ? -(1 - score / previousScore) * 100
-          : (score / previousScore - 1) * 100) * 100
-      ) / 100
-    : null;
+  let score = $derived(exerciseSets ? calculateExerciseScore(exercise) : null);
 
-  $: averageWeight =
+  let scoreImprovement = $derived(
+    score
+      ? Math.round(
+          (previousScore && score < previousScore
+            ? -(1 - score / previousScore) * 100
+            : (score / previousScore - 1) * 100) * 100
+        ) / 100
+      : null
+  );
+
+  let averageWeight = $derived(
     workoutSets.length > 0
       ? Math.round(
           (workoutSets.reduce(
@@ -61,27 +68,30 @@
             workoutSets.length) *
             2
         ) / 2
-      : 0;
+      : 0
+  );
 
-  $: averageReps =
+  let averageReps = $derived(
     workoutSets.length > 0
       ? Math.round(
           workoutSets.reduce((acc, set) => acc + set.reps, 0) /
             workoutSets.length
         )
-      : 0;
+      : 0
+  );
 
-  $: averageTime =
+  let averageTime = $derived(
     workoutSets.length > 0
       ? Math.round(
           workoutSets.reduce((acc, set) => acc + set.time, 0) /
             workoutSets.length
         )
-      : 0;
+      : 0
+  );
 
-  $: setAmount = workoutSets.length;
+  let setAmount = $derived(workoutSets.length);
 
-  let x = useMotionValue(0);
+  let x = $state(useMotionValue(0));
 
   const modalStore = getModalStore();
 
@@ -95,7 +105,7 @@
       modalStore,
       () => {
         if (exercise) {
-          deleteExerciseAction(exercise);
+          deleteExerciseAction($state.snapshot(exercise));
           goto(getOverviewPath);
         }
       },
@@ -126,13 +136,9 @@
       }
     }}
   >
-    <svelte:component
-      this={ProgressRadial}
-      slot="spinner"
-      width="w-[48px]"
-      stroke={100}
-      meter="stroke-primary-50"
-    />
+    {#snippet spinner()}
+      <ProgressRadial width="w-[48px]" stroke={100} meter="stroke-primary-50" />
+    {/snippet}
     <div class="flex flex-col justify-between align-stretch items-start w-full">
       <Headline
         style="small"
@@ -148,7 +154,7 @@
             format: "MMMM D",
           }}
           class="font-light text-sm"
-        />
+        ></time>
       {/if}
     </div>
 

@@ -13,9 +13,13 @@
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { useBackNavigation, useForwardNavigation } from "$lib/stores/stores";
 
-  export let session: WorkoutSessionFull;
+  interface Props {
+    session: WorkoutSessionFull;
+  }
 
-  let x = useMotionValue(0);
+  let { session }: Props = $props();
+
+  let x = $state(useMotionValue(0));
 
   const modalStore = getModalStore();
   const forwardNavigation = useForwardNavigation();
@@ -28,7 +32,7 @@
       modalStore,
       () => {
         if (session) {
-          deleteSessionAction(session);
+          deleteSessionAction($state.snapshot(session));
 
           backNavigation.set(true);
           goto(getOverviewPath);
@@ -59,7 +63,7 @@
           format: "HH:mm · MMMM D",
         }}
         class="font-light text-sm"
-      />
+      ></time>
     </div>
     <ChevronRightIcon size="24" />
   </Button>

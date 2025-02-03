@@ -2,15 +2,25 @@
 	import { Pagination as PaginationPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils.js";
 	import { buttonVariants } from "$lib/components/ui/button/index.js";
-	let className = undefined;
-	export let page;
-	export let size = "icon";
-	export let isActive = false;
-	export { className as class };
+
+	let {
+		ref = $bindable(null),
+		class: className,
+		size = "icon",
+		isActive = false,
+		page,
+		children,
+		...restProps
+	} = $props();
 </script>
 
+{#snippet Fallback()}
+	{page.value}
+{/snippet}
+
 <PaginationPrimitive.Page
-	bind:page
+	bind:ref
+	{page}
 	class={cn(
 		buttonVariants({
 			variant: isActive ? "outline" : "ghost",
@@ -18,8 +28,6 @@
 		}),
 		className
 	)}
-	{...$$restProps}
-	on:click
->
-	<slot>{page.value}</slot>
-</PaginationPrimitive.Page>
+	children={children || Fallback}
+	{...restProps}
+/>

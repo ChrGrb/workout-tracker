@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from "svelte/legacy";
+
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 
   import Headline from "$lib/base/Headline.svelte";
@@ -48,52 +50,26 @@
   import addExerciseSetAction from "./actions/addExerciseSetAction";
   import * as Drawer from "$lib/components/ui/drawer";
   import AddExerciseDrawer from "./components/AddExerciseDrawer.svelte";
+  import { string } from "zod";
 
-  export let data: PageData;
+  interface Props {
+    data: PageData;
+  }
+
+  let { data }: Props = $props();
 
   let userId = useUserId();
-  let exercise: ExerciseFull | undefined;
-  let isActive = false;
+  let exercise: ExerciseFull | undefined = $state();
+  let isActive = $state(false);
 
   let settings = useSettings();
   let exerciseCooldownTimers = useExerciseCooldownTimers();
   let exerciseTimers = useExerciseTimers();
-  let finishExerciseTimer: () => void;
+  let finishExerciseTimer: (() => void | undefined) | undefined = $state();
 
-  let hasTimer = false;
+  let hasTimer = $state(false);
 
-  $: currentExerciseTimer = $exerciseTimers.find(
-    (element) => element.exerciseId == exercise?.id
-  );
-
-  $: if (hasTimer && $settings.useTimer) {
-    hasTimer = false;
-    let thisExerciseTimer = currentExerciseCooldownTimer;
-    if (thisExerciseTimer === undefined) {
-      exerciseCooldownTimers.update((exerciseTimers) => {
-        if (exercise)
-          exerciseTimers.push({
-            exerciseId: exercise.id!,
-            startTime: Date.now(),
-          });
-        return exerciseTimers;
-      });
-    }
-    currentExerciseCooldownTimer = $exerciseCooldownTimers.find(
-      (element) => element.exerciseId == exercise?.id
-    );
-  }
-
-  $: currentExerciseCooldownTimer = $exerciseCooldownTimers.find(
-    (element) => element.exerciseId == exercise?.id
-  );
-
-  let previousExercises: ExerciseFull[] | null = null;
-
-  $: previousExercisesOfType =
-    previousExercises && exercise
-      ? getPreviousExercisesOfType(previousExercises, exercise)
-      : null;
+  let previousExercises: ExerciseFull[] | null = $state(null);
 
   onMount(() => {
     getReplicache($userId ?? "").subscribe(
@@ -146,14 +122,47 @@
   const modalStore = getModalStore();
 
   const backNavigation = useBackNavigation();
+  let currentExerciseTimer = $derived(
+    $exerciseTimers.find((element) => element.exerciseId == exercise?.id)
+  );
+  run(() => {
+    if (hasTimer && $settings.useTimer) {
+      hasTimer = false;
+      let thisExerciseTimer = currentExerciseCooldownTimer;
+      if (thisExerciseTimer === undefined) {
+        exerciseCooldownTimers.update((exerciseTimers) => {
+          if (exercise)
+            exerciseTimers.push({
+              exerciseId: exercise.id!,
+              startTime: Date.now(),
+            });
+          return exerciseTimers;
+        });
+      }
+      currentExerciseCooldownTimer = $exerciseCooldownTimers.find(
+        (element) => element.exerciseId == exercise?.id
+      );
+    }
+  });
+
+  let currentExerciseCooldownTimer = $derived(
+    $exerciseCooldownTimers.find(
+      (element) => element.exerciseId == exercise?.id
+    )
+  );
+  let previousExercisesOfType = $derived(
+    previousExercises && exercise
+      ? getPreviousExercisesOfType(previousExercises, exercise)
+      : null
+  );
 </script>
 
 <Drawer.Root>
   <Header>
     {exercise?.type.name}
-    <svelte:fragment slot="action">
+    {#snippet action()}
       <ExitButton />
-    </svelte:fragment>
+    {/snippet}
   </Header>
 
   <Container>
@@ -166,7 +175,7 @@
               timestamp: exercise.createdAt,
               format: "MMMM D, YYYY · h:mm A ",
             }}
-          />
+          ></time>
         </div>
 
         {#if previousExercisesOfType?.length}
@@ -214,7 +223,7 @@
                           modalStore,
                           () => {
                             if (exercise) {
-                              deleteExerciseAction(exercise);
+                              deleteExerciseAction($state.snapshot(exercise));
 
                               backNavigation.set(true);
                               history.back();
@@ -257,7 +266,11 @@
                   <ExerciseSetCard
                     exerciseSet={set}
                     deleteAction={() => {
-                      if (exercise) deleteExerciseSetAction(exercise, set);
+                      if (exercise)
+                        deleteExerciseSetAction(
+                          $state.snapshot(exercise),
+                          $state.snapshot(set)
+                        );
                     }}
                   />
                 </div>
@@ -312,7 +325,7 @@
                             );
                           });
                           if (exercise !== undefined) {
-                            addExerciseSetAction(exercise, {
+                            addExerciseSetAction($state.snapshot(exercise), {
                               time: elapsedTime,
                               exerciseSetType: "WORKOUT",
                             });
@@ -347,7 +360,7 @@
                   {:else}
                     <Button
                       action={() => {
-                        finishExerciseTimer();
+                        if (finishExerciseTimer) finishExerciseTimer();
                       }}
                       loadingOnClick={true}
                       classes="w-full variant-filled-primary"

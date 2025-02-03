@@ -7,7 +7,11 @@
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
 
-  export let data: PageData;
+  interface Props {
+    data: PageData;
+  }
+
+  let { data }: Props = $props();
 
   onMount(() => {
     goto(getOverviewPath, { replaceState: true });

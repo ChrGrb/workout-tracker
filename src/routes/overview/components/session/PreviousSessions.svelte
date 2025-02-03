@@ -8,12 +8,16 @@
   import { sineInOut } from "svelte/easing";
   import * as Pagination from "$lib/components/ui/pagination";
 
-  export let previousSessions: WorkoutSessionFull[] = [];
+  interface Props {
+    previousSessions?: WorkoutSessionFull[];
+  }
 
-  $: previousSessionsSorted = previousSessions.sort(sortByCreatedAt);
+  let { previousSessions = [] }: Props = $props();
+
+  let previousSessionsSorted = $derived(previousSessions.sort(sortByCreatedAt));
 
   const itemsPerPage = 4;
-  let selectedPage = 1;
+  let selectedPage = $state(1);
 </script>
 
 <div class="flex flex-col gap-4">
@@ -34,31 +38,31 @@
   <Pagination.Root
     count={previousSessions.length}
     perPage={itemsPerPage}
-    let:pages
-    let:currentPage
     bind:page={selectedPage}
     class="px-4"
   >
-    <Pagination.Content>
-      <Pagination.Item>
-        <Pagination.PrevButton />
-      </Pagination.Item>
-      {#each pages as page (page.key)}
-        {#if page.type === "ellipsis"}
-          <Pagination.Item>
-            <Pagination.Ellipsis />
-          </Pagination.Item>
-        {:else}
-          <Pagination.Item isVisible={currentPage == page.value}>
-            <Pagination.Link {page} isActive={currentPage == page.value}>
-              {page.value}
-            </Pagination.Link>
-          </Pagination.Item>
-        {/if}
-      {/each}
-      <Pagination.Item>
-        <Pagination.NextButton />
-      </Pagination.Item>
-    </Pagination.Content>
+    {#snippet children({ pages, currentPage }: any)}
+      <Pagination.Content>
+        <Pagination.Item>
+          <Pagination.PrevButton />
+        </Pagination.Item>
+        {#each pages as page (page.key)}
+          {#if page.type === "ellipsis"}
+            <Pagination.Item>
+              <Pagination.Ellipsis />
+            </Pagination.Item>
+          {:else}
+            <Pagination.Item isVisible={currentPage == page.value}>
+              <Pagination.Link {page} isActive={currentPage == page.value}>
+                {page.value}
+              </Pagination.Link>
+            </Pagination.Item>
+          {/if}
+        {/each}
+        <Pagination.Item>
+          <Pagination.NextButton />
+        </Pagination.Item>
+      </Pagination.Content>
+    {/snippet}
   </Pagination.Root>
 </div>

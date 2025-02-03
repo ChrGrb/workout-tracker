@@ -4,7 +4,11 @@
   import Apple from "$lib/icons/apple.svg?component";
   import { ConfiguredProviders } from "$lib/types/provider";
 
-  export let provider: ConfiguredProviders;
+  interface Props {
+    provider: ConfiguredProviders;
+  }
+
+  let { provider }: Props = $props();
 </script>
 
 {#if provider === ConfiguredProviders.github}

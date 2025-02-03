@@ -5,10 +5,14 @@
   import type { WorkoutSession } from "@prisma/client";
   import { CheckIcon, EditIcon } from "svelte-feather-icons";
 
-  export let workoutSession: WorkoutSession;
-  export let updateSessionNameAction: () => void;
+  interface Props {
+    workoutSession: WorkoutSession;
+    updateSessionNameAction: () => void;
+  }
 
-  let isEditMode = false;
+  let { workoutSession = $bindable(), updateSessionNameAction }: Props = $props();
+
+  let isEditMode = $state(false);
   let isLoading = false;
 </script>
 

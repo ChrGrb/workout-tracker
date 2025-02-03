@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from "svelte/legacy";
+
   import Button from "$lib/base/Button.svelte";
   import {
     PauseIcon,
@@ -27,16 +29,11 @@
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { useForwardNavigation } from "$lib/stores/stores";
 
-  export let currentSession: WorkoutSessionFull | null;
-  export let workoutSessionTemplates:
-    | WorkoutSessionTemplateWithExerciseTypes[]
-    | null;
-
   let isStartLoading = false;
 
-  $: isFinishButtonActive = (exercises: Exercise[]) => {
+  let isFinishButtonActive = $derived((exercises: Exercise[]) => {
     return exercises.length > 0;
-  };
+  });
 
   const forwardNavigation = useForwardNavigation();
 
@@ -45,13 +42,28 @@
     goto(`/overview/session/${currentSession?.id}/addExercise`);
   }
 
-  $: workoutSessionTemplates =
-    workoutSessionTemplates?.sort(sortByCreatedAt) ?? null;
+  interface Props {
+    currentSession: WorkoutSessionFull | null;
+    workoutSessionTemplates: WorkoutSessionTemplateWithExerciseTypes[] | null;
+    createSessionAction: () => void;
+    finishSessionAction: () => void;
+    deleteSessionAction: () => void;
+    updateSessionNameAction: () => void;
+  }
 
-  export let createSessionAction: () => void;
-  export let finishSessionAction: () => void;
-  export let deleteSessionAction: () => void;
-  export let updateSessionNameAction: () => void;
+  let {
+    currentSession = $bindable(),
+    workoutSessionTemplates = $bindable(),
+    createSessionAction,
+    finishSessionAction,
+    deleteSessionAction,
+    updateSessionNameAction,
+  }: Props = $props();
+
+  run(() => {
+    workoutSessionTemplates =
+      workoutSessionTemplates?.sort(sortByCreatedAt) ?? null;
+  });
 
   const modalStore = getModalStore();
 </script>
@@ -71,7 +83,7 @@
               animate:flip={{ delay: 100, duration: 250, easing: sineInOut }}
               transition:fade
               class="transition-[height] duration-300"
-              on:outrostart={() => {
+              onoutrostart={() => {
                 document.getElementById(exercise.id)?.classList.add("height-0");
               }}
             >

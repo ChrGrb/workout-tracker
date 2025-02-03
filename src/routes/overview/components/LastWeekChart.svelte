@@ -3,9 +3,12 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { Exercise, WorkoutSession } from "@prisma/client";
 
-  export let workoutSessions: (WorkoutSession & { exercises: Exercise[] })[] =
-    [];
-  export let loading = false;
+  interface Props {
+    workoutSessions?: (WorkoutSession & { exercises: Exercise[] })[];
+    loading?: boolean;
+  }
+
+  let { workoutSessions = [], loading = false }: Props = $props();
 
   const addDays = (date: Date, days: number) => {
     var result = new Date(date);
@@ -17,7 +20,7 @@
     addDays(new Date(Date.now()), -(i + 1)),
   ).reverse();
 
-  $: weekData = dates.map((date) => {
+  let weekData = $derived(dates.map((date) => {
     let workoutOnDate = workoutSessions.find((workoutSession) => {
       const workoutSessionDate = new Date(workoutSession.createdAt);
       return workoutSessionDate.getFullYear() === date.getFullYear() &&
@@ -35,7 +38,7 @@
         ? filterDeleted(workoutOnDate.exercises).length
         : 0,
     };
-  });
+  }));
 </script>
 
 {#if !loading}
@@ -71,14 +74,14 @@
   </div>
 {:else}
   <div class="card p-4 variant-soft-primary flex flex-col gap-4">
-    <div class="placeholder animate-pulse h-[2.25em] w-40" />
+    <div class="placeholder animate-pulse h-[2.25em] w-40"></div>
 
     <div class="flex flex-row justify-between w-full">
       {#each dates as _}
         <div class="flex flex-col gap-2 items-center">
           <div
             class="placeholder animate-pulse h-10 aspect-square rounded-md drop-shadow-sm"
-          />
+></div>
         </div>
       {/each}
     </div>

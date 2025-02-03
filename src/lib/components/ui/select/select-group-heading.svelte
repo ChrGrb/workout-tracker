@@ -1,12 +1,12 @@
 <script>
-	import { Drawer as DrawerPrimitive } from "vaul-svelte";
+	import { Select as SelectPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils.js";
 
 	let { ref = $bindable(null), class: className, ...restProps } = $props();
 </script>
 
-<DrawerPrimitive.Overlay
+<SelectPrimitive.GroupHeading
 	bind:ref
-	class={cn("fixed inset-0 z-50 bg-black/80", className)}
+	class={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)}
 	{...restProps}
 />

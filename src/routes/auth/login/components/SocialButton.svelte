@@ -4,13 +4,17 @@
   import { ConfiguredProviders } from "$lib/types/provider";
   import { signIn } from "@auth/sveltekit/client";
 
-  export let provider: ConfiguredProviders;
-  export let providerName: string;
+  interface Props {
+    provider: ConfiguredProviders;
+    providerName: string;
+  }
+
+  let { provider, providerName }: Props = $props();
 </script>
 
 <button
   type="button"
-  on:click={() => signIn(provider)}
+  onclick={() => signIn(provider)}
   class={clsx("btn variant-filled pl-1 items-start justify-start py-1", {
     "bg-[#333] text-white": provider === ConfiguredProviders.github,
     "bg-white text-black": provider === ConfiguredProviders.google,

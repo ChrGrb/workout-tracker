@@ -9,12 +9,21 @@
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
   import { getModalStore } from "@skeletonlabs/skeleton";
 
-  export let group: string;
-  export let required: boolean;
-  export let exerciseType: ExerciseType;
-  export let onEditClicked: (exerciseId: string) => void;
+  interface Props {
+    group: string;
+    required: boolean;
+    exerciseType: ExerciseType;
+    onEditClicked: (exerciseId: string) => void;
+  }
 
-  let dropdownMenuOpen = false;
+  let {
+    group = $bindable(),
+    required,
+    exerciseType,
+    onEditClicked
+  }: Props = $props();
+
+  let dropdownMenuOpen = $state(false);
 
   let userId = useUserId();
 

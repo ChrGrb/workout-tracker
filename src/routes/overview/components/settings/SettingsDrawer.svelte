@@ -10,8 +10,13 @@
   import { signOut } from "@auth/sveltekit/client";
   import * as Drawer from "$lib/components/ui/drawer";
 
-  // Props
-  export let user: UserWithSettings;
+  
+  interface Props {
+    // Props
+    user: UserWithSettings;
+  }
+
+  let { user }: Props = $props();
 
   let initials = user.name
     ?.split(" ")
@@ -57,8 +62,12 @@
       {/if}
 
       <SettingsCard>
-        <svelte:fragment slot="headline">Dark Mode</svelte:fragment>
-        <svelte:fragment slot="content"><LightSwitch /></svelte:fragment>
+        {#snippet headline()}
+                Dark Mode
+              {/snippet}
+        {#snippet content()}
+                <LightSwitch />
+              {/snippet}
       </SettingsCard>
 
       {#if user}

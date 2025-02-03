@@ -1,15 +1,25 @@
 <script lang="ts">
+  import { run } from "svelte/legacy";
+
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import clsx from "clsx";
   import { onMount } from "svelte";
   import { XIcon } from "svelte-feather-icons";
 
-  export let timer: { exerciseId: string; startTime: number };
-  export let finishAction: (elapsedTime: number) => void;
-  export let onFinish: () => void;
+  interface Props {
+    timer: { exerciseId: string; startTime: number };
+    finishAction?: (elapsedTime: number) => void;
+    onFinish?: () => void;
+    elapsedTime?: number;
+  }
 
-  export let elapsedTime = 0;
+  let {
+    timer,
+    finishAction,
+    onFinish = $bindable(),
+    elapsedTime = $bindable(0),
+  }: Props = $props();
 
   const updateTime = () => {
     elapsedTime = Date.now() - timer.startTime;
@@ -21,14 +31,14 @@
     updateTime();
     onFinish = () => {
       clearInterval(timerInterval);
-      finishAction(elapsedTime);
+      if (finishAction) finishAction(elapsedTime);
     };
   });
 
-  let minutes = "00";
-  let seconds = "00";
+  let minutes = $state("00");
+  let seconds = $state("00");
 
-  $: {
+  run(() => {
     if (elapsedTime <= 0) {
       minutes = "00";
       seconds = "00";
@@ -39,7 +49,7 @@
       minutes = (minutesTemp < 10 ? "0" : "") + minutesTemp;
       seconds = (secondsTemp < 10 ? "0" : "") + secondsTemp;
     }
-  }
+  });
 </script>
 
 <div
@@ -55,7 +65,9 @@
       >
     </div>
     <Button
-      action={() => finishAction(elapsedTime)}
+      action={() => {
+        if (finishAction) finishAction(elapsedTime);
+      }}
       icon={true}
       loadingOnClick={true}
     >

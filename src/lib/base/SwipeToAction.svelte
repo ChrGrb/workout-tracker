@@ -5,15 +5,28 @@
   import { fade } from "svelte/transition";
   import generateId from "$lib/utils/generateId";
 
-  export let buttonWidth = 50;
-  export let deleteAction: () => void;
-  export let key = generateId();
-  export let disabled = false;
+  interface Props {
+    buttonWidth?: number;
+    deleteAction: () => void;
+    key?: any;
+    disabled?: boolean;
+    x?: any;
+    actionItems?: import("svelte").Snippet;
+    children?: import("svelte").Snippet;
+  }
+
+  let {
+    buttonWidth = 50,
+    deleteAction,
+    key = generateId(),
+    disabled = false,
+    x = $bindable(useMotionValue(0)),
+    actionItems,
+    children,
+  }: Props = $props();
   let swipeButtonWidth = buttonWidth * 1.2;
 
-  export let x = useMotionValue(0);
-
-  $: chevronGap = -($x + swipeButtonWidth) * 0.2;
+  let chevronGap = $derived(-($x + swipeButtonWidth) * 0.2);
 
   function clickOutside(element: HTMLElement, callbackFunction: any) {
     function onClick(event: any) {
@@ -33,6 +46,8 @@
       },
     };
   }
+
+  const children_render = $derived(children);
 </script>
 
 {#if !disabled}
@@ -47,7 +62,7 @@
     <div
       class="card absolute w-1/2 top-[1px] bottom-[1px] right-[1px] variant-filled-error flex justify-end align-middle"
     >
-      <slot name="actionItems">
+      {#if actionItems}{@render actionItems()}{:else}
         <Button
           action={deleteAction}
           icon={$x >= -swipeButtonWidth}
@@ -73,7 +88,7 @@
             </div>
           {/if}
         </Button>
-      </slot>
+      {/if}
     </div>
     <Motion
       drag={disabled ? false : "x"}
@@ -84,13 +99,14 @@
         if ($x < -swipeButtonWidth * 1.3) deleteAction();
         animate(x, $x < -(buttonWidth * 0.8) ? -buttonWidth : 0);
       }}
-      let:motion
     >
-      <div use:motion>
-        <slot />
-      </div>
+      {#snippet children({ motion })}
+        <div use:motion>
+          {@render children_render?.()}
+        </div>
+      {/snippet}
     </Motion>
   </div>
 {:else}
-  <slot />
+  {@render children?.()}
 {/if}

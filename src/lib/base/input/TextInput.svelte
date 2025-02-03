@@ -4,21 +4,35 @@
   import { sineInOut } from "svelte/easing";
   import { fade } from "svelte/transition";
 
-  export let label: string = "";
-  export let type: string;
-  export let name: string | null | undefined;
-  export let id: string | null | undefined;
-  export let required: boolean = false;
-  export let input: string = "";
-  export let step = 1;
-  export let metric = "";
-  export let inputClasses = "";
+  interface Props {
+    label?: string;
+    type: string;
+    name: string | null | undefined;
+    id: string | null | undefined;
+    required?: boolean;
+    input?: string;
+    step?: number;
+    metric?: string;
+    inputClasses?: string;
+  }
+
+  let {
+    label = "",
+    type,
+    name,
+    id,
+    required = false,
+    input = $bindable(""),
+    step = 1,
+    metric = "",
+    inputClasses = ""
+  }: Props = $props();
 
   function typeAction(node: HTMLInputElement) {
     node.type = type;
   }
 
-  $: showRequiredIndicator = required && !(input !== "");
+  let showRequiredIndicator = $derived(required && !(input !== ""));
 </script>
 
 <div class="w-full">

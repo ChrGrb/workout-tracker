@@ -1,15 +1,25 @@
 <script lang="ts">
   import clsx from "clsx";
 
-  export let items: {
+
+  interface Props {
+    items: {
     name: string;
     value: string;
   }[];
+    name: string;
+    required?: boolean;
+    group?: string;
+    label?: string;
+  }
 
-  export let name: string;
-  export let required = false;
-  export let group = "";
-  export let label = "";
+  let {
+    items,
+    name,
+    required = false,
+    group = $bindable(""),
+    label = ""
+  }: Props = $props();
 </script>
 
 <div class="flex flex-col gap-3">

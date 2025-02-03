@@ -24,9 +24,13 @@
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
   import { getModalStore } from "@skeletonlabs/skeleton";
 
-  export let data: PageData;
+  interface Props {
+    data: PageData;
+  }
 
-  let session: WorkoutSessionFull | null;
+  let { data }: Props = $props();
+
+  let session: WorkoutSessionFull | null | undefined = $state(null);
 
   let userId = useUserId();
 
@@ -57,9 +61,9 @@
   {:else}
     Session
   {/if}
-  <svelte:fragment slot="action">
+  {#snippet action()}
     <ExitButton />
-  </svelte:fragment>
+  {/snippet}
 </Header>
 
 <Container>
@@ -68,7 +72,7 @@
       <SessionHeadlineEditable
         bind:workoutSession={session}
         updateSessionNameAction={() => {
-          if (session) updateSessionNameAction(session);
+          if (session) updateSessionNameAction($state.snapshot(session));
         }}
       />
       <div class="flex flex-col gap-4 items-start">
@@ -77,7 +81,7 @@
             timestamp: session.createdAt,
             format: "MMMM D, YYYY · h:mm A ",
           }}
-        />
+        ></time>
       </div>
       <div class="flex flex-col w-full gap-4">
         <div class="flex flex-row justify-between items-center">

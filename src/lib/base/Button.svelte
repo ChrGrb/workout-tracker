@@ -2,14 +2,31 @@
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import clsx from "clsx";
 
-  export let action: () => void = () => {};
-  export let type: "button" | "submit" | "reset" | null | undefined = "button";
-  export let icon = false;
-  export let highlight = false;
-  export let classes = "";
-  export let disabled = false;
-  export let isLoading = false;
-  export let loadingOnClick = false;
+  interface Props {
+    action?: () => void;
+    type?: "button" | "submit" | "reset" | null | undefined;
+    icon?: boolean;
+    highlight?: boolean;
+    classes?: string;
+    disabled?: boolean;
+    isLoading?: boolean;
+    loadingOnClick?: boolean;
+    spinner?: import('svelte').Snippet;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    action = () => {},
+    type = "button",
+    icon = false,
+    highlight = false,
+    classes = "",
+    disabled = false,
+    isLoading = $bindable(false),
+    loadingOnClick = false,
+    spinner,
+    children
+  }: Props = $props();
 </script>
 
 <button
@@ -23,7 +40,7 @@
       "variant-filled-primary": highlight,
     }
   )}
-  on:click={() => {
+  onclick={() => {
     if (loadingOnClick === true) {
       isLoading = true;
     }
@@ -35,7 +52,7 @@
   {type}
 >
   {#if isLoading}
-    <slot name="spinner">
+    {#if spinner}{@render spinner()}{:else}
       <ProgressRadial
         width="w-6"
         stroke={100}
@@ -44,8 +61,8 @@
           "stroke-primary-500": icon,
         })}
       />
-    </slot>
+    {/if}
   {:else}
-    <slot />
+    {@render children?.()}
   {/if}
 </button>

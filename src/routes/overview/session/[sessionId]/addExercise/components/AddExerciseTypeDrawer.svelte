@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import Button from "$lib/base/Button.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
   import RadioSelect from "$lib/base/input/RadioSelect.svelte";
@@ -7,24 +9,36 @@
   import createExerciseTypeAction from "../actions/createExerciseTypeAction";
   import updateExerciseTypeAction from "../actions/updateExerciseTypeAction";
 
-  export let exerciseTypeName = "";
-  export let exerciseCategory: "WEIGHT" | "TIME" = "WEIGHT";
-  export let exerciseTypeId = "";
-  export let isOpen;
-  export let editMode = false;
+  interface Props {
+    exerciseTypeName?: string;
+    exerciseCategory?: "WEIGHT" | "TIME";
+    exerciseTypeId?: string;
+    isOpen: any;
+    editMode?: boolean;
+  }
+
+  let {
+    exerciseTypeName = $bindable(""),
+    exerciseCategory = $bindable("WEIGHT"),
+    exerciseTypeId = "",
+    isOpen,
+    editMode = false
+  }: Props = $props();
 
   let userId = useUserId();
 
-  // $: isInvalid = exerciseTypeName.length === 0;
-
-  $: if (!isOpen) {
-    reset();
-  }
 
   const reset = () => {
     exerciseTypeName = "";
     exerciseCategory = "WEIGHT";
   };
+  // $: isInvalid = exerciseTypeName.length === 0;
+
+  run(() => {
+    if (!isOpen) {
+      reset();
+    }
+  });
 </script>
 
 <div>

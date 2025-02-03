@@ -8,22 +8,30 @@
   import Button from "$lib/base/Button.svelte";
   import updateUserSettingsAction from "./actions/updateUserSettingsAction";
 
-  export let user: UserWithSettings;
+  interface Props {
+    user: UserWithSettings;
+  }
 
-  let duration = (user.settings.timerValue / 1000).toString();
-  let enabled = user.settings.useTimer.toString();
+  let { user }: Props = $props();
 
-  let durationComp = duration;
-  let enabledComp = enabled;
+  let duration = $state((user.settings.timerValue / 1000).toString());
+  let enabled = $state(user.settings.useTimer.toString());
+
+  let durationComp = $state(duration);
+  let enabledComp = $state(enabled);
 
   let settings = useSettings();
 
-  $: isButtonDisabled = duration == durationComp && enabled == enabledComp;
+  let isButtonDisabled = $derived(
+    duration == durationComp && enabled == enabledComp
+  );
 </script>
 
 <SettingsCard>
-  <svelte:fragment slot="headline">Cooldown Timer</svelte:fragment>
-  <svelte:fragment slot="content">
+  {#snippet headline()}
+    Cooldown Timer
+  {/snippet}
+  {#snippet content()}
     <div class="flex flex-col gap-4">
       <RadioSelect
         items={[
@@ -65,5 +73,5 @@
     >
       <p>Update</p>
     </Button>
-  </svelte:fragment>
+  {/snippet}
 </SettingsCard>

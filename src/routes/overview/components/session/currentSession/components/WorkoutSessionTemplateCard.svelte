@@ -11,10 +11,14 @@
   import SwipeToAction from "$lib/base/SwipeToAction.svelte";
   import deleteWorkoutSessionTemplateAction from "../../../../actions/deleteWorkoutSessionTemplate";
 
-  export let workoutSessionTemplate: WorkoutSessionTemplateWithExerciseTypes;
+  interface Props {
+    workoutSessionTemplate: WorkoutSessionTemplateWithExerciseTypes;
+  }
+
+  let { workoutSessionTemplate }: Props = $props();
 
   let userId = useUserId();
-  let x = useMotionValue(0);
+  let x = $state(useMotionValue(0));
 
   const modalStore = getModalStore();
 </script>
@@ -45,13 +49,14 @@
         createSessionFromTemplateAction($userId ?? "", workoutSessionTemplate);
     }}
   >
-    <svelte:component
-      this={ProgressRadial}
-      slot="spinner"
-      width="w-[48px]"
-      stroke={100}
-      meter="stroke-primary-50"
-    />
+    {#snippet spinner()}
+        <ProgressRadial
+        
+        width="w-[48px]"
+        stroke={100}
+        meter="stroke-primary-50"
+      />
+      {/snippet}
     <Headline
       style="small"
       classes="break-words whitespace-normal line-clamp-3 max-w-[95%] text-start"

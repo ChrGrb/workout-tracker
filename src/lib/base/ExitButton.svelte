@@ -4,7 +4,11 @@
   import Button from "./Button.svelte";
   import { ChevronLeftIcon } from "svelte-feather-icons";
 
-  export let exitPath: string | undefined = undefined;
+  interface Props {
+    exitPath?: string | undefined;
+  }
+
+  let { exitPath = undefined }: Props = $props();
 
   const backNavigation = useBackNavigation();
 

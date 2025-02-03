@@ -9,7 +9,11 @@
   import type { PageData } from "./$types";
   import { getToastStore, type ToastSettings } from "@skeletonlabs/skeleton";
 
-  export let data: PageData;
+  interface Props {
+    data: PageData;
+  }
+
+  let { data }: Props = $props();
 
   const toastStore = getToastStore();
 
@@ -30,7 +34,7 @@
         <span
           style="background-image: url('{$page.data.session.user.image}')"
           class="avatar"
-        />
+></span>
       {/if}
       <span class="signedInText">
         <small>Signed in as</small><br />

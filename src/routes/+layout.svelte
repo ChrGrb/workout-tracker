@@ -38,6 +38,11 @@
   import { dev } from "$app/environment";
   import { afterNavigate, onNavigate, preloadData } from "$app/navigation";
   import { page } from "$app/stores";
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
+
+  let { children }: Props = $props();
 
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
@@ -48,7 +53,7 @@
   let scroll = useScroll();
   let beamsClient = useBeamsClient();
 
-  $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : "";
+  let webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : "");
 
   function startBeamsClient(userId: string) {
     window.navigator.serviceWorker.ready.then(
@@ -160,7 +165,7 @@
 <!-- <AppShell on:scroll={scrollHandler}> -->
 {#key $page.url.pathname}
   <div data-vaul-drawer-wrapper class="bg-white">
-    <slot />
+    {@render children?.()}
   </div>
 {/key}
 <!-- </AppShell> -->

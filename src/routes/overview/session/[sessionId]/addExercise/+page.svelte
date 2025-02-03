@@ -25,40 +25,28 @@
   import AddExerciseTypeDrawer from "./components/AddExerciseTypeDrawer.svelte";
   import * as Select from "$lib/components/ui/select";
 
-  export let data: PageData;
-
-  let exerciseTypeSelection = "";
-
-  $: selectedExerciseType = exerciseTypes
-    .filter((exerciseType) => exerciseType.id === exerciseTypeSelection)
-    .at(0);
-
-  let exerciseTypeToEditId = "";
-  $: selectedExerciseTypeToEdit = exerciseTypes
-    .filter((exerciseType) => exerciseType.id === exerciseTypeToEditId)
-    .at(0);
-
-  $: isInvalid = exerciseTypeSelection.length === 0;
-
-  let userId = useUserId();
-  let exerciseTypes: ExerciseType[] = [];
-
-  let addOpen = false;
-  let editMode = false;
-
-  enum SortType {
-    createdAt = "Created at",
-    name = "Name",
+  interface Props {
+    data: PageData;
   }
 
-  let sortType: SortType = SortType.name;
+  let { data }: Props = $props();
 
-  $: sortTypeSelection = sortType
-    ? {
-        label: sortType.toString(),
-        value: sortType,
-      }
-    : undefined;
+  let exerciseTypeSelection = $state("");
+
+  let exerciseTypeToEditId = $state("");
+
+  let userId = useUserId();
+  let exerciseTypes: ExerciseType[] = $state([]);
+
+  let addOpen = $state(false);
+  let editMode = $state(false);
+
+  const SortType = {
+    createdAt: "Created at",
+    name: "Name",
+  };
+
+  let sortType = $state(SortType.name);
 
   onMount(() => {
     getReplicache($userId ?? "").subscribe(
@@ -93,16 +81,6 @@
     );
   });
 
-  $: sortedExerciseTypes = exerciseTypes.sort((a, b) => {
-    if (sortType === SortType.createdAt) {
-      return (b.versionUpdatedAt ?? 0) - (a.versionUpdatedAt ?? 0);
-    } else if (sortType === SortType.name) {
-      return a.name.localeCompare(b.name);
-    }
-
-    return 0;
-  });
-
   const forwardNavigation = useForwardNavigation();
 
   function onEditClicked(exerciseId: string) {
@@ -110,14 +88,46 @@
     addOpen = true;
     editMode = true;
   }
+  let selectedExerciseType = $derived(
+    exerciseTypes
+      .filter((exerciseType) => exerciseType.id === exerciseTypeSelection)
+      .at(0)
+  );
+  let selectedExerciseTypeToEdit = $derived(
+    exerciseTypes
+      .filter((exerciseType) => exerciseType.id === exerciseTypeToEditId)
+      .at(0)
+  );
+  let isInvalid = $derived(exerciseTypeSelection.length === 0);
+  let sortTypeSelection = $derived(
+    sortType
+      ? {
+          label: sortType.toString(),
+          value: sortType,
+        }
+      : undefined
+  );
+  let sortedExerciseTypes = $derived(
+    exerciseTypes.toSorted((a, b) => {
+      if (sortType === SortType.createdAt) {
+        return (b.versionUpdatedAt ?? 0) - (a.versionUpdatedAt ?? 0);
+      } else if (sortType === SortType.name) {
+        return a.name.localeCompare(b.name);
+      }
+
+      return 0;
+    })
+  );
 </script>
 
 <Drawer.Root bind:open={addOpen}>
   <Header>
-    <svelte:fragment>Add Exercise</svelte:fragment>
-    <svelte:fragment slot="action">
+    {#snippet children()}
+      Add Exercise
+    {/snippet}
+    {#snippet action()}
       <ExitButton />
-    </svelte:fragment>
+    {/snippet}
   </Header>
 
   <Container>
@@ -127,7 +137,7 @@
       <div class="flex flex-col gap-4 pb-24">
         <Select.Root
           selected={sortTypeSelection}
-          onSelectedChange={(e) => e && (sortType = e.value)}
+          onSelectedChange={(e: any) => e && (sortType = e.value)}
         >
           <Select.Trigger class="ml-auto w-[180px] border-none">
             <p class="text-primary-200">Sort by</p>
@@ -161,7 +171,7 @@
         <Container>
           <Button
             action={async () => {
-              let exerciseType = selectedExerciseType;
+              let exerciseType = $state.snapshot(selectedExerciseType);
 
               if (exerciseType) {
                 const newExerciseId = await addExerciseAction(

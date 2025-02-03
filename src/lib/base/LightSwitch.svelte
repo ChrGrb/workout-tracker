@@ -11,7 +11,7 @@
 <div class="flex flex-row w-full justify-center drop-shadow-lg">
   <button
     class="grow"
-    on:click={() => {
+    onclick={() => {
       setModeCurrent(true);
       setModeUserPrefers(true);
     }}
@@ -30,7 +30,7 @@
   </button>
   <button
     class="grow"
-    on:click={() => {
+    onclick={() => {
       setModeCurrent(false);
       setModeUserPrefers(false);
     }}

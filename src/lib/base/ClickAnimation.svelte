@@ -1,7 +1,14 @@
 <script lang="ts">
-  import clsx from "clsx";
+  import { stopPropagation } from 'svelte/legacy';
 
-  let clicked = false;
+  import clsx from "clsx";
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
+
+  let { children }: Props = $props();
+
+  let clicked = $state(false);
 
   let clickAnimation = () => {
     clicked = true;
@@ -12,8 +19,8 @@
 </script>
 
 <div
-  on:click|stopPropagation={clickAnimation}
+  onclick={stopPropagation(clickAnimation)}
   class={clsx("transition-transform duration-150", { "scale-75": clicked })}
 >
-  <slot />
+  {@render children?.()}
 </div>

@@ -3,9 +3,24 @@
   import Container from "./Container.svelte";
   import clsx from "clsx";
 
-  let scroll: number;
-  export let contentAlwaysVisible = false;
-  export let headlineStyle: "large" | "medium" | "small" = "small";
+  let scroll: number = $state();
+  interface Props {
+    contentAlwaysVisible?: boolean;
+    headlineStyle?: "large" | "medium" | "small";
+    action?: import('svelte').Snippet;
+    content?: import('svelte').Snippet;
+    children?: import('svelte').Snippet;
+    actionEnd?: import('svelte').Snippet;
+  }
+
+  let {
+    contentAlwaysVisible = false,
+    headlineStyle = "small",
+    action,
+    content,
+    children,
+    actionEnd
+  }: Props = $props();
 </script>
 
 <svelte:window bind:scrollY={scroll} />
@@ -17,21 +32,21 @@
   >
     <Container>
       <div class="flex justify-start items-center align-middle gap-4">
-        <slot name="action" />
+        {@render action?.()}
         <div
           class="items-center"
           style="opacity: {contentAlwaysVisible
             ? 1
             : Math.min(Math.max(scroll - 90, 0) / 90, 1)}"
         >
-          <slot name="content">
+          {#if content}{@render content()}{:else}
             <Headline classes="line-clamp-1" style={headlineStyle}
-              ><slot /></Headline
+              >{@render children?.()}</Headline
             >
-          </slot>
+          {/if}
         </div>
         <div class="absolute right-4 top-4">
-          <slot name="actionEnd" />
+          {@render actionEnd?.()}
         </div>
       </div>
     </Container>
@@ -42,12 +57,12 @@
   <div class="z-50 relative header-fix">
     <Container>
       <div class="flex justify-start gap-8">
-        <slot name="action" />
-        <slot name="content">
-          <Headline classes="line-clamp-1"><slot /></Headline>
-        </slot>
+        {@render action?.()}
+        {#if content}{@render content()}{:else}
+          <Headline classes="line-clamp-1">{@render children?.()}</Headline>
+        {/if}
         <div class="absolute right-4 top-4">
-          <slot name="actionEnd" />
+          {@render actionEnd?.()}
         </div>
       </div>
     </Container>

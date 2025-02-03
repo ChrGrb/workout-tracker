@@ -11,14 +11,12 @@
   import addExerciseSetAction from "../actions/addExerciseSetAction";
   import * as Drawer from "$lib/components/ui/drawer";
 
-  export let exercise: ExerciseFull | undefined;
-
-  let repetitions = "";
-  let weightMain = "";
-  let weightAdditional = "";
-  let notes = "";
-  let exerciseSetType = "WORKOUT";
-  let weightType = "UNIFIED";
+  let repetitions = $state("");
+  let weightMain = $state("");
+  let weightAdditional = $state("");
+  let notes = $state("");
+  let exerciseSetType = $state("WORKOUT");
+  let weightType = $state("UNIFIED");
 
   const reset = () => {
     repetitions = "";
@@ -29,23 +27,29 @@
     weightType = "UNIFIED";
   };
 
-  export let hasTimer: boolean;
+  interface Props {
+    exercise: ExerciseFull | undefined;
+    hasTimer: boolean;
+  }
 
-  $: exerciseSet = {
+  let { exercise, hasTimer = $bindable() }: Props = $props();
+
+  let exerciseSet = $derived({
     reps: +repetitions,
     weight: +weightMain,
     additionalWeight: weightAdditional !== "" ? +weightAdditional : 0.0,
     notes: notes,
     exerciseSetType: exerciseSetType,
-  } as Partial<ExerciseSet>;
+  } as Partial<ExerciseSet>);
 
-  $: isInvalid =
+  let isInvalid = $derived(
     repetitions.length === 0 ||
-    +repetitions < 0 ||
-    weightMain.length === 0 ||
-    +weightMain < 0 ||
-    (weightType !== "UNIFIED" &&
-      (weightAdditional.length === 0 || +weightAdditional < 0));
+      +repetitions < 0 ||
+      weightMain.length === 0 ||
+      +weightMain < 0 ||
+      (weightType !== "UNIFIED" &&
+        (weightAdditional.length === 0 || +weightAdditional < 0))
+  );
 
   let settings = useSettings();
 
@@ -136,9 +140,12 @@
         <div class="w-full">
           <Drawer.Close class="w-full">
             <Button
-              action={() => {
+              action={async () => {
                 if (exercise) {
-                  addExerciseSetAction(exercise, exerciseSet);
+                  await addExerciseSetAction(
+                    $state.snapshot(exercise),
+                    $state.snapshot(exerciseSet)
+                  );
                   hasTimer = true;
 
                   if ($settings.useTimer)

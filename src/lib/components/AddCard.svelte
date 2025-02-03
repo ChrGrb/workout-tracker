@@ -5,9 +5,19 @@
   import clsx from "clsx";
   import { PlusIcon } from "svelte-feather-icons";
 
-  export let addAction = () => {};
-  export let isInline = false;
-  export let loadingOnClick = true;
+  interface Props {
+    addAction?: any;
+    isInline?: boolean;
+    loadingOnClick?: boolean;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    addAction = () => {},
+    isInline = false,
+    loadingOnClick = true,
+    children
+  }: Props = $props();
 </script>
 
 <Button
@@ -22,15 +32,16 @@
   action={addAction}
   {loadingOnClick}
 >
-  <svelte:component
-    this={ProgressRadial}
-    slot="spinner"
-    width="w-[48px]"
-    stroke={100}
-    meter="stroke-primary-900"
-  />
+  {#snippet spinner()}
+    <ProgressRadial
+      
+      width="w-[48px]"
+      stroke={100}
+      meter="stroke-primary-900"
+    />
+  {/snippet}
   <Headline style="small">
-    <slot />
+    {@render children?.()}
   </Headline>
   <PlusIcon size="32" />
 </Button>

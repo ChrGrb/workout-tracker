@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from "svelte/legacy";
+
   import Container from "$lib/base/Container.svelte";
   import { MoreVerticalIcon } from "svelte-feather-icons";
   import Button from "$lib/base/Button.svelte";
@@ -29,9 +31,9 @@
   import type { ReadTransaction } from "replicache";
   import * as Drawer from "$lib/components/ui/drawer";
 
-  let sessions: WorkoutSessionFull[] = [];
-  let user: UserWithSettings | null = null;
-  let sessionTemplates: WorkoutSessionTemplateWithExerciseTypes[] = [];
+  let sessions: WorkoutSessionFull[] = $state([]);
+  let user: UserWithSettings | null = $state(null);
+  let sessionTemplates: WorkoutSessionTemplateWithExerciseTypes[] = $state([]);
 
   let settings = useSettings();
 
@@ -39,9 +41,15 @@
 
   useExerciseCooldownTimers();
 
-  $: activeSession =
-    sessions.filter((session) => !session.finished).at(0) ?? null;
-  $: inactiveSessions = sessions.filter((session) => session.finished);
+  let activeSession: WorkoutSessionFull | null = $state(null);
+
+  $effect(() => {
+    activeSession =
+      sessions.filter((session) => !session.finished).at(0) ?? null;
+  });
+  let inactiveSessions = $derived(
+    sessions.filter((session) => session.finished)
+  );
 
   onMount(() => {
     getReplicache($userId ?? "").subscribe(
@@ -95,16 +103,18 @@
   });
 </script>
 
-<Drawer.Root shouldScaleBackground>
+<Drawer.Root>
   <Header contentAlwaysVisible={true} headlineStyle="medium">
-    <svelte:fragment>Overview</svelte:fragment>
-    <svelte:fragment slot="actionEnd">
+    {#snippet children()}
+      Overview
+    {/snippet}
+    {#snippet actionEnd()}
       <Drawer.Trigger>
         <Button icon={true}>
           <MoreVerticalIcon size="24" />
         </Button>
       </Drawer.Trigger>
-    </svelte:fragment>
+    {/snippet}
   </Header>
   <Container>
     <div class="flex flex-col gap-12 pb-20">
@@ -115,13 +125,16 @@
           if ($userId) createSessionAction($userId);
         }}
         finishSessionAction={() => {
-          if (activeSession) finishSessionAction(activeSession);
+          if (activeSession)
+            finishSessionAction($state.snapshot(activeSession));
         }}
         deleteSessionAction={() => {
-          if (activeSession) deleteSessionAction(activeSession);
+          if (activeSession)
+            deleteSessionAction($state.snapshot(activeSession));
         }}
         updateSessionNameAction={() => {
-          if (activeSession) updateSessionNameAction(activeSession);
+          if (activeSession)
+            updateSessionNameAction($state.snapshot(activeSession));
         }}
       />
 

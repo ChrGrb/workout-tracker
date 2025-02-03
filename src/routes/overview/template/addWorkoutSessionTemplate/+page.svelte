@@ -28,14 +28,14 @@
   import TextInput from "$lib/base/input/TextInput.svelte";
 
   let userId = useUserId();
-  let exerciseTypes: (ExerciseType & { isChecked: boolean })[] = [];
-  let exerciseTemplateName = "";
+  let exerciseTypes: (ExerciseType & { isChecked: boolean })[] = $state([]);
+  let exerciseTemplateName = $state("");
 
-  $: checkedTypes = exerciseTypes.filter(
+  let checkedTypes = $derived(exerciseTypes.filter(
     (exerciseType) => exerciseType.isChecked
-  );
+  ));
 
-  $: isInvalid = checkedTypes.length <= 0 || exerciseTemplateName.length <= 0;
+  let isInvalid = $derived(checkedTypes.length <= 0 || exerciseTemplateName.length <= 0);
 
   onMount(() => {
     getReplicache($userId ?? "").subscribe(
@@ -68,10 +68,14 @@
 </script>
 
 <Header>
-  <svelte:fragment>Add Template</svelte:fragment>
-  <svelte:fragment slot="action">
-    <ExitButton exitPath="/overview" />
-  </svelte:fragment>
+  {#snippet children()}
+    Add Template
+  {/snippet}
+  {#snippet action()}
+  
+      <ExitButton exitPath="/overview" />
+    
+  {/snippet}
 </Header>
 
 <Container>
