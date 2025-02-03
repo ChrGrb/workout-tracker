@@ -125,7 +125,8 @@
   let currentExerciseTimer = $derived(
     $exerciseTimers.find((element) => element.exerciseId == exercise?.id)
   );
-  run(() => {
+
+  $effect(() => {
     if (hasTimer && $settings.useTimer) {
       hasTimer = false;
       let thisExerciseTimer = currentExerciseCooldownTimer;
@@ -382,7 +383,7 @@
 
   {#if exercise}
     <Drawer.Content
-      class="bg-white flex flex-col fixed bottom-0 left-0 right-0 max-h-[90vh] rounded-t-[10px] overscroll-contain"
+      class="bg-white flex flex-col fixed bottom-0 left-0 right-0 rounded-t-[10px] max-h-[100dvh] overscroll-contain"
     >
       <AddExerciseDrawer {exercise} bind:hasTimer />
     </Drawer.Content>

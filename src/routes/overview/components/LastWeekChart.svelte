@@ -17,28 +17,30 @@
   };
 
   let dates = Array.from({ length: 7 }, (_, i) =>
-    addDays(new Date(Date.now()), -(i + 1)),
+    addDays(new Date(Date.now()), -i)
   ).reverse();
 
-  let weekData = $derived(dates.map((date) => {
-    let workoutOnDate = workoutSessions.find((workoutSession) => {
-      const workoutSessionDate = new Date(workoutSession.createdAt);
-      return workoutSessionDate.getFullYear() === date.getFullYear() &&
-        workoutSessionDate.getMonth() === date.getMonth() &&
-        workoutSessionDate.getDate() === date.getDate()
-        ? true
-        : false;
-    });
+  let weekData = $derived(
+    dates.map((date) => {
+      let workoutOnDate = workoutSessions.find((workoutSession) => {
+        const workoutSessionDate = new Date(workoutSession.createdAt);
+        return workoutSessionDate.getFullYear() === date.getFullYear() &&
+          workoutSessionDate.getMonth() === date.getMonth() &&
+          workoutSessionDate.getDate() === date.getDate()
+          ? true
+          : false;
+      });
 
-    return {
-      weekday: new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(
-        date,
-      ),
-      exerciseCount: workoutOnDate
-        ? filterDeleted(workoutOnDate.exercises).length
-        : 0,
-    };
-  }));
+      return {
+        weekday: new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(
+          date
+        ),
+        exerciseCount: workoutOnDate
+          ? filterDeleted(workoutOnDate.exercises).length
+          : 0,
+      };
+    })
+  );
 </script>
 
 {#if !loading}
@@ -81,7 +83,7 @@
         <div class="flex flex-col gap-2 items-center">
           <div
             class="placeholder animate-pulse h-10 aspect-square rounded-md drop-shadow-sm"
-></div>
+          ></div>
         </div>
       {/each}
     </div>

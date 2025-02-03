@@ -141,7 +141,6 @@
     -webkit-overflow-scrolling: touch !important;
     overflow: auto !important;
     overflow-x: hidden !important;
-    height: 100% !important;
   }
 
   html {

@@ -10,6 +10,7 @@
   import { fade } from "svelte/transition";
   import addExerciseSetAction from "../actions/addExerciseSetAction";
   import * as Drawer from "$lib/components/ui/drawer";
+  import { ScrollArea } from "$lib/components/ui/scroll-area";
 
   let repetitions = $state("");
   let weightMain = $state("");
@@ -56,7 +57,7 @@
   let userId = useUserId();
 </script>
 
-<div>
+<ScrollArea class="max-h-[80vh] w-full">
   <Drawer.Header>
     <Drawer.Title>Add Set</Drawer.Title>
   </Drawer.Header>
@@ -136,41 +137,39 @@
         />
       </div>
 
-      <Container>
-        <div class="w-full">
-          <Drawer.Close class="w-full">
-            <Button
-              action={async () => {
-                if (exercise) {
-                  await addExerciseSetAction(
-                    $state.snapshot(exercise),
-                    $state.snapshot(exerciseSet)
-                  );
-                  hasTimer = true;
+      <Drawer.Footer class="px-0">
+        <Drawer.Close class="w-full">
+          <Button
+            action={async () => {
+              if (exercise) {
+                await addExerciseSetAction(
+                  $state.snapshot(exercise),
+                  $state.snapshot(exerciseSet)
+                );
+                hasTimer = true;
 
-                  if ($settings.useTimer)
-                    fetch("https://eoj3xsgtl8d1hzc.m.pipedream.net", {
-                      method: "POST",
-                      body: JSON.stringify({
-                        delay: $settings.timerValue,
-                        userId: $userId,
-                        sessionId: exercise.sessionId,
-                        exerciseId: exercise.id,
-                      }),
-                    });
+                if ($settings.useTimer)
+                  fetch("https://eoj3xsgtl8d1hzc.m.pipedream.net", {
+                    method: "POST",
+                    body: JSON.stringify({
+                      delay: $settings.timerValue,
+                      userId: $userId,
+                      sessionId: exercise.sessionId,
+                      exerciseId: exercise.id,
+                    }),
+                  });
 
-                  reset();
-                }
-              }}
-              disabled={isInvalid}
-              highlight={true}
-              classes="w-full"
-            >
-              Add
-            </Button>
-          </Drawer.Close>
-        </div>
-      </Container>
+                reset();
+              }
+            }}
+            disabled={isInvalid}
+            highlight={true}
+            classes="w-full"
+          >
+            Add
+          </Button>
+        </Drawer.Close>
+      </Drawer.Footer>
     </div>
   </div>
-</div>
+</ScrollArea>

@@ -3,14 +3,14 @@
   import Container from "./Container.svelte";
   import clsx from "clsx";
 
-  let scroll: number = $state();
+  let scroll: number = $state<number>(0);
   interface Props {
     contentAlwaysVisible?: boolean;
     headlineStyle?: "large" | "medium" | "small";
-    action?: import('svelte').Snippet;
-    content?: import('svelte').Snippet;
-    children?: import('svelte').Snippet;
-    actionEnd?: import('svelte').Snippet;
+    action?: import("svelte").Snippet;
+    content?: import("svelte").Snippet;
+    children?: import("svelte").Snippet;
+    actionEnd?: import("svelte").Snippet;
   }
 
   let {
@@ -19,7 +19,7 @@
     action,
     content,
     children,
-    actionEnd
+    actionEnd,
   }: Props = $props();
 </script>
 

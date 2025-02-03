@@ -56,14 +56,16 @@
             </Pagination.Item>
           {:else}
             <Pagination.Item>
-              <Pagination.NextButton>
-                <ChevronRight class="size-4" />
-              </Pagination.NextButton>
+              <Pagination.Link {page} isActive={currentPage == page.value}>
+                {page.value}
+              </Pagination.Link>
             </Pagination.Item>
           {/if}
         {/each}
         <Pagination.Item>
-          <Pagination.NextButton />
+          <Pagination.NextButton>
+            <ChevronRight class="size-4" />
+          </Pagination.NextButton>
         </Pagination.Item>
       </Pagination.Content>
     {/snippet}
