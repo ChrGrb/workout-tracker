@@ -25,7 +25,7 @@
   <Headline style="small">Previous Sessions</Headline>
 
   <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-    {#each previousSessionsSorted.slice(selectedPage * itemsPerPage, (selectedPage + 1) * itemsPerPage) as session (session.id)}
+    {#each previousSessionsSorted.slice((selectedPage - 1) * itemsPerPage, selectedPage * itemsPerPage) as session (session.id)}
       <div
         in:fade={{ duration: 100, delay: 100 }}
         out:fade={{ duration: 100 }}
