@@ -60,7 +60,7 @@
     }}
     classes="card variant-soft-primary bg-white p-4 flex flex-row items-center justify-between gap-2 w-full"
   >
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2 items-start">
       <div class="flex flex-row gap-2 justify-start mb-2 !ml-0">
         <Headline style="small">{session.name}</Headline>
       </div>
@@ -74,7 +74,7 @@
           timestamp: session.createdAt,
           format: "HH:mm · MMMM D",
         }}
-        class="font-light text-sm"
+        class="font-light text-sm text-start"
       ></time>
     </div>
     <ChevronRightIcon size="24" />

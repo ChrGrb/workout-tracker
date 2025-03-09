@@ -39,7 +39,7 @@
   import { afterNavigate, onNavigate, preloadData } from "$app/navigation";
   import { page } from "$app/stores";
   interface Props {
-    children?: import('svelte').Snippet;
+    children?: import("svelte").Snippet;
   }
 
   let { children }: Props = $props();

@@ -24,7 +24,12 @@
 <div class="flex flex-col gap-3">
   <p class="label">{label}</p>
 
-  <Select.Root type="single" {name} bind:value {required}>
+  <Select.Root
+    type="single"
+    {name}
+    bind:value={() => value ?? undefined, (v) => (value = v ?? null)}
+    {required}
+  >
     <Select.Trigger class="w-full">
       {value
         ? (items.find((item) => item.value === value)?.label ?? label)
