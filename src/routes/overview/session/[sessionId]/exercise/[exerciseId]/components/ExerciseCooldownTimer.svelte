@@ -50,7 +50,7 @@
 
 <div
   class={clsx(
-    "card flex flex-col gap-8 justify-center py-4 pl-8 px-4 md:p-6 variant-soft-primary relative shadow-sm"
+    "card flex flex-col gap-8 justify-center py-4 pl-8 px-4 md:p-6 variant-filled-primary relative shadow-sm rounded-full border border-white"
   )}
 >
   <div class="absolute top-2 right-2 z-50"></div>
