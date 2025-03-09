@@ -5,19 +5,31 @@
   import TextArea from "$lib/base/input/TextArea.svelte";
   import RadioSelect from "$lib/base/input/RadioSelect.svelte";
   import type { ExerciseSet } from "@prisma/client";
-  import { useSettings, useUserId } from "$lib/stores/stores";
+  import {
+    useAddExerciseSetSettings,
+    useSettings,
+    useUserId,
+  } from "$lib/stores/stores";
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
   import { fade } from "svelte/transition";
   import addExerciseSetAction from "../actions/addExerciseSetAction";
   import * as Drawer from "$lib/components/ui/drawer";
   import { ScrollArea } from "$lib/components/ui/scroll-area";
 
+  const exerciseSetSettings = useAddExerciseSetSettings();
+
+  const defaultExerciseWeightType = $derived(
+    $exerciseSetSettings.find(
+      (element) => element.exerciseTypeId === exercise?.typeId
+    )?.exerciseInputType
+  );
+
   let repetitions = $state("");
   let weightMain = $state("");
   let weightAdditional = $state("");
   let notes = $state("");
   let exerciseSetType = $state("WORKOUT");
-  let weightType = $state("UNIFIED");
+  let weightType = $state(defaultExerciseWeightType ?? "UNIFIED");
 
   const reset = () => {
     repetitions = "";
@@ -54,6 +66,42 @@
   let settings = useSettings();
 
   let userId = useUserId();
+
+  $effect(() => {
+    updateDefaultExerciseSetType(
+      exercise?.typeId ?? "",
+      weightType as "UNIFIED" | "BILATERAL"
+    );
+  });
+
+  const updateDefaultExerciseSetType = (
+    exerciseTypeId: string,
+    exerciseInputType: "UNIFIED" | "BILATERAL"
+  ) => {
+    exerciseSetSettings.update((exerciseSetSettings) => {
+      if (
+        exerciseSetSettings
+          .map((exerciseSetSetting) => exerciseSetSetting.exerciseTypeId)
+          .includes(exerciseTypeId)
+      ) {
+        return exerciseSetSettings.map((exerciseSetSetting) => {
+          if (exerciseSetSetting.exerciseTypeId === exerciseTypeId) {
+            return {
+              ...exerciseSetSetting,
+              exerciseInputType,
+            };
+          }
+
+          return exerciseSetSetting;
+        });
+      }
+
+      return exerciseSetSettings.concat({
+        exerciseTypeId,
+        exerciseInputType,
+      });
+    });
+  };
 </script>
 
 <div>

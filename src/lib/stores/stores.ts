@@ -4,6 +4,7 @@ import { PUBLIC_REPLICACHE_LICENSE_KEY } from "$env/static/public";
 import { mutators, type M } from "$lib/utils/replicache/mutations/mutations";
 import type * as PusherPushNotifications from "@pusher/push-notifications-web";
 import { persisted } from "svelte-persisted-store";
+import { type AddExerciseSetSettings } from "$lib/types/addExerciseSetSettings";
 
 let replicachePromise: Replicache<M>;
 
@@ -56,3 +57,6 @@ export const useBackNavigation = () =>
 
 export const useForwardNavigation = () =>
   persisted<boolean>("forwardNavigation", false);
+
+export const useAddExerciseSetSettings = () =>
+  persisted<AddExerciseSetSettings[]>("addExerciseSetSettings", []);
