@@ -317,7 +317,7 @@
                       </div>
                     {/if}
 
-                    <Drawer.Trigger>
+                    <Drawer.Trigger class="ml-auto">
                       <Button
                         classes="aspect-square variant-filled-primary p-4 rounded-full"
                       >
