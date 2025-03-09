@@ -109,9 +109,7 @@
     <Drawer.Title>Add Set</Drawer.Title>
   </Drawer.Header>
 
-  <div
-    class="max-w-md w-full mx-auto flex flex-col overflow-auto p-4 rounded-t-[10px]"
-  >
+  <div class="max-w-md w-full mx-auto flex flex-col p-4 rounded-t-[10px] z-50">
     <div class="flex flex-col gap-12">
       <div class="flex flex-col gap-4">
         <RadioSelect
