@@ -105,8 +105,6 @@
   let groupedExerciseTypes = $derived(
     Object.groupBy(sortedExerciseTypes, ({ area }) => area ?? "DEFAULT")
   );
-
-  $inspect(groupedExerciseTypes);
 </script>
 
 <Drawer.Root bind:open={addOpen}>

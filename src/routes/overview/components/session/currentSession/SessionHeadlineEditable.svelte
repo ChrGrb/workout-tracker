@@ -24,8 +24,6 @@
       ),
     ].filter(Boolean)
   );
-
-  $inspect(sessionAreas);
 </script>
 
 {#if !isEditMode}
