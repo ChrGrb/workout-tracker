@@ -8,6 +8,7 @@
   import { useUserId } from "$lib/stores/stores";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
   import { getModalStore } from "@skeletonlabs/skeleton";
+  import { Edit } from "lucide-svelte";
 
   interface Props {
     group: string;
@@ -20,7 +21,7 @@
     group = $bindable(),
     required,
     exerciseType,
-    onEditClicked
+    onEditClicked,
   }: Props = $props();
 
   let dropdownMenuOpen = $state(false);
@@ -68,7 +69,7 @@
                   class="flex flex-row gap-4 justify-between items-center w-full"
                 >
                   Edit
-                  <Trash2Icon size="18" />
+                  <Edit size="18" />
                 </div>
               </Button>
             </DropdownMenu.Item>

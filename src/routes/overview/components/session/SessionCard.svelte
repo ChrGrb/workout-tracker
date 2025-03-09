@@ -12,6 +12,7 @@
   import { useMotionValue } from "svelte-motion";
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { useBackNavigation, useForwardNavigation } from "$lib/stores/stores";
+  import { Badge } from "$lib/components/ui/badge";
 
   interface Props {
     session: WorkoutSessionFull;
@@ -24,6 +25,12 @@
   const modalStore = getModalStore();
   const forwardNavigation = useForwardNavigation();
   const backNavigation = useBackNavigation();
+
+  const sessionAreas = $derived(
+    [
+      ...new Set(session.exercises.map((exercise) => exercise.type.area)),
+    ].filter(Boolean)
+  );
 </script>
 
 <SwipeToAction
@@ -56,6 +63,11 @@
     <div class="flex flex-col gap-2">
       <div class="flex flex-row gap-2 justify-start mb-2 !ml-0">
         <Headline style="small">{session.name}</Headline>
+      </div>
+      <div class="flex flex-row gap-2 justify-start">
+        {#each sessionAreas as area}
+          <Badge>{area}</Badge>
+        {/each}
       </div>
       <time
         use:svelteTime={{

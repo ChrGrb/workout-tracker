@@ -51,6 +51,7 @@
   import * as Drawer from "$lib/components/ui/drawer";
   import AddExerciseDrawer from "./components/AddExerciseDrawer.svelte";
   import { string } from "zod";
+  import Badge from "$lib/components/ui/badge/badge.svelte";
 
   interface Props {
     data: PageData;
@@ -171,6 +172,7 @@
       <div class="flex flex-col gap-12" in:fade={{ duration: 100 }}>
         <div class="flex flex-col gap-4 relative items-start">
           <Headline>{exercise?.type.name}</Headline>
+          <Badge variant="secondary">{exercise?.type.area}</Badge>
           <time
             use:svelteTime={{
               timestamp: exercise.createdAt,

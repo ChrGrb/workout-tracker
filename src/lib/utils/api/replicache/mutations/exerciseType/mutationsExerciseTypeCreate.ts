@@ -23,6 +23,7 @@ const utilsApiMutationsExerciseTypeCreate = async ({
     id: args.exerciseType.id,
     name: args.exerciseType.name,
     category: args.exerciseType.category,
+    area: args.exerciseType.area,
     description: args.exerciseType.description,
     isDeleted: false,
   } as ExerciseType;

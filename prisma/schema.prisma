@@ -115,6 +115,7 @@ model ExerciseType {
   id                      String                   @id @default(cuid())
   name                    String                   @unique
   category                ExerciseTypeCategory     @default(WEIGHT)
+  area                    ExerciseTypeArea?        
   description             String?
   isDeleted               Boolean                  @default(false)
   versionUpdatedAt        Int?                     @default(0)
@@ -126,6 +127,15 @@ model ExerciseType {
 enum ExerciseTypeCategory {
   TIME
   WEIGHT
+}
+
+enum ExerciseTypeArea {
+  CHEST
+  SHOULDERS
+  ARMS
+  CORE
+  BACK
+  LEGS
 }
 
 model ExerciseSet {

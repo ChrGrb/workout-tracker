@@ -25,7 +25,6 @@
     weightAdditional = "";
     notes = "";
     exerciseSetType = "WORKOUT";
-    weightType = "UNIFIED";
   };
 
   interface Props {
@@ -57,7 +56,7 @@
   let userId = useUserId();
 </script>
 
-<ScrollArea class="max-h-[80vh] w-full">
+<div>
   <Drawer.Header>
     <Drawer.Title>Add Set</Drawer.Title>
   </Drawer.Header>
@@ -172,4 +171,4 @@
       </Drawer.Footer>
     </div>
   </div>
-</ScrollArea>
+</div>

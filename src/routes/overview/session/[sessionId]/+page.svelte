@@ -45,6 +45,7 @@
       {
         onData: (data) => {
           try {
+            console.log(data);
             session = JSON.parse(data?.toString()) as WorkoutSessionFull;
           } catch {}
         },

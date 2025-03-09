@@ -30,6 +30,7 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { ReadTransaction } from "replicache";
   import * as Drawer from "$lib/components/ui/drawer";
+  import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
 
   let sessions: WorkoutSessionFull[] = $state([]);
   let user: UserWithSettings | null = $state(null);

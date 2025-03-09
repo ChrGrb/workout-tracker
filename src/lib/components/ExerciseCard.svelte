@@ -21,6 +21,7 @@
   import { svelteTime } from "svelte-time";
   import deleteExerciseAction from "../../routes/overview/session/[sessionId]/exercise/[exerciseId]/actions/deleteExerciseAction";
   import { useMotionValue } from "svelte-motion";
+  import { Badge } from "./ui/badge";
 
   interface Props {
     exercise: ExerciseFull;
@@ -168,55 +169,54 @@
         )}
       >
         {#if +averageTime > 0}
-          <div
-            class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
-          >
-            <p>{(averageTime / 1000).toFixed(0)}</p>
-            <p>s</p>
-          </div>
+          <Badge variant="secondary">
+            <div class="flex flex-row">
+              <p>{(averageTime / 1000).toFixed(0)}</p>
+              <p>s</p>
+            </div>
+          </Badge>
         {/if}
 
         {#if +averageWeight > 0 && +averageReps > 0}
-          <div
-            class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
-          >
-            <p>{averageReps} reps</p>
-          </div>
+          <Badge variant="secondary">
+            <div class="flex flex-row">
+              <p>{averageReps} reps</p>
+            </div>
+          </Badge>
 
-          <div
-            class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
-          >
-            <p>{averageWeight} kg</p>
-          </div>
+          <Badge variant="secondary">
+            <div class="flex flex-row">
+              <p>{averageWeight} kg</p>
+            </div>
+          </Badge>
         {/if}
 
-        <div
-          class="flex flex-row badge rounded-full pr-2.5 bg-white text-black basis-1/3"
-        >
-          <p>{setAmount} sets</p>
-        </div>
+        <Badge variant="secondary">
+          <div class="flex flex-row">
+            <p>{setAmount} sets</p>
+          </div>
+        </Badge>
 
         {#if scoreImprovement && scoreImprovement < Infinity}
-          <div
-            class={clsx(
-              "flex flex-row badge rounded-full pr-2.5 text-white basis-1/3",
-              {
-                "bg-success-700": scoreImprovement >= 0,
-                "bg-warning-700":
-                  scoreImprovement < 0 && scoreImprovement >= -5,
-                "bg-error-700": scoreImprovement < 5,
-              }
-            )}
+          <Badge
+            variant="secondary"
+            class={clsx("flex flex-row text-white", {
+              "bg-success-700": scoreImprovement >= 0,
+              "bg-warning-700": scoreImprovement < 0 && scoreImprovement >= -5,
+              "bg-error-700": scoreImprovement < 5,
+            })}
           >
-            <p>{scoreImprovement.toFixed(1)}%</p>
-            {#if scoreImprovement > 0}
-              <TrendingUpIcon size="14" />
-            {:else if scoreImprovement === 0}
-              <MinusIcon size="14" />
-            {:else}
-              <TrendingDownIcon size="14" />
-            {/if}
-          </div>
+            <div class={clsx("flex flex-row")}>
+              <p>{scoreImprovement.toFixed(1)}%</p>
+              {#if scoreImprovement > 0}
+                <TrendingUpIcon size="14" />
+              {:else if scoreImprovement == 0}
+                <MinusIcon size="14" />
+              {:else}
+                <TrendingDownIcon size="14" />
+              {/if}
+            </div>
+          </Badge>
         {/if}
       </div>
     {/if}

@@ -24,7 +24,8 @@
   import * as Drawer from "$lib/components/ui/drawer";
   import AddExerciseTypeDrawer from "./components/AddExerciseTypeDrawer.svelte";
   import * as Select from "$lib/components/ui/select";
-  import { Check } from "lucide-svelte";
+  import * as Collapsible from "$lib/components/ui/collapsible";
+  import { ChevronsUpDown } from "lucide-svelte";
 
   interface Props {
     data: PageData;
@@ -64,18 +65,6 @@
               JSON.parse(element!.toString())
             ) as ExerciseType[];
             exerciseTypes = filterDeleted(exerciseTypes);
-            console.log(
-              "exerciseTypes",
-              exerciseTypes
-                .map((e) =>
-                  JSON.stringify({
-                    name: e.name,
-                    id: e.id,
-                    isDeleted: e.isDeleted,
-                  })
-                )
-                .join("\n")
-            );
           } catch {}
         },
       }
@@ -100,6 +89,7 @@
       .at(0)
   );
   let isInvalid = $derived(exerciseTypeSelection.length === 0);
+
   let sortedExerciseTypes = $derived(
     exerciseTypes.toSorted((a, b) => {
       if (sortType === SortType.createdAt) {
@@ -111,6 +101,12 @@
       return 0;
     })
   );
+
+  let groupedExerciseTypes = $derived(
+    Object.groupBy(sortedExerciseTypes, ({ area }) => area ?? "DEFAULT")
+  );
+
+  $inspect(groupedExerciseTypes);
 </script>
 
 <Drawer.Root bind:open={addOpen}>
@@ -147,19 +143,36 @@
           </Select.Content>
         </Select.Root>
 
-        {#each sortedExerciseTypes as exerciseType (exerciseType.id)}
-          <div
-            animate:flip={{ duration: 100, easing: sineInOut }}
-            id={exerciseType.id}
-          >
-            <ExerciseTypeRadioButton
-              bind:group={exerciseTypeSelection}
-              {onEditClicked}
-              required={true}
-              {exerciseType}
-            />
-          </div>
+        {#each Object.entries(groupedExerciseTypes) as [area, exerciseTypes] (area)}
+          <Collapsible.Root open={true}>
+            <div class="flex flex-col gap-2">
+              <Collapsible.Trigger class="w-full items-center">
+                <div class="flex flex-row justify-between w-full items-center">
+                  <Headline style="small">{area ?? "DEFAULT"}</Headline>
+                  <ChevronsUpDown class="h-4 w-4" />
+                </div>
+              </Collapsible.Trigger>
+              <Collapsible.Content>
+                <div class="flex flex-col gap-2">
+                  {#each exerciseTypes as exerciseType (exerciseType.id)}
+                    <div
+                      animate:flip={{ duration: 100, easing: sineInOut }}
+                      id={exerciseType.id}
+                    >
+                      <ExerciseTypeRadioButton
+                        bind:group={exerciseTypeSelection}
+                        {onEditClicked}
+                        required={true}
+                        {exerciseType}
+                      />
+                    </div>
+                  {/each}
+                </div>
+              </Collapsible.Content>
+            </div>
+          </Collapsible.Root>
         {/each}
+
         <Drawer.Trigger class="w-full">
           <AddCard isInline={true} loadingOnClick={false}>Add Type</AddCard>
         </Drawer.Trigger>
@@ -209,6 +222,7 @@
       exerciseTypeId={selectedExerciseTypeToEdit?.id}
       exerciseTypeName={selectedExerciseTypeToEdit?.name}
       exerciseCategory={selectedExerciseTypeToEdit?.category}
+      exerciseTypeArea={selectedExerciseTypeToEdit?.area}
       isOpen={addOpen}
       {editMode}
     />

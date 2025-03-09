@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
+  import { run } from "svelte/legacy";
 
   import Button from "$lib/base/Button.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
@@ -8,10 +8,19 @@
   import * as Drawer from "$lib/components/ui/drawer";
   import createExerciseTypeAction from "../actions/createExerciseTypeAction";
   import updateExerciseTypeAction from "../actions/updateExerciseTypeAction";
+  import InputSelect from "$lib/base/input/InputSelect.svelte";
 
   interface Props {
     exerciseTypeName?: string;
     exerciseCategory?: "WEIGHT" | "TIME";
+    exerciseTypeArea?:
+      | "CHEST"
+      | "SHOULDERS"
+      | "ARMS"
+      | "CORE"
+      | "BACK"
+      | "LEGS"
+      | null;
     exerciseTypeId?: string;
     isOpen: any;
     editMode?: boolean;
@@ -20,21 +29,31 @@
   let {
     exerciseTypeName = $bindable(""),
     exerciseCategory = $bindable("WEIGHT"),
+    exerciseTypeArea = $bindable(null),
     exerciseTypeId = "",
     isOpen,
-    editMode = false
+    editMode = false,
   }: Props = $props();
 
   let userId = useUserId();
-
 
   const reset = () => {
     exerciseTypeName = "";
     exerciseCategory = "WEIGHT";
   };
-  // $: isInvalid = exerciseTypeName.length === 0;
 
-  run(() => {
+  const areas = [
+    { value: "CHEST", label: "Chest" },
+    { value: "SHOULDERS", label: "Shoulders" },
+    { value: "ARMS", label: "Arms" },
+    { value: "CORE", label: "Core" },
+    { value: "BACK", label: "Back" },
+    { value: "LEGS", label: "Legs" },
+  ];
+
+  let isInvalid = $derived(exerciseTypeName.length === 0);
+
+  $effect(() => {
     if (!isOpen) {
       reset();
     }
@@ -43,7 +62,9 @@
 
 <div>
   <Drawer.Header>
-    <Drawer.Title>Add Exercise Type</Drawer.Title>
+    <Drawer.Title
+      >{editMode ? "Update Exercise Type" : "Add Exercise Type"}</Drawer.Title
+    >
   </Drawer.Header>
 
   <div
@@ -59,6 +80,12 @@
           name="exerciseCategory"
           label="Category"
           bind:group={exerciseCategory}
+        />
+        <InputSelect
+          items={areas}
+          name="exerciseTypeArea"
+          label="Area"
+          bind:value={exerciseTypeArea}
         />
         <TextInput
           name="exerciseTypeName"
@@ -79,6 +106,7 @@
                   {
                     id: exerciseTypeId,
                     name: exerciseTypeName,
+                    area: exerciseTypeArea,
                     category: exerciseCategory,
                   },
                   $userId
@@ -87,15 +115,16 @@
                 createExerciseTypeAction(
                   $userId,
                   exerciseTypeName,
+                  exerciseTypeArea,
                   exerciseCategory
                 );
               }
 
             reset();
           }}
-          disabled={false}
+          disabled={isInvalid}
         >
-          Add
+          {editMode ? "Update" : "Add"}
         </Button>
       </Drawer.Close>
     </div>
