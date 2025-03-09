@@ -13,6 +13,7 @@
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { useBackNavigation, useForwardNavigation } from "$lib/stores/stores";
   import { Badge } from "$lib/components/ui/badge";
+  import { filterDeleted } from "$lib/utils/data/filterDeleted";
 
   interface Props {
     session: WorkoutSessionFull;
@@ -28,7 +29,9 @@
 
   const sessionAreas = $derived(
     [
-      ...new Set(session.exercises.map((exercise) => exercise.type.area)),
+      ...new Set(
+        filterDeleted(session.exercises).map((exercise) => exercise.type.area)
+      ),
     ].filter(Boolean)
   );
 </script>

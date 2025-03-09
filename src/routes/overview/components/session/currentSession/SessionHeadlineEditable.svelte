@@ -3,6 +3,7 @@
   import Headline from "$lib/base/Headline.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
   import { Badge } from "$lib/components/ui/badge";
+  import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
   import { CheckIcon, EditIcon } from "svelte-feather-icons";
 
@@ -20,7 +21,9 @@
   const sessionAreas = $derived(
     [
       ...new Set(
-        workoutSession.exercises.map((exercise) => exercise.type.area)
+        filterDeleted(workoutSession.exercises).map(
+          (exercise) => exercise.type.area
+        )
       ),
     ].filter(Boolean)
   );
