@@ -203,10 +203,10 @@
             class={clsx("flex flex-row text-white", {
               "bg-success-700": scoreImprovement >= 0,
               "bg-warning-700": scoreImprovement < 0 && scoreImprovement >= -5,
-              "bg-error-700": scoreImprovement < 5,
+              "bg-error-700": scoreImprovement < -5,
             })}
           >
-            <div class={clsx("flex flex-row")}>
+            <div class={clsx("flex flex-row gap-2 items-center")}>
               <p>{scoreImprovement.toFixed(1)}%</p>
               {#if scoreImprovement > 0}
                 <TrendingUpIcon size="14" />
