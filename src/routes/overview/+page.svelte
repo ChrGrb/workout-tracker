@@ -6,7 +6,6 @@
   import Button from "$lib/base/Button.svelte";
   import PreviousSessions from "./components/session/PreviousSessions.svelte";
   import SettingsDrawer from "./components/settings/SettingsDrawer.svelte";
-  import { type ModalComponent } from "@skeletonlabs/skeleton";
   import { fade } from "svelte/transition";
   import Header from "$lib/base/Header.svelte";
   import {
@@ -27,10 +26,9 @@
     WorkoutSessionFull,
     WorkoutSessionTemplateWithExerciseTypes,
   } from "$lib/utils/prismaTypes";
-  import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { ReadTransaction } from "replicache";
   import * as Drawer from "$lib/components/ui/drawer";
-  import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
+  import { subscribeReplicacheData } from "$lib/utils/replicache/subscribeReplicacheData";
 
   let sessions: WorkoutSessionFull[] = $state([]);
   let user: UserWithSettings | null = $state(null);
@@ -53,39 +51,19 @@
   );
 
   onMount(() => {
-    getReplicache($userId ?? "").subscribe(
-      async (tx) =>
-        (await tx.scan({ prefix: `user/${$userId ?? ""}/session` })).toArray(),
-      {
-        onData: (session) => {
-          try {
-            sessions = filterDeleted(
-              session.map((element) =>
-                JSON.parse(element!.toString())
-              ) as WorkoutSessionFull[]
-            );
-          } catch {}
-        },
+    subscribeReplicacheData<WorkoutSessionFull>(
+      $userId ?? "",
+      `user/${$userId ?? ""}/session`,
+      (data) => {
+        sessions = data;
       }
     );
 
-    getReplicache($userId ?? "").subscribe(
-      async (tx) =>
-        (
-          await tx.scan({
-            prefix: `user/${$userId ?? ""}/user/workoutSessionTemplates`,
-          })
-        ).toArray(),
-      {
-        onData: (value) => {
-          try {
-            sessionTemplates = filterDeleted(
-              value.map((element) =>
-                JSON.parse(element!.toString())
-              ) as WorkoutSessionTemplateWithExerciseTypes[]
-            );
-          } catch {}
-        },
+    subscribeReplicacheData<WorkoutSessionTemplateWithExerciseTypes>(
+      $userId ?? "",
+      `user/${$userId ?? ""}/user/workoutSessionTemplates`,
+      (data) => {
+        sessionTemplates = data;
       }
     );
 

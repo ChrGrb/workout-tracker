@@ -26,6 +26,8 @@
   import * as Select from "$lib/components/ui/select";
   import * as Collapsible from "$lib/components/ui/collapsible";
   import { ChevronsUpDown } from "lucide-svelte";
+  import TextArea from "$lib/base/input/TextArea.svelte";
+  import { subscribeReplicacheData } from "$lib/utils/replicache/subscribeReplicacheData";
 
   interface Props {
     data: PageData;
@@ -51,22 +53,11 @@
   let sortType = $state(SortType.name);
 
   onMount(() => {
-    getReplicache($userId ?? "").subscribe(
-      async (tx) =>
-        (
-          await tx.scan({
-            prefix: `user/${$userId}/exerciseType`,
-          })
-        ).toArray(),
-      {
-        onData: (data) => {
-          try {
-            exerciseTypes = data.map((element) =>
-              JSON.parse(element!.toString())
-            ) as ExerciseType[];
-            exerciseTypes = filterDeleted(exerciseTypes);
-          } catch {}
-        },
+    subscribeReplicacheData<ExerciseType>(
+      $userId ?? "",
+      `user/${$userId}/exerciseType`,
+      (data) => {
+        exerciseTypes = data;
       }
     );
   });

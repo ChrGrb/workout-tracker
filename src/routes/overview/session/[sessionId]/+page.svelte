@@ -23,6 +23,7 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
   import { getModalStore } from "@skeletonlabs/skeleton";
+  import { subscribeReplicacheDataSingle } from "$lib/utils/replicache/subscribeReplicacheData";
 
   interface Props {
     data: PageData;
@@ -35,20 +36,11 @@
   let userId = useUserId();
 
   onMount(() => {
-    getReplicache($userId ?? "").subscribe(
-      async (tx) =>
-        (
-          await tx.scan({
-            prefix: `user/${$userId}/session/${data.sessionId}`,
-          })
-        ).toArray(),
-      {
-        onData: (data) => {
-          try {
-            console.log(data);
-            session = JSON.parse(data?.toString()) as WorkoutSessionFull;
-          } catch {}
-        },
+    subscribeReplicacheDataSingle<WorkoutSessionFull>(
+      $userId ?? "",
+      `user/${$userId}/session/${data.sessionId}`,
+      (data) => {
+        session = data;
       }
     );
   });

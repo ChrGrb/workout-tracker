@@ -158,7 +158,12 @@
   let isAddSetDrawerOpen = $state(false);
 </script>
 
-<Drawer.Root bind:open={isAddSetDrawerOpen}>
+<Drawer.Root
+  bind:open={isAddSetDrawerOpen}
+  handleOnly
+  disablePreventScroll
+  noBodyStyles
+>
   <Header>
     {exercise?.type.name}
     {#snippet action()}
@@ -421,10 +426,13 @@
   </Container>
 
   {#if exercise}
-    <Drawer.Content
-      class="bg-white flex flex-col fixed bottom-0 left-0 right-0 rounded-t-[10px] max-h-[100dvh] overscroll-contain"
-    >
-      <AddExerciseDrawer {exercise} bind:hasTimer />
-    </Drawer.Content>
+    <Drawer.Portal>
+      <Drawer.Overlay class="fixed inset-0 bg-black/40" />
+      <Drawer.Content
+        class="bg-white flex flex-col fixed bottom-0 left-0 right-0 rounded-t-[10px] max-h-[100dvh] overscroll-contain"
+      >
+        <AddExerciseDrawer {exercise} bind:hasTimer />
+      </Drawer.Content>
+    </Drawer.Portal>
   {/if}
 </Drawer.Root>

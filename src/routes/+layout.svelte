@@ -162,10 +162,8 @@
 <Modal />
 <Toast />
 
-<!-- <AppShell on:scroll={scrollHandler}> -->
 {#key $page.url.pathname}
   <div data-vaul-drawer-wrapper class="bg-white">
     {@render children?.()}
   </div>
 {/key}
-<!-- </AppShell> -->

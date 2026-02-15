@@ -20,8 +20,8 @@
 
   const defaultExerciseWeightType = $derived(
     $exerciseSetSettings.find(
-      (element) => element.exerciseTypeId === exercise?.typeId
-    )?.exerciseInputType
+      (element) => element.exerciseTypeId === exercise?.typeId,
+    )?.exerciseInputType,
   );
 
   let repetitions = $state("");
@@ -60,7 +60,7 @@
       weightMain.length === 0 ||
       +weightMain < 0 ||
       (weightType !== "UNIFIED" &&
-        (weightAdditional.length === 0 || +weightAdditional < 0))
+        (weightAdditional.length === 0 || +weightAdditional < 0)),
   );
 
   let settings = useSettings();
@@ -70,13 +70,13 @@
   $effect(() => {
     updateDefaultExerciseSetType(
       exercise?.typeId ?? "",
-      weightType as "UNIFIED" | "BILATERAL"
+      weightType as "UNIFIED" | "BILATERAL",
     );
   });
 
   const updateDefaultExerciseSetType = (
     exerciseTypeId: string,
-    exerciseInputType: "UNIFIED" | "BILATERAL"
+    exerciseInputType: "UNIFIED" | "BILATERAL",
   ) => {
     exerciseSetSettings.update((exerciseSetSettings) => {
       if (
@@ -189,7 +189,7 @@
               if (exercise) {
                 await addExerciseSetAction(
                   $state.snapshot(exercise),
-                  $state.snapshot(exerciseSet)
+                  $state.snapshot(exerciseSet),
                 );
                 hasTimer = true;
 

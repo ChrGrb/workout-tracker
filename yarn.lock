@@ -6809,10 +6809,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vaul-svelte@^1.0.0-next.6:
-  version "1.0.0-next.6"
-  resolved "https://registry.npmjs.org/vaul-svelte/-/vaul-svelte-1.0.0-next.6.tgz"
-  integrity sha512-leEKb9Qoj7JOrC0wLnqoczLhHZcwo7UHKBJ7SWBRhdFn0o+x9W1XioUK2OeiZHb5Bp7LyYKtUUjVWO3uJULUCw==
+vaul-svelte@^1.0.0-next.7:
+  version "1.0.0-next.7"
+  resolved "https://registry.npmjs.org/vaul-svelte/-/vaul-svelte-1.0.0-next.7.tgz#cb498c8143fd419a0c3fd5e3c2a6ba2ecff21884"
+  integrity sha512-7zN7Bi3dFQixvvbUJY9uGDe7Ws/dGZeBQR2pXdXmzQiakjrxBvWo0QrmsX3HK+VH+SZOltz378cmgmCS9f9rSg==
   dependencies:
     runed "^0.23.2"
     svelte-toolbelt "^0.7.1"
