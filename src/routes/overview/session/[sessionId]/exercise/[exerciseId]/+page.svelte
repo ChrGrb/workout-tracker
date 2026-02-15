@@ -83,13 +83,13 @@
             isActive = !(JSON.parse(value?.toString()) as WorkoutSessionFull)
               .finished;
             exercise = filterDeleted(
-              (JSON.parse(value?.toString()) as WorkoutSessionFull).exercises
+              (JSON.parse(value?.toString()) as WorkoutSessionFull).exercises,
             )
               .filter((exercise) => exercise.id === data.exerciseId)
               .at(0);
           } catch {}
         },
-      }
+      },
     );
 
     getReplicache($userId ?? "").subscribe(
@@ -104,8 +104,8 @@
           try {
             previousExercises = filterDeleted(
               value.map((element) =>
-                JSON.parse(element!.toString())
-              ) as WorkoutSessionFull[]
+                JSON.parse(element!.toString()),
+              ) as WorkoutSessionFull[],
             )
               .filter((workoutSession) => workoutSession.id !== data.sessionId)
               .flatMap((workoutSession) => workoutSession.exercises);
@@ -113,7 +113,7 @@
             previousExercises = null;
           }
         },
-      }
+      },
     );
   });
 
@@ -121,7 +121,7 @@
 
   const backNavigation = useBackNavigation();
   let currentExerciseTimer = $derived(
-    $exerciseTimers.find((element) => element.exerciseId == exercise?.id)
+    $exerciseTimers.find((element) => element.exerciseId == exercise?.id),
   );
 
   $effect(() => {
@@ -139,20 +139,20 @@
         });
       }
       currentExerciseCooldownTimer = $exerciseCooldownTimers.find(
-        (element) => element.exerciseId == exercise?.id
+        (element) => element.exerciseId == exercise?.id,
       );
     }
   });
 
   let currentExerciseCooldownTimer = $derived(
     $exerciseCooldownTimers.find(
-      (element) => element.exerciseId == exercise?.id
-    )
+      (element) => element.exerciseId == exercise?.id,
+    ),
   );
   let previousExercisesOfType = $derived(
     previousExercises && exercise
       ? getPreviousExercisesOfType(previousExercises, exercise)
-      : null
+      : null,
   );
 
   let isAddSetDrawerOpen = $state(false);
@@ -237,7 +237,7 @@
                             }
                           },
                           "exercise",
-                          () => {}
+                          () => {},
                         )}
                       classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none"
                     >
@@ -276,7 +276,7 @@
                       if (exercise)
                         deleteExerciseSetAction(
                           $state.snapshot(exercise),
-                          $state.snapshot(set)
+                          $state.snapshot(set),
                         );
                     }}
                   />
@@ -313,7 +313,7 @@
                               return exerciseTimers.filter(
                                 (timer) =>
                                   timer.exerciseId !=
-                                  currentExerciseCooldownTimer?.exerciseId
+                                  currentExerciseCooldownTimer?.exerciseId,
                               );
                             });
                           }}
@@ -324,7 +324,7 @@
 
                     <Drawer.Trigger class="ml-auto">
                       <Button
-                        classes="aspect-square variant-filled-primary p-4 rounded-full"
+                        classes="aspect-square variant-filled-primary p-4 rounded-full bg-black/15 backdrop-blur-md backdrop-filter  shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)] border border-white/30"
                       >
                         <Plus size="38" />
                       </Button>
@@ -345,7 +345,7 @@
                               return exerciseTimers.filter(
                                 (timer) =>
                                   timer.exerciseId !=
-                                  currentExerciseCooldownTimer?.exerciseId
+                                  currentExerciseCooldownTimer?.exerciseId,
                               );
                             });
                           }}
@@ -365,7 +365,7 @@
                               return exerciseTimers.filter(
                                 (timer) =>
                                   timer.exerciseId !=
-                                  currentExerciseTimer?.exerciseId
+                                  currentExerciseTimer?.exerciseId,
                               );
                             });
                             if (exercise !== undefined) {
