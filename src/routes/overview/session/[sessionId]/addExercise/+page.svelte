@@ -58,7 +58,7 @@
       `user/${$userId}/exerciseType`,
       (data) => {
         exerciseTypes = data;
-      }
+      },
     );
   });
 
@@ -72,12 +72,12 @@
   let selectedExerciseType = $derived(
     exerciseTypes
       .filter((exerciseType) => exerciseType.id === exerciseTypeSelection)
-      .at(0)
+      .at(0),
   );
   let selectedExerciseTypeToEdit = $derived(
     exerciseTypes
       .filter((exerciseType) => exerciseType.id === exerciseTypeToEditId)
-      .at(0)
+      .at(0),
   );
   let isInvalid = $derived(exerciseTypeSelection.length === 0);
 
@@ -90,19 +90,20 @@
       }
 
       return 0;
-    })
+    }),
   );
 
   let groupedExerciseTypes = $derived(
-    Object.groupBy(sortedExerciseTypes, ({ area }) => area ?? "DEFAULT")
+    Object.groupBy(sortedExerciseTypes, ({ area }) => area ?? "DEFAULT"),
   );
 </script>
 
-<Drawer.Root bind:open={addOpen}>
+<Drawer.Root bind:open={addOpen} handleOnly disablePreventScroll noBodyStyles>
   <Header>
     {#snippet children()}
       Add Exercise
     {/snippet}
+
     {#snippet action()}
       <ExitButton />
     {/snippet}
@@ -177,7 +178,7 @@
                 const newExerciseId = await addExerciseAction(
                   exerciseType,
                   $userId ?? "",
-                  data.sessionId
+                  data.sessionId,
                 );
 
                 forwardNavigation.set(true);
@@ -189,7 +190,7 @@
                   }),
                   {
                     replaceState: true,
-                  }
+                  },
                 );
               }
             }}

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Container from "$lib/base/Container.svelte";
   import Button from "$lib/base/Button.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
   import TextArea from "$lib/base/input/TextArea.svelte";
@@ -14,7 +13,6 @@
   import { fade } from "svelte/transition";
   import addExerciseSetAction from "../actions/addExerciseSetAction";
   import * as Drawer from "$lib/components/ui/drawer";
-  import { ScrollArea } from "$lib/components/ui/scroll-area";
 
   const exerciseSetSettings = useAddExerciseSetSettings();
 
