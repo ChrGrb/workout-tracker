@@ -2,6 +2,7 @@
   import Headline from "./Headline.svelte";
   import Container from "./Container.svelte";
   import clsx from "clsx";
+  import LiquidGlass from "./LiquidGlass.svelte";
 
   let scroll: number = $state<number>(0);
   interface Props {
@@ -26,16 +27,11 @@
 <svelte:window bind:scrollY={scroll} />
 
 <div class="fixed z-50 w-full isolate">
-  <div
-    class={clsx(
-      "z-50 relative bg-white/15 backdrop-blur-md backdrop-filter [mask-image:linear-gradient(to_bottom,black_70%,transparent)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)] pb-10 border border-white/30 header-fix",
+  <LiquidGlass
+    className={clsx(
+      "z-50 relative header-fix [mask-image:linear-gradient(to_bottom,black_70%,transparent)] pb-10",
     )}
   >
-    <div
-      class="pointer-events-none absolute inset-0
-              bg-gradient-to-b
-              from-white/40 via-white/10 to-transparent"
-    ></div>
     <Container>
       <div class="flex justify-start items-center align-middle gap-4">
         {@render action?.()}
@@ -56,7 +52,7 @@
         </div>
       </div>
     </Container>
-  </div>
+  </LiquidGlass>
 </div>
 
 <div class="relative isolate opacity-0">

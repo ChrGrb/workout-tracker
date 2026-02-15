@@ -41,7 +41,7 @@
       `user/${$userId}/session/${data.sessionId}`,
       (data) => {
         session = data;
-      }
+      },
     );
   });
 
@@ -97,7 +97,7 @@
                         }
                       },
                       "session",
-                      () => {}
+                      () => {},
                     );
                   }}
                   classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none"

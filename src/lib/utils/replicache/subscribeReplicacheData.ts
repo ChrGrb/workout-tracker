@@ -4,7 +4,7 @@ import { filterDeleted } from "../data/filterDeleted";
 export function subscribeReplicacheData<T extends { isDeleted: boolean }>(
   userId: string,
   prefix: string,
-  onData: (data: T[]) => void
+  onData: (data: T[]) => void,
 ) {
   getReplicache(userId).subscribe(
     async (tx) =>
@@ -17,33 +17,35 @@ export function subscribeReplicacheData<T extends { isDeleted: boolean }>(
       onData: (data) => {
         try {
           let newData = data.map((element) =>
-            JSON.parse(element!.toString())
+            JSON.parse(element!.toString()),
           ) as any as T[];
           onData(filterDeleted(newData));
         } catch {}
       },
-    }
+    },
   );
 }
 
 export function subscribeReplicacheDataSingle<T extends { isDeleted: boolean }>(
   userId: string,
   prefix: string,
-  onData: (data: T) => void
+  onData: (data: T) => void,
 ) {
-  getReplicache(userId).subscribe(
+  return getReplicache(userId).subscribe(
     async (tx) =>
-      await tx.scan({
-        prefix,
-      }),
+      await tx
+        .scan({
+          prefix,
+        })
+        .toArray(),
     {
       onData: (data) => {
         try {
-          let newData = JSON.parse(data!.toString()) as any as T;
+          let newData = JSON.parse(data![0].toString()) as any as T;
 
           onData(newData);
         } catch {}
       },
-    }
+    },
   );
 }
