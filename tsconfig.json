@@ -16,7 +16,10 @@
 		],
 		"lib": [
 			"WebWorker"
-		]
+		],
+		"target": "es2015",
+		"isolatedModules": true,
+		"verbatimModuleSyntax": true
 	},
 	"include": [
 		"./.svelte-kit/ambient.d.ts",
