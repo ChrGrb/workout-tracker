@@ -50,9 +50,7 @@
 </script>
 
 <LiquidGlass
-  className={clsx(
-    "card flex flex-col gap-8 justify-center py-4 pl-8 px-4 md:p-6 variant-filled-primary relative rounded-full bg-black/15",
-  )}
+  className="card flex flex-col gap-8 justify-center py-4 pl-8 px-4 md:p-6 variant-filled-primary relative rounded-full !bg-black/15"
 >
   <div class="absolute top-2 right-2 z-50"></div>
   <div class="flex flex-row gap-4 items-center md:items-end justify-between">
