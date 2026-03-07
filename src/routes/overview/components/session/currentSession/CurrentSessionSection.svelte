@@ -28,6 +28,8 @@
   import { sineInOut } from "svelte/easing";
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { useForwardNavigation } from "$lib/stores/stores";
+  import MuscleChart from "../MuscleChart.svelte";
+  import { getAreaScoresFromExercises } from "$lib/utils/data/getAreaScoresFromExercises";
 
   let isStartLoading = false;
 
@@ -66,6 +68,8 @@
   });
 
   const modalStore = getModalStore();
+
+  const exercises = $derived(currentSession?.exercises);
 </script>
 
 <div class="flex flex-col gap-12" in:fade={{ duration: 100, delay: 120 }}>
@@ -76,8 +80,19 @@
         {updateSessionNameAction}
       />
       <div class="flex flex-col gap-4">
-        {#if currentSession.exercises}
-          {#each filterDeleted(currentSession.exercises).sort(sortByCreatedAt) as exercise (exercise.id)}
+        {#if exercises}
+          {@const filteredExercises = filterDeleted(exercises)}
+
+          <div>
+            <Headline style="small">Muscular Load</Headline>
+            <div class="px-10">
+              <MuscleChart
+                areas={getAreaScoresFromExercises(filteredExercises)}
+              />
+            </div>
+          </div>
+
+          {#each filteredExercises.sort(sortByCreatedAt) as exercise (exercise.id)}
             <div
               id={exercise.id}
               animate:flip={{ delay: 100, duration: 250, easing: sineInOut }}
@@ -114,7 +129,7 @@
             modalStore,
             deleteSessionAction,
             "session",
-            () => {}
+            () => {},
           );
         }}
         icon={true}

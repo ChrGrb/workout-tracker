@@ -3,7 +3,6 @@
 
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
-  import clsx from "clsx";
   import { onMount } from "svelte";
   import { XIcon } from "svelte-feather-icons";
   import LiquidGlass from "$lib/base/LiquidGlass.svelte";

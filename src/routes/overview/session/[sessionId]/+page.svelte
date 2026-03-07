@@ -24,6 +24,8 @@
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { subscribeReplicacheDataSingle } from "$lib/utils/replicache/subscribeReplicacheData";
+  import { getAreaScoresFromExercises } from "$lib/utils/data/getAreaScoresFromExercises";
+  import MuscleChart from "../../components/session/MuscleChart.svelte";
 
   interface Props {
     data: PageData;
@@ -46,6 +48,12 @@
   });
 
   const modalStore = getModalStore();
+
+  const sessionAreas = $derived(
+    getAreaScoresFromExercises(
+      (session as unknown as WorkoutSessionFull)?.exercises,
+    ),
+  );
 </script>
 
 <Header>
@@ -61,7 +69,7 @@
 
 <Container>
   {#if session}
-    <div class="flex flex-col gap-12">
+    <div class="flex flex-col gap-8">
       <SessionHeadlineEditable
         bind:workoutSession={session}
         updateSessionNameAction={() => {
@@ -72,10 +80,18 @@
         <time
           use:svelteTime={{
             timestamp: session.createdAt,
-            format: "MMMM D, YYYY · h:mm A ",
+            format: "MMM. D, YYYY · h:mm A ",
           }}
         ></time>
       </div>
+
+      <div>
+        <Headline style="small">Muscular Load</Headline>
+        <div class="px-10">
+          <MuscleChart areas={sessionAreas} />
+        </div>
+      </div>
+
       <div class="flex flex-col w-full gap-4">
         <div class="flex flex-row justify-between items-center">
           <Headline style="small">Exercises</Headline>

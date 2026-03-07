@@ -11,8 +11,8 @@
     disabled?: boolean;
     isLoading?: boolean;
     loadingOnClick?: boolean;
-    spinner?: import('svelte').Snippet;
-    children?: import('svelte').Snippet;
+    spinner?: import("svelte").Snippet;
+    children?: import("svelte").Snippet;
   }
 
   let {
@@ -25,20 +25,20 @@
     isLoading = $bindable(false),
     loadingOnClick = false,
     spinner,
-    children
+    children,
   }: Props = $props();
 </script>
 
 <button
   class={clsx(
     classes,
-    "variant-filled-primary drop-shadow-none transition-transform active:scale-100 ",
+    "variant-filled-primary drop-shadow-none transition-transform active:scale-100 !brightness-100",
     {
       "btn-icon !bg-transparent text-inherit": icon,
       btn: !icon,
       "border active:border hover:border-primary-500": !icon && !highlight,
       "variant-filled-primary": highlight,
-    }
+    },
   )}
   onclick={() => {
     if (loadingOnClick === true) {

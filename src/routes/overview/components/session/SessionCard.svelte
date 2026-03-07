@@ -14,6 +14,9 @@
   import { useBackNavigation, useForwardNavigation } from "$lib/stores/stores";
   import { Badge } from "$lib/components/ui/badge";
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
+  import MuscleChart from "./MuscleChart.svelte";
+  import type { ExerciseTypeArea } from "@prisma/client";
+  import { getAreaScoresFromExercises } from "$lib/utils/data/getAreaScoresFromExercises";
 
   interface Props {
     session: WorkoutSessionFull;
@@ -28,11 +31,7 @@
   const backNavigation = useBackNavigation();
 
   const sessionAreas = $derived(
-    [
-      ...new Set(
-        filterDeleted(session.exercises).map((exercise) => exercise.type.area)
-      ),
-    ].filter(Boolean)
+    getAreaScoresFromExercises(filterDeleted(session.exercises)),
   );
 </script>
 
@@ -49,7 +48,7 @@
         }
       },
       "session",
-      () => {}
+      () => {},
     );
   }}
   bind:x
@@ -61,17 +60,19 @@
         goto("/overview/session/" + session.id);
       }
     }}
-    classes="card variant-soft-primary bg-white p-4 flex flex-row items-center justify-between gap-2 w-full"
+    classes="card variant-soft-primary bg-white p-4 flex flex-row items-stretch justify-between gap-2 w-full"
   >
-    <div class="flex flex-col gap-2 items-start">
-      <div class="flex flex-row gap-2 justify-start mb-2 !ml-0">
+    <div class="flex flex-col gap-2 justify-between">
+      <div class="flex flex-col gap-2 items-start justify-start mb-2 !ml-0">
         <Headline style="small">{session.name}</Headline>
+
+        <div class="flex flex-row gap-2 justify-start flex-wrap">
+          {#each Object.keys(sessionAreas) as area}
+            <Badge>{area}</Badge>
+          {/each}
+        </div>
       </div>
-      <div class="flex flex-row gap-2 justify-start">
-        {#each sessionAreas as area}
-          <Badge>{area}</Badge>
-        {/each}
-      </div>
+
       <time
         use:svelteTime={{
           timestamp: session.createdAt,
@@ -80,6 +81,7 @@
         class="font-light text-sm text-start"
       ></time>
     </div>
+
     <ChevronRightIcon size="24" />
   </Button>
 </SwipeToAction>

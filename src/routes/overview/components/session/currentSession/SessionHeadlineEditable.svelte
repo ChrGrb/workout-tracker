@@ -22,10 +22,10 @@
     [
       ...new Set(
         filterDeleted(workoutSession.exercises).map(
-          (exercise) => exercise.type.area
-        )
+          (exercise) => exercise.type.area,
+        ),
       ),
-    ].filter(Boolean)
+    ].filter(Boolean),
   );
 </script>
 
@@ -44,11 +44,11 @@
       </Button>
     </div>
 
-    <div class="flex flex-row gap-2 items-start">
+    <!-- <div class="flex flex-row gap-2 items-start">
       {#each sessionAreas as area}
         <Badge variant="secondary">{area}</Badge>
       {/each}
-    </div>
+    </div> -->
   </div>
 {:else}
   <div class="flex flex-row gap-4 items-center">
