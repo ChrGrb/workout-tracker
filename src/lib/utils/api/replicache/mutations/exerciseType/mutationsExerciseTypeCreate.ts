@@ -18,12 +18,17 @@ const utilsApiMutationsExerciseTypeCreate = async ({
 
   if (prismaExerciseTypeFindUnique) return;
 
+  const area =
+    args.exerciseType.area && (args.exerciseType.area as string) !== ""
+      ? args.exerciseType.area
+      : null;
+
   const prismaData = {
     versionUpdatedAt: versionNext,
     id: args.exerciseType.id,
     name: args.exerciseType.name,
     category: args.exerciseType.category,
-    area: args.exerciseType.area,
+    area,
     description: args.exerciseType.description,
     isDeleted: false,
   } as ExerciseType;
