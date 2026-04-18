@@ -6,6 +6,7 @@
   import { getOverviewPath } from "$lib/utils/routing/routes";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
+  import { resolve } from "$app/paths";
 
   interface Props {
     data: PageData;
@@ -14,7 +15,7 @@
   let { data }: Props = $props();
 
   onMount(() => {
-    goto(getOverviewPath, { replaceState: true });
+    goto(resolve(getOverviewPath, {}), { replaceState: true });
   });
 
   useUserId().set(data.userId);

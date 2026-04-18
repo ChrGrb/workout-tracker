@@ -1,13 +1,13 @@
-import type { PageServerLoadEvent } from './$types';
+import type { PageServerLoadEvent } from "./$types";
 import { redirect } from "@sveltejs/kit";
 
 export async function load({ locals, url }: PageServerLoadEvent) {
-    const session = await locals.getSession();
-    const error = url.searchParams.get('error');
+  const session = await locals.getSession();
+  const error = url.searchParams.get("error");
 
-    if (!session || !session.user) {
-        return { error: error };
-    }
+  if (!session || !session.user) {
+    return { error: error };
+  }
 
-    redirect(303, '/auth/afterLogin');
+  throw redirect(303, "/auth/afterLogin");
 }
