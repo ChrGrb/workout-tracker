@@ -48,7 +48,7 @@
 	"type": "module",
 	"dependencies": {
 		"@auth/prisma-adapter": "^1.4.1",
-		"@auth/sveltekit": "^1.4.1",
+		"@auth/sveltekit": "1.4.1",
 		"@floating-ui/dom": "^1.5.1",
 		"@prisma/client": "^5.16.1",
 		"@pusher/push-notifications-server": "^1.2.6",
