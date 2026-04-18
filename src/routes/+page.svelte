@@ -3,10 +3,8 @@
   import type { PageData } from "./$types";
   import { useUserId } from "$lib/stores/stores";
   import { goto } from "$app/navigation";
-  import { getOverviewPath } from "$lib/utils/routing/routes";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import Headline from "$lib/base/Headline.svelte";
-  import { resolve } from "$app/paths";
 
   interface Props {
     data: PageData;
@@ -15,7 +13,7 @@
   let { data }: Props = $props();
 
   onMount(() => {
-    goto(resolve("/auth/afterLogin", {}), { replaceState: true });
+    goto("/auth/afterLogin", { replaceState: true });
   });
 
   useUserId().set(data.userId);
