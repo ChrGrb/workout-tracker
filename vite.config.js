@@ -5,6 +5,7 @@ import { resolve } from "path";
 import svg from "@poppanator/sveltekit-svg";
 import { SvelteKitPWA } from "@vite-pwa/sveltekit";
 import { purgeCss } from "vite-plugin-tailwind-purgecss";
+import { vercelToolbar } from "@vercel/toolbar/plugins/vite";
 
 export default defineConfig({
   server: {
@@ -27,6 +28,7 @@ export default defineConfig({
   },
   plugins: [
     sveltekit(),
+    vercelToolbar(),
     purgeCss(),
     mkcert(),
     svg({

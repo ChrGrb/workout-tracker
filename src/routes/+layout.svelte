@@ -38,6 +38,8 @@
   import { dev } from "$app/environment";
   import { afterNavigate, onNavigate, preloadData } from "$app/navigation";
   import { page } from "$app/stores";
+  import { mountVercelToolbar } from "@vercel/toolbar/vite";
+
   interface Props {
     children?: import("svelte").Snippet;
   }
@@ -62,7 +64,7 @@
           new PusherPushNotifications.Client({
             instanceId: PUBLIC_BEAMS_INSTANCE_ID,
             serviceWorkerRegistration: serviceWorkerRegistration,
-          })
+          }),
         );
 
         if (beamsClient)
@@ -78,11 +80,12 @@
             })
             .then(() => $beamsClient!.getDeviceInterests())
             .catch(console.error);
-      }
+      },
     );
   }
 
   onMount(async () => {
+    mountVercelToolbar();
     if (pwaInfo) {
       useRegisterSW({
         immediate: true,
