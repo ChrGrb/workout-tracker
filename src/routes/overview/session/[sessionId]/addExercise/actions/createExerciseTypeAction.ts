@@ -6,8 +6,11 @@ const createExerciseTypeAction = (
   userId: string,
   exerciseTypeName: string,
   exerciseTypeArea: string | null,
-  exerciseCategory: string
+  exerciseCategory: string,
 ) => {
+  const area =
+    exerciseTypeArea && exerciseTypeArea !== "" ? exerciseTypeArea : null;
+
   getReplicacheAfterInit().mutate.createExerciseType({
     userId,
     exerciseType: {
@@ -15,7 +18,7 @@ const createExerciseTypeAction = (
       versionUpdatedAt: null,
       name: exerciseTypeName,
       category: exerciseCategory,
-      area: exerciseTypeArea,
+      area,
       description: "",
       isDeleted: false,
     } as ExerciseType,
