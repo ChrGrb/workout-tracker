@@ -78,7 +78,7 @@
   dependencies:
     "@auth/core" "0.29.0"
 
-"@auth/sveltekit@^1.11.2":
+"@auth/sveltekit@^1.4.1":
   version "1.11.2"
   resolved "https://registry.npmjs.org/@auth/sveltekit/-/sveltekit-1.11.2.tgz#4aade531f28fcde1a4409ea0a2d59433872a934b"
   integrity sha512-3Ifc1McYor3OHNChhOTcnJ2bQWWiVlSXxHe15vaVqhoUM//9MhbP6sSO2ChKuoocXVNQWATBCfkkxMAw1Z7QPw==
