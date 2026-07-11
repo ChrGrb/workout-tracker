@@ -1,30 +1,7 @@
 import type { Settings } from "@prisma/client";
-import { Replicache } from "replicache";
-import { PUBLIC_REPLICACHE_LICENSE_KEY } from "$env/static/public";
-import { mutators, type M } from "$lib/utils/replicache/mutations/mutations";
 import type * as PusherPushNotifications from "@pusher/push-notifications-web";
 import { persisted } from "svelte-persisted-store";
 import { type AddExerciseSetSettings } from "$lib/types/addExerciseSetSettings";
-
-let replicachePromise: Replicache<M>;
-
-const _createReplicache = (userId: string) => {
-  const rep = new Replicache<M>({
-    name: userId,
-    licenseKey: PUBLIC_REPLICACHE_LICENSE_KEY,
-    pullURL: "/api/replicache/pull?userId=" + userId,
-    pushURL: "/api/replicache/push?userId=" + userId,
-    mutators: mutators,
-  });
-
-  replicachePromise = rep;
-
-  return rep;
-};
-
-export const getReplicache = (name: string) =>
-  replicachePromise ? replicachePromise : _createReplicache(name);
-export const getReplicacheAfterInit = () => replicachePromise;
 
 export const useSettings = () =>
   persisted<Settings>("settings", {

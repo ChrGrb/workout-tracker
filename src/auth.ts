@@ -69,7 +69,6 @@ export const { handle } = SvelteKitAuth({
           },
           include: {
             settings: true,
-            replicacheSpace: true,
           },
         });
 
@@ -90,19 +89,6 @@ export const { handle } = SvelteKitAuth({
           });
         }
 
-        // Add replicacheSpace to the user if it does not yet exist
-        if (user && !user.replicacheSpace) {
-          await prismaClient.user.update({
-            where: {
-              id: message.user.id,
-            },
-            data: {
-              replicacheSpace: {
-                create: {},
-              },
-            },
-          });
-        }
       } catch (responseError) {
         console.error(400, (responseError as Error).message);
       }

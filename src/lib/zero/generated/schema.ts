@@ -26,8 +26,6 @@ export const userTable = table("user")
     email: string().optional(),
     emailVerified: number().optional(),
     image: string().optional(),
-    settingsId: string(),
-    versionUpdatedAt: number().optional(),
   })
   .primaryKey("id");
 
@@ -38,7 +36,6 @@ export const settingsTable = table("settings")
     userId: string(),
     useTimer: boolean(),
     timerValue: number(),
-    versionUpdatedAt: number().optional(),
   })
   .primaryKey("id");
 
@@ -50,17 +47,13 @@ export const workoutSessionTable = table("workoutSession")
     finished: boolean(),
     createdAt: number(),
     name: string(),
-    isDeleted: boolean(),
-    versionUpdatedAt: number().optional(),
   })
   .primaryKey("id");
 
 export const workoutSessionTemplateTable = table("workoutSessionTemplate")
   .from("WorkoutSessionTemplate")
   .columns({
-    versionUpdatedAt: number().optional(),
     createdAt: number(),
-    isDeleted: boolean(),
     id: string(),
     userId: string(),
     name: string(),
@@ -79,8 +72,6 @@ export const exerciseTable = table("exercise")
     createdAt: number(),
     previousScore: number().optional(),
     score: number(),
-    isDeleted: boolean(),
-    versionUpdatedAt: number().optional(),
   })
   .primaryKey("id");
 
@@ -92,8 +83,6 @@ export const exerciseTypeTable = table("exerciseType")
     category: enumeration<ExerciseTypeCategory>(),
     area: enumeration<ExerciseTypeArea>().optional(),
     description: string().optional(),
-    isDeleted: boolean(),
-    versionUpdatedAt: number().optional(),
   })
   .primaryKey("id");
 
@@ -107,8 +96,6 @@ export const exerciseSetTable = table("exerciseSet")
     weight: number(),
     notes: string(),
     createdAt: number(),
-    isDeleted: boolean(),
-    versionUpdatedAt: number().optional(),
     additionalWeight: number(),
     time: number(),
   })

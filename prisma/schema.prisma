@@ -8,7 +8,7 @@ generator zero {
   output        = "../src/lib/zero/generated"
   camelCase     = true
   prettier      = false
-  excludeTables = ["Account", "Session", "VerificationToken", "ReplicacheSpace", "ReplicacheClient"]
+  excludeTables = ["Account", "Session", "VerificationToken"]
 }
 
 datasource db {
@@ -46,14 +46,11 @@ model Session {
 model User {
   id                      String                   @id @default(cuid())
   name                    String?
-  email                   String?                 
+  email                   String?
   emailVerified           DateTime?
   image                   String?
-  settingsId              String                   @default("")
-  versionUpdatedAt        Int?                     @default(0)
   accounts                Account[]
   exercises               Exercise[]
-  replicacheSpace         ReplicacheSpace?
   sessions                Session[]
   settings                Settings?
   workoutSessions         WorkoutSession[]
@@ -70,63 +67,54 @@ model VerificationToken {
 }
 
 model Settings {
-  id               String  @id @default(cuid())
-  userId           String  @unique
-  useTimer         Boolean @default(true)
-  timerValue       Float   @default(180000)
-  versionUpdatedAt Int?    @default(0)
-  user             User    @relation(fields: [userId], references: [id])
+  id         String  @id @default(cuid())
+  userId     String  @unique
+  useTimer   Boolean @default(true)
+  timerValue Float   @default(180000)
+  user       User    @relation(fields: [userId], references: [id])
 }
 
 model WorkoutSession {
-  id               String     @id @unique @default(cuid())
-  userId           String
-  finished         Boolean    @default(false)
-  createdAt        DateTime   @default(now())
-  name             String     @default("Session")
-  isDeleted        Boolean    @default(false)
-  versionUpdatedAt Int?       @default(0)
-  exercises        Exercise[]
-  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String     @id @default(cuid())
+  userId    String
+  finished  Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  name      String     @default("Session")
+  exercises Exercise[]
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model WorkoutSessionTemplate {
-  versionUpdatedAt Int?           @default(0)
-  createdAt        DateTime       @default(now())
-  isDeleted        Boolean        @default(false)
-  id               String         @id
-  userId           String
-  name             String         @default("Template")
-  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  exerciseTypes    ExerciseType[] @relation("ExerciseTypeToWorkoutSessionTemplate")
+  createdAt     DateTime       @default(now())
+  id            String         @id @default(cuid())
+  userId        String
+  name          String         @default("Template")
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseTypes ExerciseType[] @relation("ExerciseTypeToWorkoutSessionTemplate")
 }
 
 model Exercise {
-  id               String         @id @default(cuid())
-  userId           String
-  averageWeight    Float?
-  averageReps      Int?
-  typeId           String
-  sessionId        String
-  createdAt        DateTime       @default(now())
-  previousScore    Float?
-  score            Float          @default(0)
-  isDeleted        Boolean        @default(false)
-  versionUpdatedAt Int?           @default(0)
-  session          WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  type             ExerciseType   @relation(fields: [typeId], references: [id])
-  user             User           @relation(fields: [userId], references: [id])
-  sets             ExerciseSet[]
+  id            String         @id @default(cuid())
+  userId        String
+  averageWeight Float?
+  averageReps   Int?
+  typeId        String
+  sessionId     String
+  createdAt     DateTime       @default(now())
+  previousScore Float?
+  score         Float          @default(0)
+  session       WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  type          ExerciseType   @relation(fields: [typeId], references: [id])
+  user          User           @relation(fields: [userId], references: [id])
+  sets          ExerciseSet[]
 }
 
 model ExerciseType {
   id                      String                   @id @default(cuid())
-  name                    String                   
+  name                    String
   category                ExerciseTypeCategory     @default(WEIGHT)
-  area                    ExerciseTypeArea?        
+  area                    ExerciseTypeArea?
   description             String?
-  isDeleted               Boolean                  @default(false)
-  versionUpdatedAt        Int?                     @default(0)
   exercise                Exercise[]
   users                   User[]                   @relation("ExerciseTypeToUser")
   workoutSessionTemplates WorkoutSessionTemplate[] @relation("ExerciseTypeToWorkoutSessionTemplate")
@@ -154,27 +142,9 @@ model ExerciseSet {
   weight           Float           @default(0.0)
   notes            String          @default("")
   createdAt        DateTime        @default(now())
-  isDeleted        Boolean         @default(false)
-  versionUpdatedAt Int?            @default(0)
   additionalWeight Float           @default(0.0)
   time             Float           @default(0.0)
   exercise         Exercise        @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-}
-
-model ReplicacheSpace {
-  versionAt Int    @default(0)
-  userId    String @id
-  user      User   @relation(fields: [userId], references: [id])
-
-  @@index([userId])
-}
-
-model ReplicacheClient {
-  id                  String @unique
-  userId              String
-  clientGroupId       String
-  lastMutationId      Int    @default(0)
-  lastModifiedVersion Int    @default(0)
 }
 
 enum ExerciseSetType {

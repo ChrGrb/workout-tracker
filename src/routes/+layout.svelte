@@ -17,7 +17,6 @@
 
   import { storePopup } from "@skeletonlabs/skeleton";
   import {
-    getReplicacheAfterInit,
     useBackNavigation,
     useBeamsClient,
     useForwardNavigation,
@@ -28,13 +27,8 @@
   import { pwaInfo } from "virtual:pwa-info";
   import { onMount } from "svelte";
   import { useRegisterSW } from "virtual:pwa-register/svelte";
-  import Pusher from "pusher-js";
   import * as PusherPushNotifications from "@pusher/push-notifications-web";
-  import {
-    PUBLIC_REPLICACHE_PUSHER_KEY,
-    PUBLIC_REPLICACHE_PUSHER_CLUSTER,
-    PUBLIC_BEAMS_INSTANCE_ID,
-  } from "$env/static/public";
+  import { PUBLIC_BEAMS_INSTANCE_ID } from "$env/static/public";
   import { dev, browser } from "$app/environment";
   import { afterNavigate, onNavigate, preloadData } from "$app/navigation";
   import { page } from "$app/stores";
@@ -103,30 +97,8 @@
       });
     }
 
-    if ($userId) {
-      listen($userId);
-    }
-
     startBeamsClient($userId ?? "");
   });
-
-  // Listen for changes to the remote data
-  function listen(userId: string) {
-    const replicache = getReplicacheAfterInit();
-    if (!replicache) {
-      return;
-    }
-
-    // Listen for pokes, and pull whenever we get one.
-    Pusher.logToConsole = dev;
-    const pusher = new Pusher(PUBLIC_REPLICACHE_PUSHER_KEY, {
-      cluster: PUBLIC_REPLICACHE_PUSHER_CLUSTER,
-    });
-    const channel = pusher.subscribe(userId);
-    channel.bind("poke", () => {
-      replicache.pull();
-    });
-  }
 
   const backNavigation = useBackNavigation();
   const forwardNavigation = useForwardNavigation();

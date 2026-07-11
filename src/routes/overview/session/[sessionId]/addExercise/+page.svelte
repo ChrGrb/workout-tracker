@@ -74,7 +74,8 @@
   let sortedExerciseTypes = $derived(
     exerciseTypes.toSorted((a, b) => {
       if (sortType === SortType.createdAt) {
-        return (b.versionUpdatedAt ?? 0) - (a.versionUpdatedAt ?? 0);
+        // ExerciseType has no timestamp column; id is a stable proxy for order.
+        return b.id.localeCompare(a.id);
       } else if (sortType === SortType.name) {
         return a.name.localeCompare(b.name);
       }
