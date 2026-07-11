@@ -1,6 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { SvelteKitAuth } from "@auth/sveltekit";
-import { PrismaClient } from "@prisma/client";
 import GitHub from "@auth/core/providers/github";
 import Google from "@auth/core/providers/google";
 import Apple from "@auth/core/providers/apple";
@@ -13,8 +12,6 @@ import {
 } from "$env/static/private";
 import { GOOGLE_ID, GOOGLE_SECRET } from "$env/static/private";
 import prismaClient from "$lib/db.server";
-
-const prisma = new PrismaClient();
 
 export const { handle } = SvelteKitAuth({
   adapter: PrismaAdapter(prismaClient),
@@ -66,7 +63,7 @@ export const { handle } = SvelteKitAuth({
       // Add settings to user, if they do not yet exist
       // Currently in signin to be backwards compatible without deleting db
       try {
-        const user = await prisma.user.findFirst({
+        const user = await prismaClient.user.findFirst({
           where: {
             id: message.user.id,
           },
@@ -77,7 +74,7 @@ export const { handle } = SvelteKitAuth({
         });
 
         if (user && !user.settings) {
-          await prisma.user.update({
+          await prismaClient.user.update({
             where: {
               id: message.user.id,
             },
@@ -95,7 +92,7 @@ export const { handle } = SvelteKitAuth({
 
         // Add replicacheSpace to the user if it does not yet exist
         if (user && !user.replicacheSpace) {
-          await prisma.user.update({
+          await prismaClient.user.update({
             where: {
               id: message.user.id,
             },

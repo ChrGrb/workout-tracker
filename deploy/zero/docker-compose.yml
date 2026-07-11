@@ -1,0 +1,75 @@
+# zero-cache deployment for Coolify (single-node).
+#
+# Deploy this as a Coolify "Docker Compose" resource. zero-cache is a long-lived,
+# stateful WebSocket server: it keeps a SQLite replica of the upstream Postgres on
+# a persistent volume and serves ZQL queries over WebSockets. It CANNOT run on
+# Vercel — that is why it lives here.
+#
+# All ZERO_* values come from the Coolify environment (see .env.example). Pin the
+# image tag to the same version as the `@rocicorp/zero` package in the app's
+# package.json (currently 1.7.0) so client and server protocols match.
+
+services:
+  zero-cache:
+    image: rocicorp/zero:1.7.0
+    restart: unless-stopped
+    # `expose` (not `ports`) so Coolify wires this service into the Traefik proxy
+    # network and routes the domain to it, instead of treating it as a directly
+    # host-published port. The app reaches it via wss://zero.<your-domain>.
+    expose:
+      - "4848"
+    environment:
+      # --- Upstream (your Neon app database) ---
+      # MUST be a DIRECT (non-pooled) connection with sslmode=require, and Neon
+      # logical replication MUST be enabled (see README).
+      ZERO_UPSTREAM_DB: ${ZERO_UPSTREAM_DB}
+      # Only replicate the app tables — never the OAuth/session secret tables.
+      # This publication is created by the SQL in ./sql/zero-publication.sql.
+      ZERO_APP_PUBLICATION: zero_data
+
+      # --- Zero's own bookkeeping databases (the local zero-db below) ---
+      ZERO_CVR_DB: ${ZERO_CVR_DB}
+      ZERO_CHANGE_DB: ${ZERO_CHANGE_DB}
+
+      # --- Local SQLite replica (persistent volume) ---
+      ZERO_REPLICA_FILE: /data/zero-replica.db
+
+      # --- Where zero-cache calls back into the Vercel app ---
+      ZERO_QUERY_URL: ${ZERO_QUERY_URL} # https://<app-domain>/api/zero/query
+      ZERO_MUTATE_URL: ${ZERO_MUTATE_URL} # https://<app-domain>/api/zero/mutate
+
+      # --- Auth ---
+      # NOTE: zero-cache does NOT need to verify tokens in our model — it forwards
+      # them to /api/zero/{query,mutate}, which verify with the APP-side
+      # ZERO_AUTH_SECRET (on Vercel) and scope every query/mutation to the user.
+      # Setting ZERO_AUTH_SECRET here is deprecated and only produces a warning, so
+      # leave it unset on the cache. The important copy lives on Vercel.
+
+      # Guards zero-cache's admin/debug endpoints. Required in production mode.
+      ZERO_ADMIN_PASSWORD: ${ZERO_ADMIN_PASSWORD}
+
+      # No schema file needed: with synced queries + custom mutators, zero-cache
+      # derives the table schema by introspecting the tables in ZERO_APP_PUBLICATION,
+      # and authorization lives in the app's /api/zero/{query,mutate} endpoints.
+
+      ZERO_PORT: "4848"
+      ZERO_LOG_FORMAT: text
+    volumes:
+      - zero-replica:/data
+
+  # CVR + change-log databases. These are independent of the upstream app DB, so
+  # running them here (rather than on Neon) keeps Neon compute/connections free.
+  zero-db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: zero
+      POSTGRES_PASSWORD: ${ZERO_DB_PASSWORD}
+      POSTGRES_DB: zero_cvr
+    volumes:
+      - zero-db-data:/var/lib/postgresql/data
+      - ./sql/init-zero-dbs.sql:/docker-entrypoint-initdb.d/01-init.sql
+
+volumes:
+  zero-replica:
+  zero-db-data:

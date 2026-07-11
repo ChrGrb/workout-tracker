@@ -1,27 +1,8 @@
-version: '3'
-
 services:
-  # Uncomment this section if you want to run the application in a Docker container
-  # web:
-  #   build: .
-  #   restart: on-failure
-  #   ports:
-  #     - 5173:5173
-  #     - 24678:24678
-  #   environment:
-  #     POSTGRES_PRISMA_URL: postgresql://prisma:prisma@db:5432/mydb
-  #     POSTGRES_URL_NON_POOLING: postgresql://prisma:prisma@db:5432/mydb
-  #     REDIS_URL: redis://cache:6379
-  #   hostname: dev.workout-tracker.com
-  #   command: bash -c "npx prisma db push && npm run dev"
-  #   volumes:
-  #     - ./src:/usr/src/app/src
-  #   depends_on:
-  #     - db
-  #     - cache
-
   db:
-    image: postgres:13
+    image: postgres:16
+    # wal_level=logical is required by Zero (zero-cache) for logical replication.
+    command: ["postgres", "-c", "wal_level=logical"]
     ports:
       - 5432:5432
     environment:
@@ -30,11 +11,8 @@ services:
       POSTGRES_DB: mydb
     volumes:
       - postgres-data:/var/lib/postgresql/data
-
-  cache:
-    image: redis:6
-    ports:
-      - 6379:6379
+      # Creates the auxiliary databases Zero needs (CVR + change log) on first boot.
+      - ./docker/postgres-init:/docker-entrypoint-initdb.d
 
 volumes:
   postgres-data:

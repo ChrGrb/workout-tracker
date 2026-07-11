@@ -3,6 +3,14 @@ generator client {
   previewFeatures = []
 }
 
+generator zero {
+  provider      = "prisma-zero"
+  output        = "../src/lib/zero/generated"
+  camelCase     = true
+  prettier      = false
+  excludeTables = ["Account", "Session", "VerificationToken", "ReplicacheSpace", "ReplicacheClient"]
+}
+
 datasource db {
   provider  = "postgresql"
   url       = env("POSTGRES_PRISMA_URL")
