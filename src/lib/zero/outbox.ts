@@ -112,8 +112,11 @@ export async function drainOutbox(): Promise<void> {
   }
 }
 
-// Wire replay to connection changes. Call once after initZero.
+// Wire replay to connection changes. Idempotent — safe to call more than once.
+let outboxStarted = false;
 export function startOutbox(z: Z<Schema>) {
+  if (outboxStarted) return;
+  outboxStarted = true;
   z.connection.state.subscribe((state) => {
     if (state.name === "connected") void drainOutbox();
   });

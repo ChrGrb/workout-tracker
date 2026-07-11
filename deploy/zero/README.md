@@ -56,7 +56,8 @@ exports no `permissions`, so this deploys an empty set).
 ### 5. Vercel: app environment
 Add to the Vercel project:
 - `ZERO_AUTH_SECRET` — same value as zero-cache.
-- `PUBLIC_ZERO_SERVER` — `wss://zero.<your-domain>` (read by the browser client).
+- `PUBLIC_ZERO_SERVER` — `https://zero.<your-domain>` (read by the browser client).
+  Use the `https://` scheme, NOT `wss://` — Zero upgrades to a WebSocket itself.
 - `POSTGRES_URL_NON_POOLING` — already present; the mutate endpoint writes through it.
 
 ## Verify

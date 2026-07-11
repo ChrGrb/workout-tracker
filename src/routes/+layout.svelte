@@ -36,7 +36,6 @@
     PUBLIC_BEAMS_INSTANCE_ID,
   } from "$env/static/public";
   import { dev, browser } from "$app/environment";
-  import { get } from "svelte/store";
   import { afterNavigate, onNavigate, preloadData } from "$app/navigation";
   import { page } from "$app/stores";
   import { mountVercelToolbar } from "@vercel/toolbar/vite";
@@ -59,13 +58,13 @@
   let scroll = useScroll();
   let beamsClient = useBeamsClient();
 
-  // Initialise Zero as early as possible (in the layout script, which runs before
-  // any child component) so getZ() is available when pages mount. Runs alongside
-  // Replicache during the migration.
-  if (browser) {
-    const uid = get(userId);
-    if (uid) startOutbox(initZero(uid));
-  }
+  // Initialise Zero (and the offline outbox) once the user id is known. An $effect
+  // re-runs when $userId becomes available, so this fires both on a fresh page load
+  // and right after login (when the layout itself doesn't re-mount). initZero and
+  // startOutbox are both idempotent. Runs alongside Replicache during the migration.
+  $effect(() => {
+    if (browser && $userId) startOutbox(initZero($userId));
+  });
 
   let webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : "");
 

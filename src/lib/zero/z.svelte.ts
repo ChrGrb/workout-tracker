@@ -1,8 +1,10 @@
 import { Z } from "zero-svelte";
 import type { AnyMutatorRegistry } from "@rocicorp/zero";
+import { get } from "svelte/store";
 import { env } from "$env/dynamic/public";
 import { schema, type Schema } from "./schema";
 import { mutators } from "./mutators";
+import { useUserId } from "$lib/stores/stores";
 
 // The single Zero client for the signed-in session. Built after auth is known
 // (see initZero, called from the root layout once the user id is available).
@@ -21,41 +23,53 @@ async function fetchToken(): Promise<string | undefined> {
   }
 }
 
+// Fetch a token and (re)apply it to the connection.
+async function authenticate(z: Z<Schema>) {
+  const token = await fetchToken();
+  if (token) await z.connection.connect({ auth: token });
+}
+
 // Re-mint and re-apply the token whenever zero-cache reports it needs auth
-// (token expiry, or first connect before a token was available).
+// (token expiry, or a dropped connection).
 function watchAuth(z: Z<Schema>) {
-  z.connection.state.subscribe(async (state) => {
-    if (state.name === "needs-auth") {
-      const token = await fetchToken();
-      if (token) await z.connection.connect({ auth: token });
-    }
+  z.connection.state.subscribe((state) => {
+    if (state.name === "needs-auth") void authenticate(z);
   });
 }
 
-// Synchronous so callers (getZ) have an instance immediately. Svelte mounts child
-// components' onMount before the layout's, so the client must exist as soon as the
-// layout's script runs — we can't await a token first. The client connects, hits
-// needs-auth, and watchAuth supplies the token (see below).
-export function initZero(userID: string): Z<Schema> {
-  if (current) return current;
+// Build the client synchronously so getZ() has an instance immediately, then
+// authenticate in the background. `context` supplies `ctx.userID` for the
+// client-side evaluation of the user-scoped synced queries.
+function build(userID: string): Z<Schema> {
   const z = new Z<Schema>({
     cacheURL: env.PUBLIC_ZERO_SERVER ?? "",
     schema,
     userID,
+    context: { userID },
     // Runtime accepts the mutator registry; the Z generic is typed narrower.
     mutators: mutators as unknown as AnyMutatorRegistry,
     kvStore: "idb",
   });
   watchAuth(z);
+  void authenticate(z);
   current = z;
   return z;
 }
 
+// Explicit init (from the layout). Idempotent.
+export function initZero(userID: string): Z<Schema> {
+  return current ?? build(userID);
+}
+
+// Lazy accessor for components: builds the client on first use from the persisted
+// user id, so it works regardless of layout/component mount ordering.
 export function getZ(): Z<Schema> {
-  if (!current) {
-    throw new Error("Zero is not initialised yet — call initZero(userID) first");
+  if (current) return current;
+  const userID = get(useUserId());
+  if (!userID) {
+    throw new Error("Zero: no signed-in user id available yet");
   }
-  return current;
+  return build(userID);
 }
 
 export function getZOrUndefined(): Z<Schema> | undefined {
