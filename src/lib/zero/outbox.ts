@@ -2,6 +2,7 @@ import { persisted } from "svelte-persisted-store";
 import { get } from "svelte/store";
 import { nanoid } from "nanoid";
 import { getZOrUndefined } from "./z.svelte";
+import { mutators } from "./mutators";
 import type { Z } from "zero-svelte";
 import type { Schema } from "./schema";
 import type {
@@ -43,13 +44,17 @@ export const pendingWrites = persisted<OutboxEntry[]>("zero-outbox", []);
 
 function runMutation(z: Z<Schema>, name: string, args: unknown): Promise<unknown> {
   const [ns, fn] = name.split(".");
-  // The mutator tree is typed as CustomMutatorDefs at the Z boundary; dispatch by
-  // name at runtime.
-  const tree = z.mutate as unknown as Record<
+  // `mutators` is a defineMutators registry: calling registry[ns][fn](args) builds
+  // a MutateRequest, which is then executed by the client via z.mutate(request).
+  // (This is NOT the same as z.mutate[ns][fn](args) — that tree isn't populated for
+  // registry-style mutators.)
+  const registry = mutators as unknown as Record<
     string,
-    Record<string, (a: unknown) => Promise<unknown>>
+    Record<string, (a: unknown) => unknown>
   >;
-  return tree[ns][fn](args);
+  const request = registry[ns][fn](args);
+  const run = z.mutate as unknown as (req: unknown) => Promise<unknown>;
+  return run(request);
 }
 
 function enqueue(name: string, args: unknown) {
@@ -69,8 +74,9 @@ async function enqueueOrRun(name: string, args: unknown): Promise<void> {
     try {
       await runMutation(z, name, args);
       return;
-    } catch {
-      // Treat as transient — queue for replay (bounded by MAX_ATTEMPTS).
+    } catch (err) {
+      // Surface the real reason, then queue for replay (bounded by MAX_ATTEMPTS).
+      console.error(`Zero mutation "${name}" failed:`, err);
       enqueue(name, args);
       return;
     }
@@ -94,6 +100,7 @@ export async function drainOutbox(): Promise<void> {
         await runMutation(z, entry.name, entry.args);
         pendingWrites.update((q) => q.filter((e) => e.id !== entry.id));
       } catch (err) {
+        console.error(`Zero outbox replay of "${entry.name}" failed:`, err);
         const attempts = entry.attempts + 1;
         if (attempts >= MAX_ATTEMPTS) {
           // Give up on this write so it can't wedge the queue forever.
