@@ -11,9 +11,9 @@
   import Header from "$lib/base/Header.svelte";
   import SessionHeadlineEditable from "../../components/session/currentSession/SessionHeadlineEditable.svelte";
   import updateSessionNameAction from "../../actions/updateSessionNameAction";
-  import { getReplicache, useUserId } from "$lib/stores/stores";
   import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
-  import { onMount } from "svelte";
+  import { getZ } from "$lib/zero/z.svelte";
+  import { queries } from "$lib/zero/queries";
   import Button from "$lib/base/Button.svelte";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import deleteSessionAction from "../../actions/deleteSessionAction";
@@ -23,7 +23,6 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
   import { getModalStore } from "@skeletonlabs/skeleton";
-  import { subscribeReplicacheDataSingle } from "$lib/utils/replicache/subscribeReplicacheData";
   import { getAreaScoresFromExercises } from "$lib/utils/data/getAreaScoresFromExercises";
   import MuscleChart from "../../components/session/MuscleChart.svelte";
 
@@ -35,16 +34,11 @@
 
   let session: WorkoutSessionFull | null | undefined = $state(null);
 
-  let userId = useUserId();
-
-  onMount(() => {
-    subscribeReplicacheDataSingle<WorkoutSessionFull>(
-      $userId ?? "",
-      `user/${$userId}/session/${data.sessionId}`,
-      (data) => {
-        session = data;
-      },
-    );
+  const sessionQuery = getZ().createQuery(
+    queries.sessionById({ id: data.sessionId }),
+  );
+  $effect(() => {
+    session = (sessionQuery.data as unknown as WorkoutSessionFull) ?? null;
   });
 
   const modalStore = getModalStore();

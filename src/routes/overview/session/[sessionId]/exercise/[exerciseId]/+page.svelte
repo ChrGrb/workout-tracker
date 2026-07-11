@@ -21,14 +21,13 @@
   import Header from "$lib/base/Header.svelte";
   import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
   import {
-    getReplicache,
     useBackNavigation,
     useExerciseCooldownTimers,
     useExerciseTimers,
     useSettings,
-    useUserId,
   } from "$lib/stores/stores";
-  import { onMount } from "svelte";
+  import { getZ } from "$lib/zero/z.svelte";
+  import { queries } from "$lib/zero/queries";
   import type {
     ExerciseFull,
     WorkoutSessionFull,
@@ -56,7 +55,6 @@
 
   let { data }: Props = $props();
 
-  let userId = useUserId();
   let exercise: ExerciseFull | undefined = $state();
   let isActive = $state(false);
 
@@ -69,52 +67,27 @@
 
   let previousExercises: ExerciseFull[] | null = $state(null);
 
-  onMount(() => {
-    getReplicache($userId ?? "").subscribe(
-      async (tx) =>
-        (
-          await tx.scan({
-            prefix: `user/${$userId}/session/${data.sessionId}`,
-          })
-        ).toArray(),
-      {
-        onData: (value) => {
-          try {
-            isActive = !(JSON.parse(value?.toString()) as WorkoutSessionFull)
-              .finished;
-            exercise = filterDeleted(
-              (JSON.parse(value?.toString()) as WorkoutSessionFull).exercises,
-            )
-              .filter((exercise) => exercise.id === data.exerciseId)
-              .at(0);
-          } catch {}
-        },
-      },
-    );
+  const z = getZ();
+  const sessionQuery = z.createQuery(
+    queries.sessionById({ id: data.sessionId }),
+  );
+  const allSessionsQuery = z.createQuery(queries.sessions());
 
-    getReplicache($userId ?? "").subscribe(
-      async (tx) =>
-        (
-          await tx.scan({
-            prefix: `user/${$userId}/session`,
-          })
-        ).toArray(),
-      {
-        onData: (value) => {
-          try {
-            previousExercises = filterDeleted(
-              value.map((element) =>
-                JSON.parse(element!.toString()),
-              ) as WorkoutSessionFull[],
-            )
-              .filter((workoutSession) => workoutSession.id !== data.sessionId)
-              .flatMap((workoutSession) => workoutSession.exercises);
-          } catch (error) {
-            previousExercises = null;
-          }
-        },
-      },
-    );
+  // Current exercise + whether its session is still active.
+  $effect(() => {
+    const session = sessionQuery.data as unknown as
+      | WorkoutSessionFull
+      | undefined;
+    isActive = session ? !session.finished : false;
+    exercise = session?.exercises?.find((e) => e.id === data.exerciseId);
+  });
+
+  // Exercises from the user's other sessions, for the previous-performance graph.
+  $effect(() => {
+    const all = allSessionsQuery.data as unknown as WorkoutSessionFull[];
+    previousExercises = all
+      .filter((workoutSession) => workoutSession.id !== data.sessionId)
+      .flatMap((workoutSession) => workoutSession.exercises);
   });
 
   const modalStore = getModalStore();

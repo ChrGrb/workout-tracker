@@ -1,13 +1,22 @@
-import { getReplicacheAfterInit } from "$lib/stores/stores";
+import { zmutate } from "$lib/zero/outbox";
 import type { ExerciseType } from "@prisma/client";
+import type {
+  ExerciseTypeArea,
+  ExerciseTypeCategory,
+} from "$lib/zero/schema";
 
 const updateExerciseTypeAction = (
   exerciseType: Partial<ExerciseType>,
-  userId: string
+  // userId retained for call-site compatibility; ownership is enforced server-side.
+  _userId: string,
 ) => {
-  getReplicacheAfterInit().mutate.updateExerciseType({
-    exerciseType,
-    userId,
+  if (!exerciseType.id) return;
+  zmutate.exerciseType.update({
+    id: exerciseType.id,
+    name: exerciseType.name,
+    category: exerciseType.category as ExerciseTypeCategory | undefined,
+    area: (exerciseType.area ?? undefined) as ExerciseTypeArea | undefined,
+    description: exerciseType.description ?? undefined,
   });
 };
 

@@ -1,18 +1,19 @@
-import { getReplicacheAfterInit } from "$lib/stores/stores";
+import { zmutate } from "$lib/zero/outbox";
 import generateId from "$lib/utils/generateId";
-import type { WorkoutSessionTemplateWithExerciseTypes } from "$lib/utils/prismaTypes";
-import type { ExerciseType, WorkoutSession } from "@prisma/client";
+import type { ExerciseType } from "@prisma/client";
 
-const createWorkoutSessionTemplateAction = (userId: string, exerciseTypes: ExerciseType[], name: string) => {
-    getReplicacheAfterInit().mutate.createUserWorkoutSessionTemplate({
-        id: generateId(),
-        versionUpdatedAt: null,
-        name: name,
-        userId: userId,
-        exerciseTypes: exerciseTypes,
-        createdAt: new Date(),
-        isDeleted: false,
-    } as WorkoutSessionTemplateWithExerciseTypes);
+const createWorkoutSessionTemplateAction = (
+  userId: string,
+  exerciseTypes: ExerciseType[],
+  name: string,
+) => {
+  zmutate.template.create({
+    id: generateId(),
+    name,
+    userId,
+    createdAt: Date.now(),
+    exerciseTypeIds: exerciseTypes.map((type) => type.id),
+  });
 };
 
 export default createWorkoutSessionTemplateAction;

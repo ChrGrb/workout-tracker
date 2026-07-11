@@ -1,10 +1,7 @@
-import { getReplicacheAfterInit } from "$lib/stores/stores";
-import type { WorkoutSession } from "@prisma/client";
+import { zmutate } from "$lib/zero/outbox";
 
-const updateSessionNameAction = (session: WorkoutSession) => {
-    getReplicacheAfterInit().mutate.updateSession({
-        ...session,
-    } as WorkoutSession);
+const updateSessionNameAction = (session: { id: string; name: string }) => {
+  zmutate.session.update({ id: session.id, name: session.name });
 };
 
 export default updateSessionNameAction;

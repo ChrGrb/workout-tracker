@@ -1,13 +1,12 @@
-import { getReplicacheAfterInit } from "$lib/stores/stores";
-import generateId from "$lib/utils/generateId";
+import { zmutate } from "$lib/zero/outbox";
 import type { ExerciseFull } from "$lib/utils/prismaTypes";
 import type { ExerciseSet } from "@prisma/client";
 
-const deleteExerciseSetAction = async (exercise: ExerciseFull, exerciseSet: ExerciseSet) => {
-    getReplicacheAfterInit().mutate.deleteExerciseSet({
-        exercise,
-        exerciseSet: { ...exerciseSet, isDeleted: true }
-    });
-}
+const deleteExerciseSetAction = async (
+  _exercise: ExerciseFull,
+  exerciseSet: ExerciseSet,
+) => {
+  zmutate.exerciseSet.delete({ id: exerciseSet.id });
+};
 
 export default deleteExerciseSetAction;

@@ -9,7 +9,6 @@
   import Header from "$lib/base/Header.svelte";
   import Button from "$lib/base/Button.svelte";
   import {
-    getReplicache,
     useBackNavigation,
     useForwardNavigation,
     useUserId,
@@ -19,9 +18,9 @@
     getOverviewPath,
   } from "$lib/utils/routing/routes";
   import type { ExerciseType } from "@prisma/client";
-  import { onMount } from "svelte";
   import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
-  import { filterDeleted } from "$lib/utils/data/filterDeleted";
+  import { getZ } from "$lib/zero/z.svelte";
+  import { queries } from "$lib/zero/queries";
   import ExerciseTypeCheckbox from "./components/ExerciseTypeCheckbox.svelte";
   import createWorkoutSessionTemplateAction from "../../actions/createWorkoutSessionTemplate";
   import Headline from "$lib/base/Headline.svelte";
@@ -37,30 +36,12 @@
 
   let isInvalid = $derived(checkedTypes.length <= 0 || exerciseTemplateName.length <= 0);
 
-  onMount(() => {
-    getReplicache($userId ?? "").subscribe(
-      async (tx) =>
-        (
-          await tx.scan({
-            prefix: `user/${$userId}/exerciseType`,
-          })
-        ).toArray(),
-      {
-        onData: (data) => {
-          try {
-            exerciseTypes = data.map(
-              (element) =>
-                JSON.parse(element!.toString()) as ExerciseType & {
-                  isChecked: false;
-                }
-            ) as (ExerciseType & { isChecked: boolean })[];
-            exerciseTypes = filterDeleted(exerciseTypes).sort((a, b) =>
-              a.name.localeCompare(b.name)
-            );
-          } catch {}
-        },
-      }
-    );
+  const exerciseTypesQuery = getZ().createQuery(queries.exerciseTypes());
+  $effect(() => {
+    const types = (exerciseTypesQuery.data as unknown as ExerciseType[]) ?? [];
+    exerciseTypes = types
+      .map((t) => ({ ...t, isChecked: false }))
+      .sort((a, b) => a.name.localeCompare(b.name));
   });
 
   const forwardNavigation = useForwardNavigation();

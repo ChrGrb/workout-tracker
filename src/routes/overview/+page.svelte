@@ -9,14 +9,12 @@
   import { fade } from "svelte/transition";
   import Header from "$lib/base/Header.svelte";
   import {
-    getReplicache,
     useExerciseCooldownTimers,
     useSettings,
     useUserId,
   } from "$lib/stores/stores";
   import CurrentSessionSection from "./components/session/currentSession/CurrentSessionSection.svelte";
   import LastWeekChart from "./components/LastWeekChart.svelte";
-  import { onMount } from "svelte";
   import createSessionAction from "./actions/createSessionAction";
   import finishSessionAction from "./actions/finishSessionAction";
   import deleteSessionAction from "./actions/deleteSessionAction";
@@ -26,9 +24,9 @@
     WorkoutSessionFull,
     WorkoutSessionTemplateWithExerciseTypes,
   } from "$lib/utils/prismaTypes";
-  import type { ReadTransaction } from "replicache";
   import * as Drawer from "$lib/components/ui/drawer";
-  import { subscribeReplicacheData } from "$lib/utils/replicache/subscribeReplicacheData";
+  import { getZ } from "$lib/zero/z.svelte";
+  import { queries } from "$lib/zero/queries";
 
   let sessions: WorkoutSessionFull[] = $state([]);
   let user: UserWithSettings | null = $state(null);
@@ -50,35 +48,30 @@
     sessions.filter((session) => session.finished)
   );
 
-  onMount(() => {
-    subscribeReplicacheData<WorkoutSessionFull>(
-      $userId ?? "",
-      `user/${$userId ?? ""}/session`,
-      (data) => {
-        sessions = data;
-      }
-    );
+  // Zero synced queries (reactive). Kept in $state vars so child `bind:` props and
+  // the existing Prisma-derived types downstream are unchanged. `createdAt` is now
+  // an epoch-millis number rather than a Date/ISO string, which the consumers
+  // (new Date(...), svelte-time) handle transparently.
+  const z = getZ();
+  const sessionsQuery = z.createQuery(queries.sessions());
+  const templatesQuery = z.createQuery(queries.templates());
+  const meQuery = z.createQuery(queries.me());
 
-    subscribeReplicacheData<WorkoutSessionTemplateWithExerciseTypes>(
-      $userId ?? "",
-      `user/${$userId ?? ""}/user/workoutSessionTemplates`,
-      (data) => {
-        sessionTemplates = data;
-      }
-    );
+  $effect(() => {
+    sessions = sessionsQuery.data as unknown as WorkoutSessionFull[];
+  });
 
-    getReplicache($userId ?? "").subscribe(
-      async (tx: ReadTransaction) => await tx.get(`user/${$userId ?? ""}/user`),
-      {
-        onData: (value) => {
-          try {
-            user = JSON.parse(value!.toString()) as UserWithSettings;
+  $effect(() => {
+    sessionTemplates =
+      templatesQuery.data as unknown as WorkoutSessionTemplateWithExerciseTypes[];
+  });
 
-            settings.set(user.settings);
-          } catch {}
-        },
-      }
-    );
+  $effect(() => {
+    const u = meQuery.data as unknown as UserWithSettings | undefined;
+    if (u) {
+      user = u;
+      if (u.settings) settings.set(u.settings);
+    }
   });
 </script>
 

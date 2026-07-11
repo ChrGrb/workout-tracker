@@ -32,14 +32,16 @@ function watchAuth(z: Z<Schema>) {
   });
 }
 
-export async function initZero(userID: string): Promise<Z<Schema>> {
+// Synchronous so callers (getZ) have an instance immediately. Svelte mounts child
+// components' onMount before the layout's, so the client must exist as soon as the
+// layout's script runs — we can't await a token first. The client connects, hits
+// needs-auth, and watchAuth supplies the token (see below).
+export function initZero(userID: string): Z<Schema> {
   if (current) return current;
-  const token = await fetchToken();
   const z = new Z<Schema>({
     cacheURL: env.PUBLIC_ZERO_SERVER ?? "",
     schema,
     userID,
-    auth: token ?? undefined,
     // Runtime accepts the mutator registry; the Z generic is typed narrower.
     mutators: mutators as unknown as AnyMutatorRegistry,
     kvStore: "idb",

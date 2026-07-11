@@ -10,16 +10,10 @@
   import Header from "$lib/base/Header.svelte";
   import Button from "$lib/base/Button.svelte";
   import addExerciseAction from "./actions/addExerciseAction";
-  import {
-    getReplicache,
-    useForwardNavigation,
-    useUserId,
-  } from "$lib/stores/stores";
+  import { useForwardNavigation, useUserId } from "$lib/stores/stores";
   import { getExercisePath } from "$lib/utils/routing/routes";
   import type { ExerciseType } from "@prisma/client";
-  import { onMount } from "svelte";
   import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
-  import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import Headline from "$lib/base/Headline.svelte";
   import * as Drawer from "$lib/components/ui/drawer";
   import AddExerciseTypeDrawer from "./components/AddExerciseTypeDrawer.svelte";
@@ -27,7 +21,8 @@
   import * as Collapsible from "$lib/components/ui/collapsible";
   import { ChevronsUpDown } from "lucide-svelte";
   import TextArea from "$lib/base/input/TextArea.svelte";
-  import { subscribeReplicacheData } from "$lib/utils/replicache/subscribeReplicacheData";
+  import { getZ } from "$lib/zero/z.svelte";
+  import { queries } from "$lib/zero/queries";
 
   interface Props {
     data: PageData;
@@ -52,14 +47,9 @@
 
   let sortType = $state(SortType.name);
 
-  onMount(() => {
-    subscribeReplicacheData<ExerciseType>(
-      $userId ?? "",
-      `user/${$userId}/exerciseType`,
-      (data) => {
-        exerciseTypes = data;
-      },
-    );
+  const exerciseTypesQuery = getZ().createQuery(queries.exerciseTypes());
+  $effect(() => {
+    exerciseTypes = exerciseTypesQuery.data as unknown as ExerciseType[];
   });
 
   const forwardNavigation = useForwardNavigation();

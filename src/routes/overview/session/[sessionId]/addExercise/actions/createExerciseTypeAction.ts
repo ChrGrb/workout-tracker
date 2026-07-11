@@ -1,6 +1,9 @@
-import { getReplicacheAfterInit } from "$lib/stores/stores";
+import { zmutate } from "$lib/zero/outbox";
 import generateId from "$lib/utils/generateId";
-import type { ExerciseType } from "@prisma/client";
+import type {
+  ExerciseTypeArea,
+  ExerciseTypeCategory,
+} from "$lib/zero/schema";
 
 const createExerciseTypeAction = (
   userId: string,
@@ -9,19 +12,17 @@ const createExerciseTypeAction = (
   exerciseCategory: string,
 ) => {
   const area =
-    exerciseTypeArea && exerciseTypeArea !== "" ? exerciseTypeArea : null;
+    exerciseTypeArea && exerciseTypeArea !== ""
+      ? (exerciseTypeArea as ExerciseTypeArea)
+      : undefined;
 
-  getReplicacheAfterInit().mutate.createExerciseType({
+  zmutate.exerciseType.create({
+    id: generateId(),
     userId,
-    exerciseType: {
-      id: generateId(),
-      versionUpdatedAt: null,
-      name: exerciseTypeName,
-      category: exerciseCategory,
-      area,
-      description: "",
-      isDeleted: false,
-    } as ExerciseType,
+    name: exerciseTypeName,
+    category: exerciseCategory as ExerciseTypeCategory,
+    area,
+    description: "",
   });
 };
 

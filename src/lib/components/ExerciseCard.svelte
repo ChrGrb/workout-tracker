@@ -9,7 +9,7 @@
   import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import { getExerciseSetWeight } from "$lib/utils/data/getExerciseSetWeight";
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
-  import getExerciseTypePreviousScore from "$lib/utils/replicache/getters/getExerciseTypePreviousScore";
+  import getExerciseTypePreviousScore from "$lib/zero/getExerciseTypePreviousScore";
   import { getExercisePath, getOverviewPath } from "$lib/utils/routing/routes";
   import { getModalStore, ProgressRadial } from "@skeletonlabs/skeleton";
   import clsx from "clsx";

@@ -1,12 +1,10 @@
-import { getReplicacheAfterInit } from "$lib/stores/stores";
-import type { WorkoutSessionTemplateWithExerciseTypes } from "$lib/utils/prismaTypes";
+import { zmutate } from "$lib/zero/outbox";
 import type { WorkoutSessionTemplate } from "@prisma/client";
 
-const deleteWorkoutSessionTemplateAction = (workoutSessionTemplate: WorkoutSessionTemplate) => {
-    getReplicacheAfterInit().mutate.updateUserWorkoutSessionTemplate({
-        ...workoutSessionTemplate,
-        isDeleted: true,
-    } as WorkoutSessionTemplateWithExerciseTypes);
+const deleteWorkoutSessionTemplateAction = (
+  workoutSessionTemplate: WorkoutSessionTemplate,
+) => {
+  zmutate.template.delete({ id: workoutSessionTemplate.id });
 };
 
 export default deleteWorkoutSessionTemplateAction;

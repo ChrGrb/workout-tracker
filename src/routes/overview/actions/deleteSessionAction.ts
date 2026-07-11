@@ -1,12 +1,7 @@
-import { getReplicacheAfterInit } from "$lib/stores/stores";
-import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
-import type { WorkoutSession } from "@prisma/client";
+import { zmutate } from "$lib/zero/outbox";
 
-const deleteSessionAction = (session: WorkoutSessionFull) => {
-    getReplicacheAfterInit().mutate.deleteSession({
-        ...session,
-        isDeleted: true,
-    } as WorkoutSession);
+const deleteSessionAction = (session: { id: string }) => {
+  zmutate.session.delete({ id: session.id });
 };
 
 export default deleteSessionAction;

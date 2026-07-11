@@ -35,10 +35,14 @@
     PUBLIC_REPLICACHE_PUSHER_CLUSTER,
     PUBLIC_BEAMS_INSTANCE_ID,
   } from "$env/static/public";
-  import { dev } from "$app/environment";
+  import { dev, browser } from "$app/environment";
+  import { get } from "svelte/store";
   import { afterNavigate, onNavigate, preloadData } from "$app/navigation";
   import { page } from "$app/stores";
   import { mountVercelToolbar } from "@vercel/toolbar/vite";
+  import { initZero } from "$lib/zero/z.svelte";
+  import { startOutbox } from "$lib/zero/outbox";
+  import OutboxIndicator from "$lib/components/OutboxIndicator.svelte";
 
   interface Props {
     children?: import("svelte").Snippet;
@@ -54,6 +58,14 @@
   let userId = useUserId();
   let scroll = useScroll();
   let beamsClient = useBeamsClient();
+
+  // Initialise Zero as early as possible (in the layout script, which runs before
+  // any child component) so getZ() is available when pages mount. Runs alongside
+  // Replicache during the migration.
+  if (browser) {
+    const uid = get(userId);
+    if (uid) startOutbox(initZero(uid));
+  }
 
   let webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : "");
 
@@ -164,6 +176,7 @@
 
 <Modal />
 <Toast />
+<OutboxIndicator />
 
 {#key $page.url.pathname}
   <div data-vaul-drawer-wrapper class="bg-white">
