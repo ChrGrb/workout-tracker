@@ -1,6 +1,5 @@
 <script lang="ts">
   import { lightenDarkenColor } from "$lib/utils/lightenDarkenColor";
-  import type { ExerciseFull } from "$lib/utils/prismaTypes";
   import { ExerciseTypeArea } from "@prisma/client";
 
   interface Props {
@@ -131,8 +130,8 @@
   </defs>
 
   <g>
-    {#each muscleData as muscle, i}
-      {#each Array(segmentsPerBar) as _, j}
+    {#each muscleData as muscle, i (muscle.name)}
+      {#each Array(segmentsPerBar) as _, j (`muscle.name${j}`)}
         {@const lit = isLit(muscle.value, j)}
 
         <path
@@ -157,7 +156,7 @@
       {/each}
     {/each}
 
-    {#each muscleData as muscle, i}
+    {#each muscleData as muscle, i (muscle.name)}
       {@const pos = getLabelCoords(i)}
       {@const value = Math.round((muscle.value / totalValue) * 100)}
 

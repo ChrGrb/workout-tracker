@@ -1,10 +1,13 @@
 import type { ExerciseTypeArea } from "@prisma/client";
 import type { ExerciseFull } from "../prismaTypes";
 
-export const getAreaScoresFromExercises = (exercises: ExerciseFull[]) =>
-  exercises.reduce(
+export const getAreaScoresFromExercises = (exercises: ExerciseFull[]) => {
+  return exercises.reduce(
     (acc, exercise) => {
       const exerciseScore = exercise.sets.reduce((totalScore, set) => {
+        if (set.reps === null) {
+          return totalScore;
+        }
         return (
           totalScore + set.reps * (set.weight + set.additionalWeight) + set.time
         );
@@ -22,3 +25,4 @@ export const getAreaScoresFromExercises = (exercises: ExerciseFull[]) =>
     },
     {} as Record<ExerciseTypeArea, number>,
   );
+};
