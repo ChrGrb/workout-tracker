@@ -6,32 +6,50 @@ import { schema, type Schema } from "./schema";
 import { mutators } from "./mutators";
 import { useUserId } from "$lib/stores/stores";
 
-// The single Zero client for the signed-in session. Built after auth is known
-// (see initZero, called from the root layout once the user id is available).
+// The single Zero client for the signed-in session.
 let current = $state<Z<Schema> | undefined>(undefined);
 
-// Fetches a fresh short-lived Zero JWT from our own endpoint (which reads the
-// Auth.js session). Returns undefined if the user is not authenticated.
+const TOKEN_KEY = "zeroToken";
+
+function cachedToken(): string | undefined {
+  try {
+    return localStorage.getItem(TOKEN_KEY) ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+// Fetches a fresh Zero JWT from our endpoint (which reads the Auth.js session) and
+// caches it so the next construction can pass it synchronously as `auth`.
 async function fetchToken(): Promise<string | undefined> {
   try {
     const res = await fetch("/api/zero/token");
     if (!res.ok) return undefined;
     const body = (await res.json()) as { token?: string };
+    if (body.token) {
+      try {
+        localStorage.setItem(TOKEN_KEY, body.token);
+      } catch {
+        /* ignore storage failures */
+      }
+    }
     return body.token;
   } catch {
     return undefined;
   }
 }
 
-// Fetch a token and (re)apply it to the connection.
-async function authenticate(z: Z<Schema>) {
+// Fetch a fresh token and apply it to the connection. Per the Zero auth docs, the
+// refresh mechanism is connection.connect({auth}); it updates the auth used for the
+// connection (and reconnects).
+async function reauth(z: Z<Schema>) {
   const token = await fetchToken();
   if (token) await z.connection.connect({ auth: token });
 }
 
-// Re-mint and re-apply the token whenever the connection reports it needs auth
-// or errors (a 401 from the query/mutate endpoints surfaces here). Guarded so a
-// persistently-rejected token can't spin a tight reconnect loop.
+// Re-mint and re-apply the token whenever the connection needs auth or errors
+// (a 401/403 from the query/mutate endpoints surfaces as needs-auth). Guarded
+// against a tight loop when a token is persistently rejected.
 let lastAuthAt = 0;
 function watchAuth(z: Z<Schema>) {
   z.connection.state.subscribe((state) => {
@@ -39,27 +57,32 @@ function watchAuth(z: Z<Schema>) {
       const now = Date.now();
       if (now - lastAuthAt < 5000) return;
       lastAuthAt = now;
-      void authenticate(z);
+      void reauth(z);
     }
   });
 }
 
-// Build the client synchronously so getZ() has an instance immediately, then
-// authenticate in the background. `context` supplies `ctx.userID` for the
-// client-side evaluation of the user-scoped synced queries.
 function build(userID: string): Z<Schema> {
+  // Construct WITH the token as the `auth` option (the documented usage), using any
+  // cached token so the first connection is authenticated. Passing it here — rather
+  // than only via connect() afterward — is what keeps reconnects authenticated.
   const z = new Z<Schema>({
     cacheURL: env.PUBLIC_ZERO_SERVER ?? "",
     schema,
     userID,
+    auth: cachedToken(),
+    // `context` supplies `ctx.userID` for client-side evaluation of the
+    // user-scoped synced queries.
     context: { userID },
     // Runtime accepts the mutator registry; the Z generic is typed narrower.
     mutators: mutators as unknown as AnyMutatorRegistry,
     kvStore: "idb",
   });
   watchAuth(z);
-  void authenticate(z);
   current = z;
+  // Refresh to a current token from the server (also covers first login, where no
+  // token was cached yet).
+  void reauth(z);
   return z;
 }
 
