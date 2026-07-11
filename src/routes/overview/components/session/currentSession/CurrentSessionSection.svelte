@@ -20,7 +20,6 @@
     WorkoutSessionTemplateWithExerciseTypes,
   } from "$lib/utils/prismaTypes";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
-  import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import Headline from "$lib/base/Headline.svelte";
   import WorkoutSessionTemplateCard from "./components/WorkoutSessionTemplateCard.svelte";
   import { getAddTemplatePath } from "$lib/utils/routing/routes";
@@ -64,7 +63,7 @@
 
   run(() => {
     workoutSessionTemplates =
-      workoutSessionTemplates?.sort(sortByCreatedAt) ?? null;
+      workoutSessionTemplates?.toSorted(sortByCreatedAt) ?? null;
   });
 
   const modalStore = getModalStore();
@@ -81,7 +80,7 @@
       />
       <div class="flex flex-col gap-4">
         {#if exercises}
-          {@const filteredExercises = filterDeleted(exercises)}
+          {@const filteredExercises = exercises ?? []}
 
           <div>
             <Headline style="small">Muscular Load</Headline>
@@ -92,7 +91,7 @@
             </div>
           </div>
 
-          {#each filteredExercises.sort(sortByCreatedAt) as exercise (exercise.id)}
+          {#each filteredExercises.toSorted(sortByCreatedAt) as exercise (exercise.id)}
             <div
               id={exercise.id}
               animate:flip={{ delay: 100, duration: 250, easing: sineInOut }}

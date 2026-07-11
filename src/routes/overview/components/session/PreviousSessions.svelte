@@ -15,7 +15,7 @@
 
   let { previousSessions = [] }: Props = $props();
 
-  let previousSessionsSorted = $derived(previousSessions.sort(sortByCreatedAt));
+  let previousSessionsSorted = $derived(previousSessions.toSorted(sortByCreatedAt));
 
   const itemsPerPage = 4;
   let selectedPage = $state(1);

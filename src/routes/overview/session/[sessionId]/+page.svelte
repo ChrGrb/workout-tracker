@@ -20,7 +20,6 @@
   import { MoreHorizontalIcon, Trash2Icon } from "svelte-feather-icons";
   import { goto } from "$app/navigation";
   import { getOverviewPath } from "$lib/utils/routing/routes";
-  import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { getAreaScoresFromExercises } from "$lib/utils/data/getAreaScoresFromExercises";
@@ -122,9 +121,9 @@
           </DropdownMenu.Root>
         </div>
         <div class="flex flex-col gap-2">
-          {#if session.exercises && filterDeleted(session.exercises).length > 0}
+          {#if session.exercises && session.exercises.length > 0}
             <div class="flex flex-col gap-4">
-              {#each filterDeleted(session.exercises).sort(sortByCreatedAt) as exercise (exercise.id)}
+              {#each session.exercises.toSorted(sortByCreatedAt) as exercise (exercise.id)}
                 <div animate:flip={{ duration: 100, easing: sineInOut }}>
                   <WorkoutCard {exercise} />
                 </div>

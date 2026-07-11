@@ -15,7 +15,7 @@
   let barHeight = 60;
 
   let exerciseScores = $derived(getPreviousExercisesOfType(previousExercises, exercise)
-    .sort(sortByCreatedAt)
+    .toSorted(sortByCreatedAt)
     .reverse()
     .slice(-4)
     .concat(exercise)

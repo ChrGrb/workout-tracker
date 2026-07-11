@@ -35,7 +35,6 @@
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import deleteExerciseAction from "./actions/deleteExerciseAction";
   import deleteExerciseSetAction from "./actions/deleteExerciseSetAction";
-  import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import ExerciseOverviewGraph from "./components/ExerciseOverviewGraph.svelte";
   import { getPreviousExercisesOfType } from "$lib/utils/data/previousExercisesOfType";
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
@@ -171,8 +170,8 @@
                 </div>
               {/if}
               <div class="flex flex-col gap-2">
-                {#each filterDeleted(previousExercisesOfType)
-                  .sort(sortByCreatedAt)
+                {#each (previousExercisesOfType ?? [])
+                  .toSorted(sortByCreatedAt)
                   .slice(0, 3) as previousExercise}
                   <ExerciseCard exercise={previousExercise} previous={true} />
                 {/each}
@@ -234,7 +233,7 @@
             })}
           >
             {#if exercise.sets}
-              {#each filterDeleted(exercise.sets) as set (set.id)}
+              {#each exercise.sets ?? [] as set (set.id)}
                 <div
                   animate:flip={{
                     delay: 100,

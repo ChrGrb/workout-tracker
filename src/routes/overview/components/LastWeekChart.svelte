@@ -1,6 +1,5 @@
 <script lang="ts">
   import Headline from "$lib/base/Headline.svelte";
-  import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import type { Exercise, WorkoutSession } from "@prisma/client";
 
   interface Props {
@@ -36,7 +35,7 @@
           date
         ),
         exerciseCount: workoutOnDate
-          ? filterDeleted(workoutOnDate.exercises).length
+          ? (workoutOnDate.exercises ?? []).length
           : 0,
       };
     })

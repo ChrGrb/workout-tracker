@@ -6,7 +6,6 @@
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import { useForwardNavigation, useUserId } from "$lib/stores/stores";
   import calculateExerciseScore from "$lib/utils/data/calculateExerciseScore";
-  import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import { getExerciseSetWeight } from "$lib/utils/data/getExerciseSetWeight";
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
   import getExerciseTypePreviousScore from "$lib/zero/getExerciseTypePreviousScore";
@@ -40,7 +39,7 @@
     previousScore = value ?? 0;
   });
 
-  let exerciseSets = $derived(filterDeleted(exercise.sets));
+  let exerciseSets = $derived(exercise.sets ?? []);
   let workoutSets = $derived(
     exerciseSets.filter((set) => set.exerciseSetType === "WORKOUT")
   );

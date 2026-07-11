@@ -13,7 +13,6 @@
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { useBackNavigation, useForwardNavigation } from "$lib/stores/stores";
   import { Badge } from "$lib/components/ui/badge";
-  import { filterDeleted } from "$lib/utils/data/filterDeleted";
   import MuscleChart from "./MuscleChart.svelte";
   import type { ExerciseTypeArea } from "@prisma/client";
   import { getAreaScoresFromExercises } from "$lib/utils/data/getAreaScoresFromExercises";
@@ -31,7 +30,7 @@
   const backNavigation = useBackNavigation();
 
   const sessionAreas = $derived(
-    getAreaScoresFromExercises(filterDeleted(session.exercises)),
+    getAreaScoresFromExercises(session.exercises ?? []),
   );
 </script>
 

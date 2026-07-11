@@ -1,13 +1,12 @@
 import type { ExerciseAverage } from "$lib/types/exerciseAverage";
 import type { ExerciseFull } from "../prismaTypes"
-import { filterDeleted } from "./filterDeleted"
 import { getExerciseSetWeight } from "./getExerciseSetWeight";
 import { getPreviousExercisesOfType } from "./previousExercisesOfType";
 import { sortByCreatedAt } from "./sortByDate";
 
 export const getRecommendations = (exercise: ExerciseFull, previousExercises: ExerciseFull[]): ExerciseAverage | null => {
     try {
-        const previousRelevantExerciseSets = filterDeleted(getPreviousExercisesOfType(filterDeleted(previousExercises), exercise).sort(sortByCreatedAt).slice(-3).flatMap((previousExercise) => previousExercise.sets));
+        const previousRelevantExerciseSets = getPreviousExercisesOfType(previousExercises, exercise).toSorted(sortByCreatedAt).slice(-3).flatMap((previousExercise) => previousExercise.sets);
 
         if (!previousRelevantExerciseSets || previousRelevantExerciseSets.length === 0)
             return null;
