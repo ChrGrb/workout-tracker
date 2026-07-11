@@ -29,11 +29,18 @@ async function authenticate(z: Z<Schema>) {
   if (token) await z.connection.connect({ auth: token });
 }
 
-// Re-mint and re-apply the token whenever zero-cache reports it needs auth
-// (token expiry, or a dropped connection).
+// Re-mint and re-apply the token whenever the connection reports it needs auth
+// or errors (a 401 from the query/mutate endpoints surfaces here). Guarded so a
+// persistently-rejected token can't spin a tight reconnect loop.
+let lastAuthAt = 0;
 function watchAuth(z: Z<Schema>) {
   z.connection.state.subscribe((state) => {
-    if (state.name === "needs-auth") void authenticate(z);
+    if (state.name === "needs-auth" || state.name === "error") {
+      const now = Date.now();
+      if (now - lastAuthAt < 5000) return;
+      lastAuthAt = now;
+      void authenticate(z);
+    }
   });
 }
 

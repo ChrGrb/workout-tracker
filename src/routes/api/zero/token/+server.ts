@@ -25,7 +25,7 @@ export const GET: RequestHandler = async (event) => {
     .setProtectedHeader({ alg: "HS256" })
     .setSubject(userId)
     .setIssuedAt()
-    .setExpirationTime("1h")
+    .setExpirationTime("12h")
     .sign(new TextEncoder().encode(secret));
 
   return json({ token });

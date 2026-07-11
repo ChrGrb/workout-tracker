@@ -45,6 +45,11 @@ zero-cache build refuses to start without a permissions record, deploy an empty 
 with `npx zero-deploy-permissions -p src/lib/zero/schema.ts` (our `schema.ts`
 exports no `permissions`, so this deploys an empty set).
 
+> Note on `ZERO_AUTH_SECRET`: it IS required on zero-cache (despite the deprecation
+> warning Zero prints). The cache verifies the client's JWT with it to authenticate
+> the WebSocket. Without it, authenticated sockets are dropped with "WebSocket
+> connection closed abruptly". It must equal the app's `ZERO_AUTH_SECRET`.
+
 ### 4. Coolify: deploy
 - New resource → **Docker Compose** → point at `deploy/zero/docker-compose.yml`.
 - Set the environment variables from `.env.example` (Coolify env UI).

@@ -39,11 +39,13 @@ services:
       ZERO_MUTATE_URL: ${ZERO_MUTATE_URL} # https://<app-domain>/api/zero/mutate
 
       # --- Auth ---
-      # NOTE: zero-cache does NOT need to verify tokens in our model — it forwards
-      # them to /api/zero/{query,mutate}, which verify with the APP-side
-      # ZERO_AUTH_SECRET (on Vercel) and scope every query/mutation to the user.
-      # Setting ZERO_AUTH_SECRET here is deprecated and only produces a warning, so
-      # leave it unset on the cache. The important copy lives on Vercel.
+      # zero-cache verifies the client's JWT with this shared secret to authenticate
+      # the WebSocket connection (it extracts the user id from the token). It MUST be
+      # set and MUST equal the app's ZERO_AUTH_SECRET (which /api/zero/token signs
+      # with). Zero prints a deprecation warning suggesting JWKS instead — that
+      # warning is harmless; without a verifier configured, authenticated sockets are
+      # dropped ("WebSocket connection closed abruptly").
+      ZERO_AUTH_SECRET: ${ZERO_AUTH_SECRET}
 
       # Guards zero-cache's admin/debug endpoints. Required in production mode.
       ZERO_ADMIN_PASSWORD: ${ZERO_ADMIN_PASSWORD}
