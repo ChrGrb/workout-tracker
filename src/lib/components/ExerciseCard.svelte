@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { goto, invalidate } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import SwipeToAction from "$lib/base/SwipeToAction.svelte";

@@ -9,9 +9,9 @@
   interface Props {
     buttonWidth?: number;
     deleteAction: () => void;
-    key?: any;
+    key?: string;
     disabled?: boolean;
-    x?: any;
+    x?: ReturnType<typeof useMotionValue<number>>;
     actionItems?: import("svelte").Snippet;
     children?: import("svelte").Snippet;
   }
@@ -29,9 +29,9 @@
 
   let chevronGap = $derived(-($x + swipeButtonWidth) * 0.2);
 
-  function clickOutside(element: HTMLElement, callbackFunction: any) {
-    function onClick(event: any) {
-      if (!element.contains(event.target)) {
+  function clickOutside(element: HTMLElement, callbackFunction: () => void) {
+    function onClick(event: MouseEvent) {
+      if (!element.contains(event.target as Node)) {
         callbackFunction();
       }
     }
@@ -39,7 +39,7 @@
     document.body.addEventListener("click", onClick);
 
     return {
-      update(newCallbackFunction: any) {
+      update(newCallbackFunction: () => void) {
         callbackFunction = newCallbackFunction;
       },
       destroy() {

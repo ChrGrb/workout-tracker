@@ -6,7 +6,7 @@
   import { PlusIcon } from "svelte-feather-icons";
 
   interface Props {
-    addAction?: any;
+    addAction?: () => unknown;
     isInline?: boolean;
     loadingOnClick?: boolean;
     children?: import('svelte').Snippet;

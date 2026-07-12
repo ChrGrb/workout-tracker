@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { signIn, signOut } from "@auth/sveltekit/client";
+  import { signOut } from "@auth/sveltekit/client";
   import { page } from "$app/stores";
   import Headline from "$lib/base/Headline.svelte";
   import Button from "$lib/base/Button.svelte";

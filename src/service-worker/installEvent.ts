@@ -1,8 +1,7 @@
 import { CACHE_NAME } from './constants';
-import { build } from '$service-worker';
-export default (event: any): void => {
+export default (event: ExtendableEvent): void => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
+        caches.open(CACHE_NAME).then(() => {
             // Open a cache and cache our files
             //cache.addAll(build);
             return true;

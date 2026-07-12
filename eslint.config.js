@@ -6,6 +6,20 @@ import ts from "typescript-eslint";
 import svelteConfig from "./svelte.config.js";
 
 export default ts.config(
+  {
+    // Flat config does not read `.eslintignore`; ignore build output and other
+    // generated artifacts here so only source is linted.
+    ignores: [
+      ".svelte-kit/",
+      "build/",
+      "package/",
+      ".vercel/",
+      "static/",
+      "*.timestamp-*",
+      // Vendored Pusher Beams service worker bundle — third-party, not our code.
+      "src/service-worker/beams-sw.js",
+    ],
+  },
   js.configs.recommended,
   ...ts.configs.recommended,
   ...svelte.configs.recommended,
@@ -45,8 +59,25 @@ export default ts.config(
   },
   {
     rules: {
-      // Override or add rule settings here, such as:
-      // 'svelte/rule-name': 'error'
+      // TypeScript itself resolves identifiers, and core `no-undef` does not know
+      // about TS-only globals (utility types like `Record`, `Partial`,
+      // `Parameters`). Disabling it for TS/Svelte is the typescript-eslint
+      // recommendation and removes those false positives.
+      "no-undef": "off",
+      // Allow intentionally-unused identifiers prefixed with `_` (placeholder
+      // params, ignored destructured values, caught errors).
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      // This project navigates via string-path helpers (see
+      // `$lib/utils/routing/routes`) rather than route-id `resolve()`, so this
+      // opt-in SvelteKit rule does not fit the codebase's routing convention.
+      "svelte/no-navigation-without-resolve": "off",
     },
   },
 );

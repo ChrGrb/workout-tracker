@@ -172,7 +172,7 @@
               <div class="flex flex-col gap-2">
                 {#each (previousExercisesOfType ?? [])
                   .toSorted(sortByCreatedAt)
-                  .slice(0, 3) as previousExercise}
+                  .slice(0, 3) as previousExercise (previousExercise.id)}
                   <ExerciseCard exercise={previousExercise} previous={true} />
                 {/each}
               </div>

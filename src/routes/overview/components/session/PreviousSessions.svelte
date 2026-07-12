@@ -42,7 +42,7 @@
     bind:page={selectedPage}
     class="px-4"
   >
-    {#snippet children({ pages, currentPage }: any)}
+    {#snippet children({ pages, currentPage })}
       <Pagination.Content>
         <Pagination.Item>
           <Pagination.PrevButton>

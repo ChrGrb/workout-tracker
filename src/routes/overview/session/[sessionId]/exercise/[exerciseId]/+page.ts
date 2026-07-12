@@ -1,7 +1,7 @@
 import { error } from "@sveltejs/kit";
 import type { PageLoadEvent } from "./$types";
 
-export async function load({ params, fetch, url }: PageLoadEvent) {
+export async function load({ params, url }: PageLoadEvent) {
   if (!params.exerciseId) {
     error(404, "Workout not found");
   }

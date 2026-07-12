@@ -15,7 +15,7 @@ export const getRecommendations = (exercise: ExerciseFull, previousExercises: Ex
         const averageReps = previousRelevantExerciseSets.map((previousExercise) => previousExercise.reps).reduce((partialSum, reps) => partialSum + reps, 0) / previousRelevantExerciseSets.length;
 
         return { averageWeight: averageWeights, averageReps: averageReps };
-    } catch (error) {
+    } catch {
         return null;
     }
 }

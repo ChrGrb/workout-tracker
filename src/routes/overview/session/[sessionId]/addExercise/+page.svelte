@@ -20,7 +20,6 @@
   import * as Collapsible from "$lib/components/ui/collapsible";
   import { ChevronsUpDown, Search, Filter } from "lucide-svelte";
   import { slide } from "svelte/transition";
-  import TextArea from "$lib/base/input/TextArea.svelte";
   import { getZ } from "$lib/zero/z.svelte";
   import { queries } from "$lib/zero/queries";
   import clsx from "clsx";
@@ -123,9 +122,7 @@
 
 <Drawer.Root bind:open={addOpen} handleOnly disablePreventScroll noBodyStyles>
   <Header>
-    {#snippet children()}
-      Add Exercise
-    {/snippet}
+    Add Exercise
 
     {#snippet action()}
       <ExitButton />

@@ -1,6 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <script lang="ts">
-  import { applyAction, enhance } from "$app/forms";
+  import { enhance } from "$app/forms";
+  import type { ActionResult } from "@sveltejs/kit";
   import Button from "$lib/base/Button.svelte";
   import Container from "$lib/base/Container.svelte";
   import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
@@ -10,7 +11,8 @@
   export let action = "";
   export let form: HTMLFormElement | null = null;
   export let formClasses = "";
-  export let formCallbackFunction: ((result: any) => void) | null = null;
+  export let formCallbackFunction: ((result: ActionResult) => void) | null =
+    null;
   export let resetOnSubmit = true;
   export let floatingSubmitbutton = true;
 </script>

@@ -29,7 +29,7 @@
 </script>
 
 <div class="flex flex-row justify-evenly">
-  {#each exerciseBarHeights as barHeight, index}
+  {#each exerciseBarHeights as barHeight, index (index)}
     <div class="flex flex-col justify-start items-center align-center gap-2">
       <div
         class="w-4 h-[60px] variant-soft-primary rounded-t-full rounded-b-lg relative"

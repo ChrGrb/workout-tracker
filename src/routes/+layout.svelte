@@ -20,7 +20,6 @@
     useBackNavigation,
     useBeamsClient,
     useForwardNavigation,
-    useScroll,
     useSettings,
     useUserId,
   } from "$lib/stores/stores";
@@ -49,7 +48,6 @@
 
   useSettings();
   let userId = useUserId();
-  let scroll = useScroll();
   let beamsClient = useBeamsClient();
 
   // Initialise Zero (and the offline outbox) once the user id is known. An $effect
@@ -72,10 +70,10 @@
           }),
         );
 
-        if (beamsClient)
+        if ($beamsClient)
           $beamsClient!
             .start()
-            .then((beamsClient: any) => beamsClient.getDeviceId())
+            .then(() => $beamsClient!.getDeviceId())
             .then(() => {
               $beamsClient!.clearDeviceInterests();
             })
@@ -137,8 +135,10 @@
   <title>Workout Tracker</title>
   <meta name="description" content="The minimal workout tracking app" />
   <meta name="theme-color" content="#FFFFFF" />
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -- framework-generated PWA manifest link tag, not user content -->
   {@html webManifestLink}
   <!-- Workaround for a svelte parsing error: https://github.com/sveltejs/eslint-plugin-svelte/issues/492 -->
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -- static, nonce-guarded theme-init script, not user content -->
   {@html `<\u{73}cript nonce="%sveltekit.nonce%">(${setInitialClassState.toString()})();</script>`}
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" href="/favicon.png" type="image/png" />

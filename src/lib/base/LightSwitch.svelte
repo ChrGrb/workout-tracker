@@ -5,7 +5,6 @@
     setModeUserPrefers,
   } from "@skeletonlabs/skeleton";
   import clsx from "clsx";
-  import Headline from "./Headline.svelte";
 </script>
 
 <div class="flex flex-row w-full justify-center drop-shadow-lg">

@@ -1,7 +1,7 @@
 import { CACHE_NAME } from './constants';
-export default (event: any): void => {
+export default (event: FetchEvent): void => {
     event.respondWith(
-        caches.match(event.request).then((cacheResponse) => {
+        caches.match(event.request).then(() => {
             // if (cacheResponse) {
             //     console.info(`fetching from cache: ${event.request.url}`);
             //     return cacheResponse;
@@ -24,7 +24,7 @@ export default (event: any): void => {
                         }
                         return fetchResponse;
                     }
-                    // eslint-disable-next-line consistent-return
+                     
                     return undefined;
                 })
                 .catch(((error) => {

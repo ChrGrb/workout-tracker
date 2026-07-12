@@ -9,11 +9,8 @@
 
   let { workoutSessions = [], loading = false }: Props = $props();
 
-  const addDays = (date: Date, days: number) => {
-    var result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  };
+  const addDays = (date: Date, days: number) =>
+    new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
 
   let dates = Array.from({ length: 7 }, (_, i) =>
     addDays(new Date(Date.now()), -i)
@@ -47,7 +44,7 @@
     <Headline style="small">Last week</Headline>
 
     <div class="flex flex-row justify-between w-full">
-      {#each weekData as dayData}
+      {#each weekData as dayData (dayData.weekday)}
         <div class="flex flex-col gap-2 items-center">
           {#if dayData.exerciseCount != 0}
             <div class="relative inline-block">
@@ -78,7 +75,7 @@
     <div class="placeholder animate-pulse h-[2.25em] w-40"></div>
 
     <div class="flex flex-row justify-between w-full">
-      {#each dates as _}
+      {#each dates as _, i (i)}
         <div class="flex flex-col gap-2 items-center">
           <div
             class="placeholder animate-pulse h-10 aspect-square rounded-md drop-shadow-sm"

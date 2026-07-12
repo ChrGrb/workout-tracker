@@ -6,7 +6,9 @@ import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
 import "./service-worker/beams-sw";
 
 // has to be var, because we need function scope
-declare var self: any;
+declare let self: ServiceWorkerGlobalScope & {
+  __WB_MANIFEST: Array<string | { url: string; revision: string | null }>;
+};
 
 cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);

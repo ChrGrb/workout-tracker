@@ -2,7 +2,6 @@
   import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
-  import { Badge } from "$lib/components/ui/badge";
   import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
   import { CheckIcon, EditIcon } from "svelte-feather-icons";
 
@@ -17,15 +16,6 @@
   let isEditMode = $state(false);
   let isLoading = false;
 
-  const sessionAreas = $derived(
-    [
-      ...new Set(
-        (workoutSession.exercises ?? []).map(
-          (exercise) => exercise.type.area,
-        ),
-      ),
-    ].filter(Boolean),
-  );
 </script>
 
 {#if !isEditMode}

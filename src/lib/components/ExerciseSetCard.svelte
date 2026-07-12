@@ -1,9 +1,8 @@
 <script lang="ts">
-  import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import type { ExerciseSet } from "@prisma/client";
   import clsx from "clsx";
-  import { InfoIcon, Trash2Icon } from "svelte-feather-icons";
+  import { InfoIcon } from "svelte-feather-icons";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import { getExerciseSetWeight } from "$lib/utils/data/getExerciseSetWeight";
   import SwipeToAction from "$lib/base/SwipeToAction.svelte";

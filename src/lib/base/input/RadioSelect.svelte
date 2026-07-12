@@ -28,7 +28,7 @@
   <div
     class="flex flex-row w-full gap-1 justify-center p-1 variant-soft-primary rounded-token"
   >
-    {#each items as item, index (item.value)}
+    {#each items as item (item.value)}
       <div class="grow">
         <input
           id={item.name}

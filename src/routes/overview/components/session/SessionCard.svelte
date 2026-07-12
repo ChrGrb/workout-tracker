@@ -13,8 +13,6 @@
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { useBackNavigation, useForwardNavigation } from "$lib/stores/stores";
   import { Badge } from "$lib/components/ui/badge";
-  import MuscleChart from "./MuscleChart.svelte";
-  import type { ExerciseTypeArea } from "@prisma/client";
   import { getAreaScoresFromExercises } from "$lib/utils/data/getAreaScoresFromExercises";
 
   interface Props {
@@ -66,7 +64,7 @@
         <Headline style="small">{session.name}</Headline>
 
         <div class="flex flex-row gap-2 justify-start flex-wrap">
-          {#each Object.keys(sessionAreas) as area}
+          {#each Object.keys(sessionAreas) as area (area)}
             <Badge>{area}</Badge>
           {/each}
         </div>

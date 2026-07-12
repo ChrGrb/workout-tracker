@@ -1,7 +1,6 @@
 <script lang="ts">
   import RadioSelect from "$lib/base/input/RadioSelect.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
-  import SubmitFormWrapper from "$lib/components/forms/SubmitFormWrapper.svelte";
   import { useSettings } from "$lib/stores/stores";
   import SettingsCard from "./components/SettingsCard.svelte";
   import type { UserWithSettings } from "$lib/utils/prismaTypes";

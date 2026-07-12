@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { run } from "svelte/legacy";
 
   import Button from "$lib/base/Button.svelte";
   import TextInput from "$lib/base/input/TextInput.svelte";
@@ -22,7 +21,7 @@
       | "LEGS"
       | null;
     exerciseTypeId?: string;
-    isOpen: any;
+    isOpen: boolean;
     editMode?: boolean;
   }
 

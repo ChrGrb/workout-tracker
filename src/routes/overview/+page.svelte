@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { run } from "svelte/legacy";
 
   import Container from "$lib/base/Container.svelte";
   import { MoreVerticalIcon } from "svelte-feather-icons";
@@ -77,9 +76,7 @@
 
 <Drawer.Root>
   <Header contentAlwaysVisible={true} headlineStyle="medium">
-    {#snippet children()}
-      Overview
-    {/snippet}
+    Overview
     {#snippet actionEnd()}
       <Drawer.Trigger>
         <Button icon={true}>

@@ -8,7 +8,7 @@
   import { XIcon } from "svelte-feather-icons";
 
   interface Props {
-    timer: { exerciseId: string; startTime: number };
+    timer: { startTime: number };
     finishAction?: (elapsedTime: number) => void;
     onFinish?: () => void;
     elapsedTime?: number;

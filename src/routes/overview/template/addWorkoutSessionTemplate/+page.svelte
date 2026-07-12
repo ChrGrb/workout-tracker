@@ -1,6 +1,5 @@
 <script lang="ts">
   import Container from "$lib/base/Container.svelte";
-  import type { PageData } from "./$types";
   import ExitButton from "$lib/base/ExitButton.svelte";
   import { goto } from "$app/navigation";
   import { flip } from "svelte/animate";
@@ -49,9 +48,7 @@
 </script>
 
 <Header>
-  {#snippet children()}
-    Add Template
-  {/snippet}
+  Add Template
   {#snippet action()}
   
       <ExitButton exitPath="/overview" />

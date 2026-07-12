@@ -10,7 +10,7 @@
   } from "svelte-feather-icons";
   import type { Exercise } from "@prisma/client";
   import { fade } from "svelte/transition";
-  import { goto, replaceState } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import AddExerciseCard from "$lib/components/AddCard.svelte";
   import ExerciseCard from "$lib/components/ExerciseCard.svelte";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
