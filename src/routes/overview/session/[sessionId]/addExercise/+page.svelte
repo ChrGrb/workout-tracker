@@ -17,12 +17,13 @@
   import Headline from "$lib/base/Headline.svelte";
   import * as Drawer from "$lib/components/ui/drawer";
   import AddExerciseTypeDrawer from "./components/AddExerciseTypeDrawer.svelte";
-  import * as Select from "$lib/components/ui/select";
   import * as Collapsible from "$lib/components/ui/collapsible";
-  import { ChevronsUpDown } from "lucide-svelte";
+  import { ChevronsUpDown, Search, Filter } from "lucide-svelte";
+  import { slide } from "svelte/transition";
   import TextArea from "$lib/base/input/TextArea.svelte";
   import { getZ } from "$lib/zero/z.svelte";
   import { queries } from "$lib/zero/queries";
+  import clsx from "clsx";
 
   interface Props {
     data: PageData;
@@ -40,12 +41,38 @@
   let addOpen = $state(false);
   let editMode = $state(false);
 
-  const SortType = {
-    createdAt: "Created at",
-    name: "Name",
-  };
+  const OTHER = "OTHER";
+  const muscleGroups = [
+    { value: "CHEST", label: "Chest" },
+    { value: "SHOULDERS", label: "Shoulders" },
+    { value: "ARMS", label: "Arms" },
+    { value: "CORE", label: "Core" },
+    { value: "BACK", label: "Back" },
+    { value: "LEGS", label: "Legs" },
+    { value: OTHER, label: "Other" },
+  ];
 
-  let sortType = $state(SortType.name);
+  let selectedGroups = $state<string[]>([]);
+
+  function toggleGroup(value: string) {
+    selectedGroups = selectedGroups.includes(value)
+      ? selectedGroups.filter((group) => group !== value)
+      : [...selectedGroups, value];
+  }
+
+  let searchOpen = $state(false);
+  let searchTerm = $state("");
+
+  function toggleSearch() {
+    searchOpen = !searchOpen;
+    if (!searchOpen) searchTerm = "";
+  }
+
+  let filterOpen = $state(false);
+
+  function toggleFilter() {
+    filterOpen = !filterOpen;
+  }
 
   const exerciseTypesQuery = getZ().createQuery(queries.exerciseTypes());
   $effect(() => {
@@ -71,21 +98,26 @@
   );
   let isInvalid = $derived(exerciseTypeSelection.length === 0);
 
-  let sortedExerciseTypes = $derived(
-    exerciseTypes.toSorted((a, b) => {
-      if (sortType === SortType.createdAt) {
-        // ExerciseType has no timestamp column; id is a stable proxy for order.
-        return b.id.localeCompare(a.id);
-      } else if (sortType === SortType.name) {
-        return a.name.localeCompare(b.name);
-      }
-
-      return 0;
-    }),
-  );
+  let search = $derived(searchTerm.trim().toLowerCase());
 
   let groupedExerciseTypes = $derived(
-    Object.groupBy(sortedExerciseTypes, ({ area }) => area ?? "DEFAULT"),
+    muscleGroups
+      .filter(
+        (group) =>
+          selectedGroups.length === 0 || selectedGroups.includes(group.value),
+      )
+      .map((group) => ({
+        ...group,
+        items: exerciseTypes
+          .filter((exerciseType) => (exerciseType.area ?? OTHER) === group.value)
+          .filter(
+            (exerciseType) =>
+              search.length === 0 ||
+              exerciseType.name.toLowerCase().includes(search),
+          )
+          .toSorted((a, b) => a.name.localeCompare(b.name)),
+      }))
+      .filter((group) => group.items.length > 0),
   );
 </script>
 
@@ -102,40 +134,84 @@
 
   <Container>
     <div class="flex flex-col gap-12">
-      <Headline style="medium">Add Exercise</Headline>
+      <div class="flex flex-row justify-between items-center gap-4">
+        <Headline style="medium">Add Exercise</Headline>
+        <div class="flex flex-row items-center gap-2">
+          <button
+            type="button"
+            aria-label="Filter by muscle group"
+            aria-pressed={filterOpen}
+            onclick={toggleFilter}
+            class={clsx(
+              "flex items-center justify-center rounded-full p-2 transition-all",
+              filterOpen ? "bg-black text-white" : "text-primary-700",
+            )}
+          >
+            <Filter class="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            aria-label="Search exercises"
+            aria-pressed={searchOpen}
+            onclick={toggleSearch}
+            class={clsx(
+              "flex items-center justify-center rounded-full p-2 transition-all",
+              searchOpen ? "bg-black text-white" : "text-primary-700",
+            )}
+          >
+            <Search class="h-5 w-5" />
+          </button>
+        </div>
+      </div>
 
       <div class="flex flex-col gap-4 pb-24">
-        <Select.Root
-          type="single"
-          onValueChange={(value: string) => (sortType = value)}
-          bind:value={sortType}
-        >
-          <Select.Trigger class="ml-auto w-[180px] border-none">
-            <p class="text-primary-200">Sort by</p>
-            {sortType}
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Item value={SortType.createdAt} label="Created at">
-              {SortType.createdAt}
-            </Select.Item>
-            <Select.Item value={SortType.name} label="Created at">
-              {SortType.name}
-            </Select.Item>
-          </Select.Content>
-        </Select.Root>
+        {#if searchOpen}
+          <div transition:slide={{ duration: 200, easing: sineInOut }}>
+            <!-- svelte-ignore a11y_autofocus -->
+            <input
+              type="text"
+              autofocus
+              bind:value={searchTerm}
+              placeholder="Search exercises"
+              class="input block w-full py-2 px-3"
+            />
+          </div>
+        {/if}
 
-        {#each Object.entries(groupedExerciseTypes) as [area, exerciseTypes] (area)}
+        {#if filterOpen}
+          <div
+            transition:slide={{ duration: 200, easing: sineInOut }}
+            class="flex flex-row flex-wrap gap-2"
+          >
+            {#each muscleGroups as group (group.value)}
+              <button
+                type="button"
+                onclick={() => toggleGroup(group.value)}
+                class={clsx(
+                  "rounded-full border px-3 py-1 text-sm transition-all",
+                  selectedGroups.includes(group.value)
+                    ? "bg-black text-white border-black"
+                    : "variant-soft-primary border-transparent text-primary-700",
+                )}
+              >
+                {group.label}
+              </button>
+            {/each}
+          </div>
+        {/if}
+
+        {#each groupedExerciseTypes as group (group.value)}
           <Collapsible.Root open={true}>
             <div class="flex flex-col gap-2">
               <Collapsible.Trigger class="w-full items-center">
                 <div class="flex flex-row justify-between w-full items-center">
-                  <Headline style="small">{area ?? "DEFAULT"}</Headline>
+                  <Headline style="small">{group.label}</Headline>
                   <ChevronsUpDown class="h-4 w-4" />
                 </div>
               </Collapsible.Trigger>
               <Collapsible.Content>
                 <div class="flex flex-col gap-2">
-                  {#each exerciseTypes as exerciseType (exerciseType.id)}
+                  {#each group.items as exerciseType (exerciseType.id)}
                     <div
                       animate:flip={{ duration: 100, easing: sineInOut }}
                       id={exerciseType.id}

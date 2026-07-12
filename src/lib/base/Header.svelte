@@ -26,14 +26,16 @@
 
 <svelte:window bind:scrollY={scroll} />
 
-<div class="fixed z-50 w-full isolate">
+<div class="fixed z-50 w-full isolate pointer-events-none">
   <LiquidGlass
     className={clsx(
       "z-50 relative header-fix [mask-image:linear-gradient(to_bottom,black_70%,transparent)] pb-10",
     )}
   >
     <Container>
-      <div class="flex justify-start items-center align-middle gap-4">
+      <div
+        class="flex justify-start items-center align-middle gap-4 pointer-events-auto"
+      >
         {@render action?.()}
         <div
           class="items-center"
