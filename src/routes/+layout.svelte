@@ -60,42 +60,54 @@
 
   let webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : "");
 
-  function startBeamsClient(userId: string) {
-    window.navigator.serviceWorker.ready.then(
-      async (serviceWorkerRegistration) => {
-        beamsClient.set(
-          new PusherPushNotifications.Client({
-            instanceId: PUBLIC_BEAMS_INSTANCE_ID,
-            serviceWorkerRegistration: serviceWorkerRegistration,
-          }),
-        );
-
-        if ($beamsClient)
-          $beamsClient!
-            .start()
-            .then(() => $beamsClient!.getDeviceId())
-            .then(() => {
-              $beamsClient!.clearDeviceInterests();
-            })
-            .then(() => $beamsClient!.addDeviceInterest(`user-${userId}`))
-            .then(() => {
-              if (dev) $beamsClient!.addDeviceInterest("debug-test");
-            })
-            .then(() => $beamsClient!.getDeviceInterests())
-            .catch(console.error);
-      },
+  // Create the Beams client once the service worker is ready.
+  async function createBeamsClient() {
+    const serviceWorkerRegistration =
+      await window.navigator.serviceWorker.ready;
+    beamsClient.set(
+      new PusherPushNotifications.Client({
+        instanceId: PUBLIC_BEAMS_INSTANCE_ID,
+        serviceWorkerRegistration,
+      }),
     );
   }
 
+  // Subscribe the device to the `user-<id>` interest the server publishes to.
+  // The server pushes timer notifications via publishToInterests(["user-<id>"]),
+  // so the device MUST be subscribed to exactly that interest or delivery fails.
+  async function registerUserInterest(
+    client: PusherPushNotifications.Client,
+    userId: string,
+  ) {
+    await client.start();
+    await client.getDeviceId();
+    await client.clearDeviceInterests();
+    await client.addDeviceInterest(`user-${userId}`);
+    if (dev) await client.addDeviceInterest("debug-test");
+    return client.getDeviceInterests();
+  }
+
+  // Re-register whenever the user id becomes known. On a fresh login the layout
+  // does not remount and $userId is only set afterwards by the page component,
+  // so registering once in onMount would subscribe the device to the empty
+  // `user-` interest. Guard on a non-empty id and only re-run when it changes.
+  let registeredInterestFor: string | undefined = $state(undefined);
+  $effect(() => {
+    if (!browser || !$userId || !$beamsClient) return;
+    if (registeredInterestFor === $userId) return;
+    registeredInterestFor = $userId;
+    registerUserInterest($beamsClient, $userId).catch(console.error);
+  });
+
   onMount(async () => {
-    mountVercelToolbar();
+    // mountVercelToolbar();
     if (pwaInfo) {
       useRegisterSW({
         immediate: true,
       });
     }
 
-    startBeamsClient($userId ?? "");
+    createBeamsClient().catch(console.error);
   });
 
   const backNavigation = useBackNavigation();
