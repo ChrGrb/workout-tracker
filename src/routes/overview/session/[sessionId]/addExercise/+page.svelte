@@ -287,14 +287,10 @@
 
       <FloatBottomWrapper>
         <Container>
-          <div
-            class={clsx(
-              "relative w-full transition-opacity",
-              isInvalid && "opacity-40",
-            )}
-          >
-            <!-- Liquid-glass surface sits behind the button so it persists even
-                 while the button swaps its label for the loading spinner. -->
+          <!-- No opacity on this wrapper: an ancestor with opacity < 1 disables
+               the LiquidGlass backdrop-filter, so the disabled state dims only
+               the label (below) and keeps the glass intact. -->
+          <div class="relative w-full">
             <LiquidGlass
               className="absolute inset-0 rounded-full !bg-black/15"
             />
@@ -324,7 +320,10 @@
               }}
               loadingOnClick={true}
               disabled={isInvalid}
-              classes="w-full !bg-transparent !border-0 relative z-10 text-white font-semibold"
+              classes={clsx(
+                "w-full !bg-transparent !border-0 relative z-10 text-white font-semibold transition-opacity",
+                isInvalid && "opacity-40",
+              )}
             >
               Add
             </Button>

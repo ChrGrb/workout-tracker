@@ -9,6 +9,7 @@
   import { flip } from "svelte/animate";
   import { sineInOut } from "svelte/easing";
   import Header from "$lib/base/Header.svelte";
+  import LiquidGlass from "$lib/base/LiquidGlass.svelte";
   import SessionHeadlineEditable from "../../components/session/currentSession/SessionHeadlineEditable.svelte";
   import updateSessionNameAction from "../../actions/updateSessionNameAction";
   import type { WorkoutSessionFull } from "$lib/utils/prismaTypes";
@@ -17,11 +18,16 @@
   import Button from "$lib/base/Button.svelte";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import deleteSessionAction from "../../actions/deleteSessionAction";
-  import { MoreHorizontalIcon, Trash2Icon } from "svelte-feather-icons";
+  import {
+    MoreHorizontalIcon,
+    Share2Icon,
+    Trash2Icon,
+  } from "svelte-feather-icons";
   import { goto } from "$app/navigation";
   import { getOverviewPath } from "$lib/utils/routing/routes";
   import { sortByCreatedAt } from "$lib/utils/data/sortByDate";
-  import { getModalStore } from "@skeletonlabs/skeleton";
+  import { formatWorkoutForExport } from "$lib/utils/data/formatWorkoutExport";
+  import { getModalStore, getToastStore } from "@skeletonlabs/skeleton";
   import { getAreaScoresFromExercises } from "$lib/utils/data/getAreaScoresFromExercises";
   import MuscleChart from "../../components/session/MuscleChart.svelte";
 
@@ -41,6 +47,37 @@
   });
 
   const modalStore = getModalStore();
+  const toastStore = getToastStore();
+
+  // Export the workout as plain text for another app's AI importer (Bevel).
+  // Prefer the native share sheet; fall back to the clipboard.
+  async function exportWorkout() {
+    if (!session) return;
+    const text = formatWorkoutForExport($state.snapshot(session));
+
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: session.name, text });
+        return;
+      } catch (err) {
+        // The user dismissed the share sheet — don't fall through to copying.
+        if (err instanceof DOMException && err.name === "AbortError") return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(text);
+      toastStore.trigger({
+        message: "Workout copied to clipboard",
+        background: "variant-filled-success",
+      });
+    } catch {
+      toastStore.trigger({
+        message: "Could not export the workout",
+        background: "variant-filled-error",
+      });
+    }
+  }
 
   const sessionAreas = $derived(
     getAreaScoresFromExercises(
@@ -57,6 +94,57 @@
   {/if}
   {#snippet action()}
     <ExitButton />
+  {/snippet}
+  {#snippet actionEnd()}
+    {#if session}
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger>
+          <LiquidGlass
+            specular
+            className="h-10 w-10 rounded-full flex items-center justify-center !bg-black/15 text-white transition-transform active:scale-95"
+          >
+            <MoreHorizontalIcon size="24" />
+          </LiquidGlass>
+        </DropdownMenu.Trigger>
+
+        <DropdownMenu.Content class="w-56">
+          <DropdownMenu.Item>
+            <Button
+              action={exportWorkout}
+              classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none"
+            >
+              <div class="flex flex-row gap-4 justify-center items-center">
+                Export workout
+                <Share2Icon size="18" />
+              </div>
+            </Button>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item>
+            <Button
+              action={() => {
+                confirmDeleteWithAction(
+                  modalStore,
+                  () => {
+                    if (session) {
+                      deleteSessionAction(session);
+                      goto(getOverviewPath);
+                    }
+                  },
+                  "session",
+                  () => {},
+                );
+              }}
+              classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none"
+            >
+              <div class="flex flex-row gap-4 justify-center items-center">
+                Delete Session
+                <Trash2Icon size="18" />
+              </div>
+            </Button>
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+    {/if}
   {/snippet}
 </Header>
 
@@ -86,40 +174,7 @@
       </div>
 
       <div class="flex flex-col w-full gap-4">
-        <div class="flex flex-row justify-between items-center">
-          <Headline style="small">Exercises</Headline>
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger>
-              <MoreHorizontalIcon size="24" />
-            </DropdownMenu.Trigger>
-
-            <DropdownMenu.Content class="w-56">
-              <DropdownMenu.Item>
-                <Button
-                  action={() => {
-                    confirmDeleteWithAction(
-                      modalStore,
-                      () => {
-                        if (session) {
-                          deleteSessionAction(session);
-                          goto(getOverviewPath);
-                        }
-                      },
-                      "session",
-                      () => {},
-                    );
-                  }}
-                  classes="btn !bg-transparent text-inherit transition-all drop-shadow-none border-none"
-                >
-                  <div class="flex flex-row gap-4 justify-center items-center">
-                    Delete Session
-                    <Trash2Icon size="18" />
-                  </div>
-                </Button>
-              </DropdownMenu.Item>
-            </DropdownMenu.Content>
-          </DropdownMenu.Root>
-        </div>
+        <Headline style="small">Exercises</Headline>
         <div class="flex flex-col gap-2">
           {#if session.exercises && session.exercises.length > 0}
             <div class="flex flex-col gap-4">

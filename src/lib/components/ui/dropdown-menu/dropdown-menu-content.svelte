@@ -29,7 +29,7 @@
     bind:ref
     {sideOffset}
     class={cn(
-      "text-white data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem] rounded-2xl p-1.5 outline-none bg-white/30 backdrop-blur-md backdrop-filter shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)] border border-white/30 overflow-hidden",
+      "text-white data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem] rounded-2xl p-1.5 outline-none bg-black/30 backdrop-blur-md backdrop-filter shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)] border border-white/20 overflow-hidden",
       className,
     )}
     {...restProps}

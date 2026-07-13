@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { useBackNavigation } from "$lib/stores/stores";
-  import Button from "./Button.svelte";
+  import LiquidGlass from "./LiquidGlass.svelte";
   import { ChevronLeftIcon } from "svelte-feather-icons";
 
   interface Props {
@@ -22,8 +22,11 @@
   }
 </script>
 
-<div class="z-50 flex flex-col justify-center">
-  <Button action={redirect} icon={true} classes="aspect-auto w-auto my-auto">
-    <ChevronLeftIcon size="32" />
-  </Button>
-</div>
+<button type="button" onclick={redirect} aria-label="Go back" class="rounded-full">
+  <LiquidGlass
+    specular
+    className="h-10 w-10 rounded-full flex items-center justify-center !bg-black/15 text-white transition-transform active:scale-95"
+  >
+    <ChevronLeftIcon size="24" />
+  </LiquidGlass>
+</button>
