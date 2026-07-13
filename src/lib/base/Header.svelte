@@ -2,7 +2,6 @@
   import Headline from "./Headline.svelte";
   import Container from "./Container.svelte";
   import clsx from "clsx";
-  import LiquidGlass from "./LiquidGlass.svelte";
 
   let scroll: number = $state<number>(0);
   interface Props {
@@ -27,11 +26,26 @@
 <svelte:window bind:scrollY={scroll} />
 
 <div class="fixed z-50 w-full isolate pointer-events-none">
-  <LiquidGlass
-    className={clsx(
-      "z-50 relative header-fix [mask-image:linear-gradient(to_bottom,black_70%,transparent)] pb-10",
+  <!--
+    Native iOS-style nav bar material: a translucent, saturated blur that lets
+    content scroll underneath, with a progressive-blur mask so the effect fades
+    out at the bottom edge (iOS 16+) instead of ending on a hard line. No SVG
+    refraction here — a flat vibrancy material reads far more "system bar" than
+    a lens does.
+  -->
+  <div
+    class={clsx(
+      "z-50 relative header-fix pb-10 overflow-hidden",
+      "bg-white/10 backdrop-blur-xl backdrop-saturate-150 backdrop-filter",
+      "shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]",
+      "[mask-image:linear-gradient(to_bottom,black_65%,transparent)]",
     )}
   >
+    <div
+      class="pointer-events-none absolute inset-0
+              bg-gradient-to-b
+              from-white/15 via-white/5 to-transparent"
+    ></div>
     <Container>
       <div
         class="flex justify-start items-center align-middle gap-4 pointer-events-auto"
@@ -54,7 +68,7 @@
         </div>
       </div>
     </Container>
-  </LiquidGlass>
+  </div>
 </div>
 
 <div class="relative isolate opacity-0">

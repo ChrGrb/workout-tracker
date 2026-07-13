@@ -4,16 +4,17 @@
   import { MoreHorizontalIcon, Trash2Icon } from "svelte-feather-icons";
   import { confirmDeleteWithAction } from "$lib/modals/ConfirmDeleteModalWrapper";
   import deleteExerciseTypeAction from "../actions/deleteExerciseTypeAction";
-  import type { ExerciseType } from "@prisma/client";
+  import type { ExerciseTypeWithEquipment } from "$lib/utils/prismaTypes";
   import { useUserId } from "$lib/stores/stores";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { Edit } from "lucide-svelte";
+  import { Badge } from "$lib/components/ui/badge";
 
   interface Props {
     group: string;
     required: boolean;
-    exerciseType: ExerciseType;
+    exerciseType: ExerciseTypeWithEquipment;
     onEditClicked: (exerciseId: string) => void;
   }
 
@@ -47,6 +48,12 @@
   >
     <div class="flex flex-col items-start justify-start p-4">
       <Headline style="small">{exerciseType.name}</Headline>
+
+      {#if exerciseType.equipment}
+        <Badge variant="secondary" class="mt-1">
+          {exerciseType.equipment.name}
+        </Badge>
+      {/if}
 
       <div class="absolute bottom-2 right-2">
         <DropdownMenu.Root bind:open={dropdownMenuOpen}>

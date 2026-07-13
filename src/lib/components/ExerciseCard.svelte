@@ -147,6 +147,12 @@
         {exercise.type.name}
       </Headline>
 
+      {#if exercise.type.equipment}
+        <Badge variant="secondary" class="mt-1">
+          {exercise.type.equipment.name}
+        </Badge>
+      {/if}
+
       {#if previous}
         <time
           use:svelteTime={{

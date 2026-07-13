@@ -8,9 +8,18 @@ const EXERCISE_TYPES = [
   { id: "t-other", name: "Plank", category: "WEIGHT", area: null, description: null },
 ];
 
-// Feed the page canned query data instead of a live Zero client.
+// Feed the page canned query data instead of a live Zero client. The page runs
+// two queries (exercise types + equipment); only the exercise-type one should
+// get the fixture rows.
+const queryNameOf = (query: unknown): string =>
+  (query as { query?: { queryName?: string } })?.query?.queryName ?? "";
+
 vi.mock("$lib/zero/z.svelte", () => ({
-  getZ: () => ({ createQuery: () => ({ data: EXERCISE_TYPES }) }),
+  getZ: () => ({
+    createQuery: (query: unknown) => ({
+      data: queryNameOf(query) === "equipment" ? [] : EXERCISE_TYPES,
+    }),
+  }),
   getZOrUndefined: () => undefined,
   initZero: () => {},
   closeZero: () => {},

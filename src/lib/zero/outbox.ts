@@ -15,6 +15,8 @@ import type {
   UpdateExerciseTypeArgs,
   CreateTemplateArgs,
   UpdateTemplateArgs,
+  CreateEquipmentArgs,
+  UpdateEquipmentArgs,
 } from "./mutators";
 
 // ---------------------------------------------------------------------------
@@ -162,5 +164,11 @@ export const zmutate = {
     create: (a: CreateTemplateArgs) => enqueueOrRun("template.create", a),
     update: (a: UpdateTemplateArgs) => enqueueOrRun("template.update", a),
     delete: (a: { id: string }) => enqueueOrRun("template.delete", a),
+  },
+  equipment: {
+    create: (a: CreateEquipmentArgs) => enqueueOrRun("equipment.create", a),
+    update: (a: UpdateEquipmentArgs) => enqueueOrRun("equipment.update", a),
+    delete: (a: { id: string; userId: string }) =>
+      enqueueOrRun("equipment.delete", a),
   },
 };

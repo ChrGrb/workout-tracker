@@ -7,6 +7,8 @@ export const sessionById = q(
     zql.workoutSession
       .where("userId", ctx.userID)
       .where("id", args.id)
-      .related("exercises", (e) => e.related("sets").related("type"))
+      .related("exercises", (e) =>
+        e.related("sets").related("type", (t) => t.related("equipment")),
+      )
       .one(),
 );

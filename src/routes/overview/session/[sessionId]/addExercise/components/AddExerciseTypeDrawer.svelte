@@ -8,6 +8,7 @@
   import createExerciseTypeAction from "../actions/createExerciseTypeAction";
   import updateExerciseTypeAction from "../actions/updateExerciseTypeAction";
   import InputSelect from "$lib/base/input/InputSelect.svelte";
+  import EquipmentSelect from "$lib/base/input/EquipmentSelect.svelte";
 
   interface Props {
     exerciseTypeName?: string;
@@ -20,6 +21,7 @@
       | "BACK"
       | "LEGS"
       | null;
+    exerciseTypeEquipmentId?: string | null;
     exerciseTypeId?: string;
     isOpen: boolean;
     editMode?: boolean;
@@ -29,6 +31,7 @@
     exerciseTypeName = $bindable(""),
     exerciseCategory = $bindable("WEIGHT"),
     exerciseTypeArea = $bindable(null),
+    exerciseTypeEquipmentId = $bindable(null),
     exerciseTypeId = "",
     isOpen,
     editMode = false,
@@ -39,6 +42,7 @@
   const reset = () => {
     exerciseTypeName = "";
     exerciseCategory = "WEIGHT";
+    exerciseTypeEquipmentId = null;
   };
 
   const areas = [
@@ -86,6 +90,7 @@
           label="Area"
           bind:value={exerciseTypeArea}
         />
+        <EquipmentSelect label="Equipment" bind:value={exerciseTypeEquipmentId} />
         <TextInput
           name="exerciseTypeName"
           id="exerciseTypeName"
@@ -107,6 +112,7 @@
                     name: exerciseTypeName,
                     area: exerciseTypeArea,
                     category: exerciseCategory,
+                    equipmentId: exerciseTypeEquipmentId,
                   },
                   $userId
                 );
@@ -115,7 +121,8 @@
                   $userId,
                   exerciseTypeName,
                   exerciseTypeArea,
-                  exerciseCategory
+                  exerciseCategory,
+                  exerciseTypeEquipmentId
                 );
               }
 

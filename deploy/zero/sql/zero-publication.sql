@@ -17,6 +17,7 @@ CREATE PUBLICATION zero_data FOR TABLE
   "Exercise",
   "ExerciseType",
   "ExerciseSet",
+  "Equipment",
   "_ExerciseTypeToUser",
   "_ExerciseTypeToWorkoutSessionTemplate";
 

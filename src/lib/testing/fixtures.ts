@@ -1,11 +1,14 @@
 import type {
   Exercise,
   ExerciseSet,
-  ExerciseType,
   Settings,
   WorkoutSession,
 } from "@prisma/client";
-import type { ExerciseFull, WorkoutSessionFull } from "$lib/utils/prismaTypes";
+import type {
+  ExerciseFull,
+  ExerciseTypeWithEquipment,
+  WorkoutSessionFull,
+} from "$lib/utils/prismaTypes";
 
 // Deterministic-ish id helper. Tests that assert on ids should pass them
 // explicitly; this is just for filler.
@@ -33,16 +36,18 @@ export function makeExerciseSet(
 }
 
 export function makeExerciseType(
-  overrides: Partial<ExerciseType> = {},
-): ExerciseType {
+  overrides: Partial<ExerciseTypeWithEquipment> = {},
+): ExerciseTypeWithEquipment {
   return {
     id: nextId("type"),
     name: "Bench Press",
     category: "WEIGHT",
     area: "CHEST",
     description: null,
+    equipmentId: null,
+    equipment: null,
     ...overrides,
-  } as ExerciseType;
+  } as ExerciseTypeWithEquipment;
 }
 
 export function makeExercise(overrides: Partial<Exercise> = {}): Exercise {
@@ -66,7 +71,9 @@ export function makeExerciseFull(
   const base = makeExercise(overrides as Partial<Exercise>);
   return {
     ...base,
-    type: (overrides.type as ExerciseType) ?? makeExerciseType({ id: base.typeId }),
+    type:
+      (overrides.type as ExerciseTypeWithEquipment) ??
+      makeExerciseType({ id: base.typeId }),
     sets: (overrides.sets as ExerciseSet[]) ?? [],
   };
 }

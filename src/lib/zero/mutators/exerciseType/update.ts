@@ -7,6 +7,7 @@ export type UpdateExerciseTypeArgs = {
   category?: ExerciseTypeCategory;
   area?: ExerciseTypeArea;
   description?: string;
+  equipmentId?: string | null;
 };
 
 export const updateExerciseType = m(
@@ -18,6 +19,9 @@ export const updateExerciseType = m(
       ...(args.area !== undefined ? { area: args.area } : {}),
       ...(args.description !== undefined
         ? { description: args.description }
+        : {}),
+      ...(args.equipmentId !== undefined
+        ? { equipmentId: args.equipmentId }
         : {}),
     });
   },

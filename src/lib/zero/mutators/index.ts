@@ -13,6 +13,9 @@ import { deleteExerciseType } from "./exerciseType/delete";
 import { createTemplate } from "./template/create";
 import { updateTemplate } from "./template/update";
 import { deleteTemplate } from "./template/delete";
+import { createEquipment } from "./equipment/create";
+import { updateEquipment } from "./equipment/update";
+import { deleteEquipment } from "./equipment/delete";
 
 // The mutator registry. To add a mutator: create a file exporting an `m(...)`
 // definition and wire it in here — one file per mutator keeps this from growing
@@ -44,6 +47,11 @@ export const mutators = defineMutators({
     update: updateTemplate,
     delete: deleteTemplate,
   },
+  equipment: {
+    create: createEquipment,
+    update: updateEquipment,
+    delete: deleteEquipment,
+  },
 });
 
 export type Mutators = typeof mutators;
@@ -58,3 +66,5 @@ export type { CreateExerciseTypeArgs } from "./exerciseType/create";
 export type { UpdateExerciseTypeArgs } from "./exerciseType/update";
 export type { CreateTemplateArgs } from "./template/create";
 export type { UpdateTemplateArgs } from "./template/update";
+export type { CreateEquipmentArgs } from "./equipment/create";
+export type { UpdateEquipmentArgs } from "./equipment/update";

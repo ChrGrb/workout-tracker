@@ -1,10 +1,9 @@
 <script lang="ts">
   import { run } from "svelte/legacy";
 
-  import Button from "$lib/base/Button.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import { onMount } from "svelte";
-  import { XIcon } from "svelte-feather-icons";
+  import { X } from "lucide-svelte";
   import LiquidGlass from "$lib/base/LiquidGlass.svelte";
 
   interface Props {
@@ -49,17 +48,18 @@
 </script>
 
 <LiquidGlass
-  className="card flex flex-col gap-8 justify-center py-4 pl-8 px-4 md:p-6 variant-filled-primary relative rounded-full !bg-black/15"
+  className="relative flex items-center justify-between gap-3 rounded-full py-2 pl-6 pr-2 !bg-black/15 text-white"
 >
-  <div class="absolute top-2 right-2 z-50"></div>
-  <div class="flex flex-row gap-4 items-center md:items-end justify-between">
-    <div class="flex flex-row font-medium font-mono">
-      <Headline style="medium" classes="font-mono"
-        >{minutes} : {seconds}</Headline
-      >
-    </div>
-    <Button action={finishAction} icon={true} loadingOnClick={true}>
-      <XIcon size="24" />
-    </Button>
+  <div class="font-mono font-medium tabular-nums">
+    <Headline style="medium" classes="font-mono">{minutes}:{seconds}</Headline>
   </div>
+  <!-- Apple-style close button: a small light-gray fill with a dark-gray glyph. -->
+  <button
+    type="button"
+    onclick={finishAction}
+    aria-label="Cancel timer"
+    class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e5e5ea]/90 text-[#48484a] transition-transform active:scale-90 hover:bg-[#e5e5ea]"
+  >
+    <X size="16" strokeWidth={2.5} />
+  </button>
 </LiquidGlass>

@@ -17,6 +17,7 @@ const updateExerciseTypeAction = (
     category: exerciseType.category as ExerciseTypeCategory | undefined,
     area: (exerciseType.area ?? undefined) as ExerciseTypeArea | undefined,
     description: exerciseType.description ?? undefined,
+    equipmentId: exerciseType.equipmentId,
   });
 };
 

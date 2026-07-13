@@ -83,6 +83,17 @@ export const exerciseTypeTable = table("exerciseType")
     category: enumeration<ExerciseTypeCategory>(),
     area: enumeration<ExerciseTypeArea>().optional(),
     description: string().optional(),
+    equipmentId: string().optional(),
+  })
+  .primaryKey("id");
+
+export const equipmentTable = table("equipment")
+  .from("Equipment")
+  .columns({
+    id: string(),
+    userId: string(),
+    name: string(),
+    createdAt: number(),
   })
   .primaryKey("id");
 
@@ -146,6 +157,11 @@ export const userTableRelationships = relationships(userTable, ({ one, many }) =
     sourceField: ["A"],
     destField: ["id"],
     destSchema: exerciseTypeTable,
+  }),
+  equipment: many({
+    sourceField: ["id"],
+    destField: ["userId"],
+    destSchema: equipmentTable,
   })
 }));
 export const settingsTableRelationships = relationships(settingsTable, ({ one }) => ({
@@ -205,7 +221,12 @@ export const exerciseTableRelationships = relationships(exerciseTable, ({ one, m
     destSchema: exerciseSetTable,
   })
 }));
-export const exerciseTypeTableRelationships = relationships(exerciseTypeTable, ({ many }) => ({
+export const exerciseTypeTableRelationships = relationships(exerciseTypeTable, ({ one, many }) => ({
+  equipment: one({
+    sourceField: ["equipmentId"],
+    destField: ["id"],
+    destSchema: equipmentTable,
+  }),
   exercise: many({
     sourceField: ["id"],
     destField: ["typeId"],
@@ -228,6 +249,18 @@ export const exerciseTypeTableRelationships = relationships(exerciseTypeTable, (
     sourceField: ["B"],
     destField: ["id"],
     destSchema: workoutSessionTemplateTable,
+  })
+}));
+export const equipmentTableRelationships = relationships(equipmentTable, ({ one, many }) => ({
+  user: one({
+    sourceField: ["userId"],
+    destField: ["id"],
+    destSchema: userTable,
+  }),
+  exerciseTypes: many({
+    sourceField: ["id"],
+    destField: ["equipmentId"],
+    destSchema: exerciseTypeTable,
   })
 }));
 export const exerciseSetTableRelationships = relationships(exerciseSetTable, ({ one }) => ({
@@ -273,6 +306,7 @@ export const schema = createSchema({
     workoutSessionTemplateTable,
     exerciseTable,
     exerciseTypeTable,
+    equipmentTable,
     exerciseSetTable,
     _exerciseTypeToUserTable,
     _exerciseTypeToWorkoutSessionTemplateTable,
@@ -284,6 +318,7 @@ export const schema = createSchema({
     workoutSessionTemplateTableRelationships,
     exerciseTableRelationships,
     exerciseTypeTableRelationships,
+    equipmentTableRelationships,
     exerciseSetTableRelationships,
     _exerciseTypeToUserTableRelationships,
     _exerciseTypeToWorkoutSessionTemplateTableRelationships,

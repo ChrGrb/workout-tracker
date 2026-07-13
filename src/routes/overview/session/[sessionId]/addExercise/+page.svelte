@@ -12,8 +12,9 @@
   import addExerciseAction from "./actions/addExerciseAction";
   import { useForwardNavigation, useUserId } from "$lib/stores/stores";
   import { getExercisePath } from "$lib/utils/routing/routes";
-  import type { ExerciseType } from "@prisma/client";
+  import type { ExerciseTypeWithEquipment } from "$lib/utils/prismaTypes";
   import FloatBottomWrapper from "$lib/base/layout/FloatBottomWrapper.svelte";
+  import LiquidGlass from "$lib/base/LiquidGlass.svelte";
   import Headline from "$lib/base/Headline.svelte";
   import * as Drawer from "$lib/components/ui/drawer";
   import AddExerciseTypeDrawer from "./components/AddExerciseTypeDrawer.svelte";
@@ -35,7 +36,7 @@
   let exerciseTypeToEditId = $state("");
 
   let userId = useUserId();
-  let exerciseTypes: ExerciseType[] = $state([]);
+  let exerciseTypes: ExerciseTypeWithEquipment[] = $state([]);
 
   let addOpen = $state(false);
   let editMode = $state(false);
@@ -59,6 +60,22 @@
       : [...selectedGroups, value];
   }
 
+  // Equipment filter. NONE matches exercise types with no equipment assigned.
+  const NONE = "NONE";
+  let equipment = $state<{ id: string; name: string }[]>([]);
+  let selectedEquipment = $state<string[]>([]);
+
+  function toggleEquipment(value: string) {
+    selectedEquipment = selectedEquipment.includes(value)
+      ? selectedEquipment.filter((e) => e !== value)
+      : [...selectedEquipment, value];
+  }
+
+  let equipmentOptions = $derived([
+    { value: NONE, label: "None" },
+    ...equipment.map((e) => ({ value: e.id, label: e.name })),
+  ]);
+
   let searchOpen = $state(false);
   let searchTerm = $state("");
 
@@ -75,7 +92,13 @@
 
   const exerciseTypesQuery = getZ().createQuery(queries.exerciseTypes());
   $effect(() => {
-    exerciseTypes = exerciseTypesQuery.data as unknown as ExerciseType[];
+    exerciseTypes =
+      exerciseTypesQuery.data as unknown as ExerciseTypeWithEquipment[];
+  });
+
+  const equipmentQuery = getZ().createQuery(queries.equipment());
+  $effect(() => {
+    equipment = (equipmentQuery.data ?? []) as { id: string; name: string }[];
   });
 
   const forwardNavigation = useForwardNavigation();
@@ -113,6 +136,11 @@
             (exerciseType) =>
               search.length === 0 ||
               exerciseType.name.toLowerCase().includes(search),
+          )
+          .filter(
+            (exerciseType) =>
+              selectedEquipment.length === 0 ||
+              selectedEquipment.includes(exerciseType.equipmentId ?? NONE),
           )
           .toSorted((a, b) => a.name.localeCompare(b.name)),
       }))
@@ -178,22 +206,47 @@
         {#if filterOpen}
           <div
             transition:slide={{ duration: 200, easing: sineInOut }}
-            class="flex flex-row flex-wrap gap-2"
+            class="flex flex-col gap-4"
           >
-            {#each muscleGroups as group (group.value)}
-              <button
-                type="button"
-                onclick={() => toggleGroup(group.value)}
-                class={clsx(
-                  "rounded-full border px-3 py-1 text-sm transition-all",
-                  selectedGroups.includes(group.value)
-                    ? "bg-black text-white border-black"
-                    : "variant-soft-primary border-transparent text-primary-700",
-                )}
-              >
-                {group.label}
-              </button>
-            {/each}
+            <div class="flex flex-col gap-2">
+              <p class="text-sm font-semibold text-primary-700">Muscle group</p>
+              <div class="flex flex-row flex-wrap gap-2">
+                {#each muscleGroups as group (group.value)}
+                  <button
+                    type="button"
+                    onclick={() => toggleGroup(group.value)}
+                    class={clsx(
+                      "rounded-full border px-3 py-1 text-sm transition-all",
+                      selectedGroups.includes(group.value)
+                        ? "bg-black text-white border-black"
+                        : "variant-soft-primary border-transparent text-primary-700",
+                    )}
+                  >
+                    {group.label}
+                  </button>
+                {/each}
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <p class="text-sm font-semibold text-primary-700">Equipment</p>
+              <div class="flex flex-row flex-wrap gap-2">
+                {#each equipmentOptions as option (option.value)}
+                  <button
+                    type="button"
+                    onclick={() => toggleEquipment(option.value)}
+                    class={clsx(
+                      "rounded-full border px-3 py-1 text-sm transition-all",
+                      selectedEquipment.includes(option.value)
+                        ? "bg-black text-white border-black"
+                        : "variant-soft-primary border-transparent text-primary-700",
+                    )}
+                  >
+                    {option.label}
+                  </button>
+                {/each}
+              </div>
+            </div>
           </div>
         {/if}
 
@@ -234,36 +287,48 @@
 
       <FloatBottomWrapper>
         <Container>
-          <Button
-            action={async () => {
-              let exerciseType = $state.snapshot(selectedExerciseType);
-
-              if (exerciseType) {
-                const newExerciseId = await addExerciseAction(
-                  exerciseType,
-                  $userId ?? "",
-                  data.sessionId,
-                );
-
-                forwardNavigation.set(true);
-
-                goto(
-                  getExercisePath({
-                    sessionId: data.sessionId,
-                    exerciseId: newExerciseId,
-                  }),
-                  {
-                    replaceState: true,
-                  },
-                );
-              }
-            }}
-            loadingOnClick={true}
-            disabled={isInvalid}
-            classes="w-full"
+          <div
+            class={clsx(
+              "relative w-full transition-opacity",
+              isInvalid && "opacity-40",
+            )}
           >
-            Add
-          </Button>
+            <!-- Liquid-glass surface sits behind the button so it persists even
+                 while the button swaps its label for the loading spinner. -->
+            <LiquidGlass
+              className="absolute inset-0 rounded-full !bg-black/15"
+            />
+            <Button
+              action={async () => {
+                let exerciseType = $state.snapshot(selectedExerciseType);
+
+                if (exerciseType) {
+                  const newExerciseId = await addExerciseAction(
+                    exerciseType,
+                    $userId ?? "",
+                    data.sessionId,
+                  );
+
+                  forwardNavigation.set(true);
+
+                  goto(
+                    getExercisePath({
+                      sessionId: data.sessionId,
+                      exerciseId: newExerciseId,
+                    }),
+                    {
+                      replaceState: true,
+                    },
+                  );
+                }
+              }}
+              loadingOnClick={true}
+              disabled={isInvalid}
+              classes="w-full !bg-transparent !border-0 relative z-10 text-white font-semibold"
+            >
+              Add
+            </Button>
+          </div>
         </Container>
       </FloatBottomWrapper>
     </div>
@@ -277,6 +342,7 @@
       exerciseTypeName={selectedExerciseTypeToEdit?.name}
       exerciseCategory={selectedExerciseTypeToEdit?.category}
       exerciseTypeArea={selectedExerciseTypeToEdit?.area}
+      exerciseTypeEquipmentId={selectedExerciseTypeToEdit?.equipmentId}
       isOpen={addOpen}
       {editMode}
     />

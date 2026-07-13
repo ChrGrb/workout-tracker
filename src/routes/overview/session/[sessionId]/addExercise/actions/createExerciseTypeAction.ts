@@ -10,6 +10,7 @@ const createExerciseTypeAction = (
   exerciseTypeName: string,
   exerciseTypeArea: string | null,
   exerciseCategory: string,
+  equipmentId: string | null,
 ) => {
   const area =
     exerciseTypeArea && exerciseTypeArea !== ""
@@ -23,6 +24,7 @@ const createExerciseTypeAction = (
     category: exerciseCategory as ExerciseTypeCategory,
     area,
     description: "",
+    equipmentId: equipmentId ?? undefined,
   });
 };
 

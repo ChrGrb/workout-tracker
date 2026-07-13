@@ -47,6 +47,7 @@
   import AddExerciseDrawer from "./components/AddExerciseDrawer.svelte";
   import Badge from "$lib/components/ui/badge/badge.svelte";
   import { Plus } from "lucide-svelte";
+  import LiquidGlass from "$lib/base/LiquidGlass.svelte";
 
   interface Props {
     data: PageData;
@@ -294,12 +295,14 @@
                       </div>
                     {/if}
 
-                    <Drawer.Trigger class="ml-auto">
-                      <Button
-                        classes="aspect-square variant-filled-primary p-4 rounded-full bg-black/15 backdrop-blur-md backdrop-filter  shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)] border border-white/30"
+                    <Drawer.Trigger class="ml-auto rounded-full">
+                      <LiquidGlass
+                        scale={18}
+                        specular={true}
+                        className="h-[50px] w-[50px] rounded-full flex items-center justify-center !bg-black/15 text-white transition-transform active:scale-95"
                       >
-                        <Plus size="38" />
-                      </Button>
+                        <Plus size="26" />
+                      </LiquidGlass>
                     </Drawer.Trigger>
                   </div>
                 {/if}

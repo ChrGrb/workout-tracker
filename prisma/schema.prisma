@@ -56,6 +56,7 @@ model User {
   workoutSessions         WorkoutSession[]
   workoutSessionTemplates WorkoutSessionTemplate[]
   exerciseTypes           ExerciseType[]           @relation("ExerciseTypeToUser")
+  equipment               Equipment[]
 }
 
 model VerificationToken {
@@ -115,9 +116,20 @@ model ExerciseType {
   category                ExerciseTypeCategory     @default(WEIGHT)
   area                    ExerciseTypeArea?
   description             String?
+  equipmentId             String?
+  equipment               Equipment?               @relation(fields: [equipmentId], references: [id])
   exercise                Exercise[]
   users                   User[]                   @relation("ExerciseTypeToUser")
   workoutSessionTemplates WorkoutSessionTemplate[] @relation("ExerciseTypeToWorkoutSessionTemplate")
+}
+
+model Equipment {
+  id            String         @id @default(cuid())
+  userId        String
+  name          String
+  createdAt     DateTime       @default(now())
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseTypes ExerciseType[]
 }
 
 enum ExerciseTypeCategory {
