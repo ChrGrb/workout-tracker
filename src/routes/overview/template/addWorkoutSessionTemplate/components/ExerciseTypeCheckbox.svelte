@@ -45,7 +45,7 @@
     // Represents the type of event that opens/closed the popup
     event: "click",
     // Matches the data-popup value on your popup element
-    target: "popupFeatured" + exerciseType.name,
+    target: "popupFeatured" + exerciseType.id,
     // Defines which side of your trigger the popup will appear
     placement: "top",
     middleware: {
@@ -58,7 +58,7 @@
 
 <div
   class="card variant-filled-surface p-2 pr-0 shadow-xl z-50"
-  data-popup={"popupFeatured" + exerciseType.name}
+  data-popup={"popupFeatured" + exerciseType.id}
 >
   <div class="flex flex-col items-end">
     <Button
@@ -96,7 +96,7 @@
 
 <div>
   <input
-    id={exerciseType.name}
+    id={exerciseType.id}
     name="exercise-type-id"
     value={exerciseType.id}
     type="checkbox"
@@ -104,7 +104,7 @@
     bind:checked
   />
   <label
-    for={exerciseType.name}
+    for={exerciseType.id}
     class="card flex flex-col justify-center text-center variant-soft-primary drop-shadow-md peer-checked:drop-shadow-lg peer-checked:variant-filled-primary text-on-surface-token peer-checked:text-on-primary-token transition-colors relative"
   >
     <div class="flex flex-col items-start justify-between p-4">

@@ -34,7 +34,7 @@
 
 <div>
   <input
-    id={exerciseType.name}
+    id={exerciseType.id}
     name="exercise-type-id"
     value={exerciseType.id}
     type="radio"
@@ -43,7 +43,7 @@
     {required}
   />
   <label
-    for={exerciseType.name}
+    for={exerciseType.id}
     class="card flex flex-col justify-center text-center variant-soft-primary drop-shadow-md peer-checked:drop-shadow-lg peer-checked:variant-filled-primary text-on-surface-token peer-checked:text-on-primary-token transition-colors relative"
   >
     <div class="flex flex-col items-start justify-start p-4">
