@@ -166,7 +166,16 @@ export async function exchangeGithubCode(input: {
     }),
   });
   if (!tokenRes.ok) throw new Error("GitHub code exchange failed");
-  const token = (await tokenRes.json()) as { access_token?: string };
+  // GitHub returns HTTP 200 even on failure, with an { error, error_description }
+  // body — surface it so redirect_uri / code mismatches are debuggable.
+  const token = (await tokenRes.json()) as {
+    access_token?: string;
+    error?: string;
+    error_description?: string;
+  };
+  if (token.error) {
+    throw new Error(`GitHub token error: ${token.error} (${token.error_description ?? ""})`);
+  }
   if (!token.access_token) throw new Error("GitHub response missing access_token");
 
   const auth = { authorization: `Bearer ${token.access_token}`, accept: "application/vnd.github+json", "user-agent": "workout-tracker" };
