@@ -151,8 +151,12 @@ export async function exchangeGithubCode(input: {
   code: string;
   redirectUri: string;
 }): Promise<VerifiedProfile> {
-  const clientId = env.GITHUB_ID;
-  const clientSecret = env.GITHUB_SECRET;
+  // A native app needs its own GitHub OAuth App (a GitHub app allows only one
+  // set of callback URLs, and the native custom-scheme callback differs from the
+  // web Auth.js callback). Use its dedicated credentials, falling back to the web
+  // app's if a separate one hasn't been set up.
+  const clientId = env.GITHUB_NATIVE_ID ?? env.GITHUB_ID;
+  const clientSecret = env.GITHUB_NATIVE_SECRET ?? env.GITHUB_SECRET;
   if (!clientId || !clientSecret) throw new Error("GITHUB client is not configured");
 
   const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
