@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const profile =
       provider === "google"
         ? await exchangeGoogleCode({ code, redirectUri, codeVerifier })
-        : await exchangeGithubCode({ code, redirectUri });
+        : await exchangeGithubCode({ code, redirectUri, codeVerifier });
     const userId = await resolveUserId(profile);
     return json(await issueSession(userId));
   } catch (e) {

@@ -171,6 +171,7 @@ export async function exchangeGoogleCode(input: {
 export async function exchangeGithubCode(input: {
   code: string;
   redirectUri: string;
+  codeVerifier?: string;
 }): Promise<VerifiedProfile> {
   // A native app needs its own GitHub OAuth App (a GitHub app allows only one
   // set of callback URLs, and the native custom-scheme callback differs from the
@@ -182,15 +183,21 @@ export async function exchangeGithubCode(input: {
   if (!clientId || !clientSecret)
     throw new Error("GITHUB client is not configured");
 
+  // expo-auth-session sends a PKCE code_challenge by default, so GitHub requires
+  // the matching code_verifier at redemption (in addition to the client secret,
+  // which GitHub still mandates — it doesn't treat native apps as public clients).
+  const payload: Record<string, string> = {
+    client_id: clientId,
+    client_secret: clientSecret,
+    code: input.code,
+    redirect_uri: input.redirectUri,
+  };
+  if (input.codeVerifier) payload.code_verifier = input.codeVerifier;
+
   const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
     method: "POST",
     headers: { "content-type": "application/json", accept: "application/json" },
-    body: JSON.stringify({
-      client_id: clientId,
-      client_secret: clientSecret,
-      code: input.code,
-      redirect_uri: input.redirectUri,
-    }),
+    body: JSON.stringify(payload),
   });
   if (!tokenRes.ok) {
     const detail = await tokenRes.text().catch(() => "");
