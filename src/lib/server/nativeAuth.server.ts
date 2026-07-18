@@ -54,13 +54,16 @@ export async function mintRefreshToken(userId: string): Promise<string> {
 }
 
 // Verify a refresh token and return the user id, or null if invalid/expired.
-export async function verifyRefreshToken(token: string): Promise<string | null> {
+export async function verifyRefreshToken(
+  token: string,
+): Promise<string | null> {
   try {
     const { payload } = await jwtVerify(token, requireSecret("AUTH_SECRET"), {
       issuer: REFRESH_ISS,
       audience: REFRESH_AUD,
     });
-    if (payload.typ !== "refresh" || typeof payload.sub !== "string") return null;
+    if (payload.typ !== "refresh" || typeof payload.sub !== "string")
+      return null;
     return payload.sub;
   } catch {
     return null;
@@ -77,14 +80,21 @@ type VerifiedProfile = {
   image?: string;
 };
 
-const appleJwks = createRemoteJWKSet(new URL("https://appleid.apple.com/auth/keys"));
-const googleJwks = createRemoteJWKSet(new URL("https://www.googleapis.com/oauth2/v3/certs"));
+const appleJwks = createRemoteJWKSet(
+  new URL("https://appleid.apple.com/auth/keys"),
+);
+const googleJwks = createRemoteJWKSet(
+  new URL("https://www.googleapis.com/oauth2/v3/certs"),
+);
 
 // The `aud` of a native Sign in with Apple identity token is the app's bundle id,
 // not the web service id. Accept a comma-separated allowlist so both can coexist.
 function appleAudiences(): string[] {
   const raw = env.APPLE_NATIVE_BUNDLE_ID ?? env.APPLE_ID ?? "";
-  return raw.split(",").map((s) => s.trim()).filter(Boolean);
+  return raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 export async function verifyAppleIdentityToken(
@@ -92,16 +102,24 @@ export async function verifyAppleIdentityToken(
   fallback: { email?: string; name?: string },
 ): Promise<VerifiedProfile> {
   const audience = appleAudiences();
-  if (audience.length === 0) throw new Error("APPLE_NATIVE_BUNDLE_ID is not configured");
+  if (audience.length === 0)
+    throw new Error("APPLE_NATIVE_BUNDLE_ID is not configured");
 
   const { payload } = await jwtVerify(identityToken, appleJwks, {
     issuer: "https://appleid.apple.com",
     audience,
   });
-  if (typeof payload.sub !== "string") throw new Error("Apple token missing sub");
+  if (typeof payload.sub !== "string")
+    throw new Error("Apple token missing sub");
 
-  const email = typeof payload.email === "string" ? payload.email : fallback.email;
-  return { provider: "apple", providerAccountId: payload.sub, email, name: fallback.name };
+  const email =
+    typeof payload.email === "string" ? payload.email : fallback.email;
+  return {
+    provider: "apple",
+    providerAccountId: payload.sub,
+    email,
+    name: fallback.name,
+  };
 }
 
 export async function exchangeGoogleCode(input: {
@@ -120,8 +138,10 @@ export async function exchangeGoogleCode(input: {
   });
   // Native (iOS) OAuth clients have no secret and rely on PKCE; a web client does.
   if (input.codeVerifier) body.set("code_verifier", input.codeVerifier);
-  if (env.GOOGLE_IOS_CLIENT_SECRET) body.set("client_secret", env.GOOGLE_IOS_CLIENT_SECRET);
-  else if (!env.GOOGLE_IOS_CLIENT_ID && env.GOOGLE_SECRET) body.set("client_secret", env.GOOGLE_SECRET);
+  if (env.GOOGLE_IOS_CLIENT_SECRET)
+    body.set("client_secret", env.GOOGLE_IOS_CLIENT_SECRET);
+  else if (!env.GOOGLE_IOS_CLIENT_ID && env.GOOGLE_SECRET)
+    body.set("client_secret", env.GOOGLE_SECRET);
 
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
@@ -136,7 +156,8 @@ export async function exchangeGoogleCode(input: {
     issuer: ["https://accounts.google.com", "accounts.google.com"],
     audience: clientId,
   });
-  if (typeof payload.sub !== "string") throw new Error("Google token missing sub");
+  if (typeof payload.sub !== "string")
+    throw new Error("Google token missing sub");
 
   return {
     provider: "google",
@@ -157,7 +178,9 @@ export async function exchangeGithubCode(input: {
   // app's if a separate one hasn't been set up.
   const clientId = env.GITHUB_NATIVE_ID ?? env.GITHUB_ID;
   const clientSecret = env.GITHUB_NATIVE_SECRET ?? env.GITHUB_SECRET;
-  if (!clientId || !clientSecret) throw new Error("GITHUB client is not configured");
+  console.log("GITHUB_NATIVE_ID", env.GITHUB_NATIVE_ID);
+  if (!clientId || !clientSecret)
+    throw new Error("GITHUB client is not configured");
 
   const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
     method: "POST",
@@ -169,7 +192,12 @@ export async function exchangeGithubCode(input: {
       redirect_uri: input.redirectUri,
     }),
   });
-  if (!tokenRes.ok) throw new Error("GitHub code exchange failed");
+  if (!tokenRes.ok) {
+    const detail = await tokenRes.text().catch(() => "");
+    throw new Error(
+      `GitHub code exchange failed: ${tokenRes.status} ${detail.slice(0, 200)}`,
+    );
+  }
   // GitHub returns HTTP 200 even on failure, with an { error, error_description }
   // body — surface it so redirect_uri / code mismatches are debuggable.
   const token = (await tokenRes.json()) as {
@@ -178,21 +206,41 @@ export async function exchangeGithubCode(input: {
     error_description?: string;
   };
   if (token.error) {
-    throw new Error(`GitHub token error: ${token.error} (${token.error_description ?? ""})`);
+    throw new Error(
+      `GitHub token error: ${token.error} (${token.error_description ?? ""})`,
+    );
   }
-  if (!token.access_token) throw new Error("GitHub response missing access_token");
+  if (!token.access_token)
+    throw new Error("GitHub response missing access_token");
 
-  const auth = { authorization: `Bearer ${token.access_token}`, accept: "application/vnd.github+json", "user-agent": "workout-tracker" };
+  const auth = {
+    authorization: `Bearer ${token.access_token}`,
+    accept: "application/vnd.github+json",
+    "user-agent": "workout-tracker",
+  };
   const userRes = await fetch("https://api.github.com/user", { headers: auth });
   if (!userRes.ok) throw new Error("GitHub user lookup failed");
-  const profile = (await userRes.json()) as { id: number; name?: string; login: string; avatar_url?: string };
+  const profile = (await userRes.json()) as {
+    id: number;
+    name?: string;
+    login: string;
+    avatar_url?: string;
+  };
 
   // Prefer the primary verified email (the /user endpoint often omits email).
   let email: string | undefined;
-  const emailRes = await fetch("https://api.github.com/user/emails", { headers: auth });
+  const emailRes = await fetch("https://api.github.com/user/emails", {
+    headers: auth,
+  });
   if (emailRes.ok) {
-    const emails = (await emailRes.json()) as { email: string; primary: boolean; verified: boolean }[];
-    email = emails.find((e) => e.primary && e.verified)?.email ?? emails.find((e) => e.verified)?.email;
+    const emails = (await emailRes.json()) as {
+      email: string;
+      primary: boolean;
+      verified: boolean;
+    }[];
+    email =
+      emails.find((e) => e.primary && e.verified)?.email ??
+      emails.find((e) => e.verified)?.email;
   }
 
   return {
