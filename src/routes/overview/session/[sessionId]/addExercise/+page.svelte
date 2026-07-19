@@ -262,10 +262,7 @@
               <Collapsible.Content>
                 <div class="flex flex-col gap-2">
                   {#each group.items as exerciseType (exerciseType.id)}
-                    <div
-                      animate:flip={{ duration: 100, easing: sineInOut }}
-                      id={exerciseType.id}
-                    >
+                    <div animate:flip={{ duration: 100, easing: sineInOut }}>
                       <ExerciseTypeRadioButton
                         bind:group={exerciseTypeSelection}
                         {onEditClicked}
