@@ -234,7 +234,9 @@
             })}
           >
             {#if exercise.sets}
-              {#each exercise.sets ?? [] as set (set.id)}
+              {#each (exercise.sets ?? [])
+                .toSorted(sortByCreatedAt)
+                .toReversed() as set (set.id)}
                 <div
                   animate:flip={{
                     delay: 100,
