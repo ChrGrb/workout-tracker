@@ -156,21 +156,41 @@ function backdropSupported() {
   );
 }
 
+// Safari/WebKit advertises support for url() backdrop-filters but never
+// actually renders the SVG displacement map, so the refraction silently
+// disappears. Detect the WebKit engine (all iOS browsers included; Blink-based
+// Chrome/Edge excluded) so we can fall back to a plain blur there instead.
+function isWebkit() {
+  return (
+    typeof navigator !== "undefined" &&
+    /AppleWebKit\//.test(navigator.userAgent) &&
+    !/Chrome|Chromium|Edg\//.test(navigator.userAgent)
+  );
+}
+
 /**
  * Svelte action that applies the liquid-glass refraction backdrop-filter to an
  * element, regenerating the displacement map whenever the element resizes. The
  * SVG <filter> lives in <body> so it works for portalled elements. Where SVG
- * backdrop filters are unsupported (Firefox/Safari), it no-ops and leaves any
- * CSS `backdrop-blur` fallback in place.
+ * backdrop filters can't render (Firefox, Safari/WebKit), it falls back to a
+ * plain frosted `backdrop-filter: blur(...)` so the surface still reads as glass.
  */
 export function liquidGlassFilter(
   node: HTMLElement,
   options: LiquidGlassOptions = {},
 ) {
   const id = `liquid-glass-${instanceCount++}`;
-  const supported = backdropSupported();
+  const supported = backdropSupported() && !isWebkit();
   let opts = options;
   let svg: SVGSVGElement | null = null;
+
+  // No SVG refraction to sit on top of — apply a stronger blur that reads as
+  // frosted glass on its own. Honors the `blur` option but keeps a visible floor.
+  function applyFallbackBlur() {
+    const value = `blur(${Math.max(opts.blur ?? 2, 12)}px)`;
+    node.style.backdropFilter = value;
+    node.style.setProperty("-webkit-backdrop-filter", value);
+  }
 
   function ensureSvg() {
     if (svg) return;
@@ -184,7 +204,10 @@ export function liquidGlassFilter(
   }
 
   function regenerate() {
-    if (!supported) return;
+    if (!supported) {
+      applyFallbackBlur();
+      return;
+    }
     const w = node.clientWidth;
     const h = node.clientHeight;
     if (w < 2 || h < 2 || w * h > 1_500_000) return;
