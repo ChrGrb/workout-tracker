@@ -1,8 +1,9 @@
 <script lang="ts">
   import clsx from "clsx";
+  import type { HTMLAttributes } from "svelte/elements";
   import { liquidGlassFilter } from "./liquidGlass";
 
-  interface Props {
+  interface Props extends HTMLAttributes<HTMLDivElement> {
     children?: import("svelte").Snippet;
     className?: string;
     /** Width of the refracting bezel band, in px (falls back to a share of the shorter side). */
@@ -28,6 +29,7 @@
     blur = 2,
     ior = 1.5,
     specular = false,
+    ...rest
   }: Props = $props();
 
   // Layered inset highlights that fake a glossy glass rim (top + bottom
@@ -38,6 +40,7 @@
 </script>
 
 <div
+  {...rest}
   use:liquidGlassFilter={{ bezel, scale, blur, ior }}
   style:box-shadow={specular ? specularShadow : undefined}
   class={clsx(
