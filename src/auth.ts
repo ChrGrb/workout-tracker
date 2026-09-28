@@ -16,7 +16,15 @@ import prismaClient from "$lib/db.server";
 export const { handle } = SvelteKitAuth({
   adapter: PrismaAdapter(prismaClient),
   providers: [
-    GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET }),
+    GitHub({
+      clientId: GITHUB_ID,
+      clientSecret: GITHUB_SECRET,
+      // GitHub now returns an RFC 9207 `iss` parameter in the OAuth callback.
+      // This @auth/core version leaves the GitHub provider's issuer unset and
+      // falls back to the placeholder "https://authjs.dev", so the callback is
+      // rejected. Newer @auth/core ships exactly this value by default.
+      issuer: "https://github.com/login/oauth",
+    }),
     Google({ clientId: GOOGLE_ID, clientSecret: GOOGLE_SECRET }),
     Apple({
       clientId: APPLE_ID,
