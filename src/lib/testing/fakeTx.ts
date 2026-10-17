@@ -3,10 +3,13 @@ import type { Tx, ZeroAuthData } from "$lib/zero/mutators/shared";
 // In-memory fake of the Zero `Transaction<Schema>` subset the mutators use:
 //   - tx.location            ("client" | "server") — drives assertOwner
 //   - tx.mutate.<table>.insert/upsert/update/delete
-//   - tx.run(zqlQuery)       — simple equality where + limit (introspects the AST)
+//   - tx.run(zqlQuery)       — equality where (single, or chained `.where().where()`)
+//                              + limit (introspects the AST)
 //
 // The AST shape (verified against @rocicorp/zero@1.7.0, which is pinned):
-//   query.ast = { table, where?: { type:"simple", left:{name}, right:{value}, op }, limit? }
+//   simple:  { type:"simple", left:{type:"column",name}, right:{type:"literal",value}, op:"=" }
+//   chained: { type:"and", conditions: [simple, simple, ...] }
+//   query.ast = { table, where?: simple | chained, limit? }
 // If a mutator ever uses a richer query, extend `run` here — one file to update.
 //
 // Lives under src/lib so tests import it via `$lib/testing/fakeTx` (resolves in
@@ -20,15 +23,28 @@ function matchesKey(row: Row, key: Row): boolean {
   return Object.keys(key).every((k) => row[k] === key[k]);
 }
 
+interface WhereAst {
+  type: string;
+  op?: string;
+  left?: { type?: string; name?: string };
+  right?: { type?: string; value?: unknown };
+  conditions?: WhereAst[];
+}
+
 interface QueryAst {
   table: string;
-  where?: {
-    type: string;
-    op?: string;
-    left?: { name?: string };
-    right?: { value?: unknown };
-  };
+  where?: WhereAst;
   limit?: number;
+}
+
+// A plain `column = literal` condition; anything else is unsupported.
+function isSimpleEq(w: WhereAst): boolean {
+  return (
+    w.type === "simple" &&
+    w.op === "=" &&
+    !!w.left?.name &&
+    (w.right?.type === undefined || w.right.type === "literal")
+  );
 }
 
 export interface FakeTx {
@@ -80,10 +96,18 @@ export function createFakeTx(
     let rows = [...table(ast.table)];
     if (ast.where) {
       const w = ast.where;
-      if (w.type === "simple" && w.op === "=" && w.left?.name) {
-        const col = w.left.name;
-        const val = w.right?.value;
-        rows = rows.filter((r) => r[col] === val);
+      const conds: WhereAst[] | undefined = isSimpleEq(w)
+        ? [w]
+        : w.type === "and" &&
+            Array.isArray(w.conditions) &&
+            w.conditions.length > 0 &&
+            w.conditions.every(isSimpleEq)
+          ? w.conditions
+          : undefined;
+      if (conds) {
+        rows = rows.filter((r) =>
+          conds.every((c) => r[c.left!.name!] === c.right?.value),
+        );
       } else {
         throw new Error(
           `fakeTx.run: unsupported where clause: ${JSON.stringify(w)}`,

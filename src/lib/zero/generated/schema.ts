@@ -72,6 +72,7 @@ export const exerciseTable = table("exercise")
     createdAt: number(),
     previousScore: number().optional(),
     score: number(),
+    notes: string(),
   })
   .primaryKey("id");
 

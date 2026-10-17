@@ -61,6 +61,7 @@ export function makeExercise(overrides: Partial<Exercise> = {}): Exercise {
     createdAt: new Date(0),
     previousScore: null,
     score: 0,
+    notes: "",
     ...overrides,
   } as Exercise;
 }

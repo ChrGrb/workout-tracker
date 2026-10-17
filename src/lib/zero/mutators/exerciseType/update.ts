@@ -1,5 +1,9 @@
-import { m, type Tx } from "../shared";
-import type { ExerciseTypeArea, ExerciseTypeCategory } from "../../schema";
+import { m, type Tx, type ZeroAuthData } from "../shared";
+import {
+  zql,
+  type ExerciseTypeArea,
+  type ExerciseTypeCategory,
+} from "../../schema";
 
 export type UpdateExerciseTypeArgs = {
   id: string;
@@ -11,7 +15,24 @@ export type UpdateExerciseTypeArgs = {
 };
 
 export const updateExerciseType = m(
-  async ({ tx, args }: { tx: Tx; args: UpdateExerciseTypeArgs }) => {
+  async ({
+    tx,
+    args,
+    ctx,
+  }: {
+    tx: Tx;
+    args: UpdateExerciseTypeArgs;
+    ctx: ZeroAuthData;
+  }) => {
+    // On the server, only a user linked to the type (implicit M2M join table,
+    // A=type, B=user) may edit it.
+    if (tx.location === "server") {
+      if (!ctx) throw new Error("Not authorized");
+      const [link] = await tx.run(
+        zql._exerciseTypeToUser.where("A", args.id).where("B", ctx.userID),
+      );
+      if (!link) throw new Error("Not authorized");
+    }
     await tx.mutate.exerciseType.update({
       id: args.id,
       ...(args.name !== undefined ? { name: args.name } : {}),

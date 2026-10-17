@@ -3,6 +3,7 @@ import { createSession } from "./session/create";
 import { updateSession } from "./session/update";
 import { deleteSession } from "./session/delete";
 import { createExercise } from "./exercise/create";
+import { updateExercise } from "./exercise/update";
 import { deleteExercise } from "./exercise/delete";
 import { createExerciseSet } from "./exerciseSet/create";
 import { deleteExerciseSet } from "./exerciseSet/delete";
@@ -28,6 +29,7 @@ export const mutators = defineMutators({
   },
   exercise: {
     create: createExercise,
+    update: updateExercise,
     delete: deleteExercise,
   },
   exerciseSet: {
@@ -60,6 +62,7 @@ export type { ZeroAuthData } from "./shared";
 export type { CreateSessionArgs } from "./session/create";
 export type { UpdateSessionArgs } from "./session/update";
 export type { CreateExerciseArgs } from "./exercise/create";
+export type { UpdateExerciseArgs } from "./exercise/update";
 export type { CreateExerciseSetArgs } from "./exerciseSet/create";
 export type { UpdateSettingsArgs } from "./settings/update";
 export type { CreateExerciseTypeArgs } from "./exerciseType/create";
