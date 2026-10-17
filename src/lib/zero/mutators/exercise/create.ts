@@ -26,6 +26,7 @@ export const createExercise = m(
       sessionId: args.sessionId,
       createdAt: args.createdAt,
       score: 0,
+      notes: "",
     });
   },
 );

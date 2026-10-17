@@ -48,6 +48,7 @@
   import Badge from "$lib/components/ui/badge/badge.svelte";
   import { Plus } from "lucide-svelte";
   import LiquidGlass from "$lib/base/LiquidGlass.svelte";
+  import ExerciseNotes from "./components/ExerciseNotes.svelte";
 
   interface Props {
     data: PageData;
@@ -72,6 +73,13 @@
     queries.sessionById({ id: data.sessionId }),
   );
   const allSessionsQuery = z.createQuery(queries.sessions());
+  const exerciseTypesQuery = z.createQuery(queries.exerciseTypes());
+
+  // Only types still linked to the user can have their (shared) note edited.
+  let canEditTypeNotes = $derived(
+    !!exercise &&
+      (exerciseTypesQuery.data ?? []).some((t) => t.id === exercise?.typeId),
+  );
 
   // Current exercise + whether its session is still active.
   $effect(() => {
@@ -161,6 +169,7 @@
               format: "MMMM D, YYYY · h:mm A ",
             }}
           ></time>
+          <ExerciseNotes {exercise} {canEditTypeNotes} />
         </div>
 
         {#if previousExercisesOfType?.length}

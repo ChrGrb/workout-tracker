@@ -1,5 +1,9 @@
 import { m, assertOwner, type Tx, type ZeroAuthData } from "../shared";
-import type { ExerciseTypeArea, ExerciseTypeCategory } from "../../schema";
+import {
+  zql,
+  type ExerciseTypeArea,
+  type ExerciseTypeCategory,
+} from "../../schema";
 
 export type CreateExerciseTypeArgs = {
   id: string;
@@ -22,6 +26,13 @@ export const createExerciseType = m(
     ctx: ZeroAuthData;
   }) => {
     assertOwner(tx, ctx, args.userId);
+    // Refuse an id that already exists: Zero's insert on an existing PK is a
+    // silent no-op, but the join insert below would still link the caller to
+    // someone else's type (and thereby pass exerciseType.update's check).
+    if (tx.location === "server") {
+      const [existing] = await tx.run(zql.exerciseType.where("id", args.id));
+      if (existing) throw new Error("Not authorized");
+    }
     await tx.mutate.exerciseType.insert({
       id: args.id,
       name: args.name,
