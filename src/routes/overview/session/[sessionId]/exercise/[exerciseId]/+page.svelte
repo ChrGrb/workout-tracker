@@ -149,7 +149,12 @@
       <div class="flex flex-col gap-12" in:fade={{ duration: 100 }}>
         <div class="flex flex-col gap-4 relative items-start">
           <Headline>{exercise?.type.name}</Headline>
-          <Badge variant="secondary">{exercise?.type.area}</Badge>
+          <div class="flex flex-row flex-wrap gap-2">
+            <Badge variant="secondary">{exercise?.type.area}</Badge>
+            {#if exercise.type.equipment}
+              <Badge variant="secondary">{exercise.type.equipment.name}</Badge>
+            {/if}
+          </div>
           <time
             use:svelteTime={{
               timestamp: exercise.createdAt,
