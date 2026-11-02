@@ -31,7 +31,6 @@
   import { dev, browser } from "$app/environment";
   import { afterNavigate, onNavigate, preloadData } from "$app/navigation";
   import { page } from "$app/stores";
-  import { mountVercelToolbar } from "@vercel/toolbar/vite";
   import { initZero } from "$lib/zero/z.svelte";
   import { startOutbox } from "$lib/zero/outbox";
   import OutboxIndicator from "$lib/components/OutboxIndicator.svelte";
