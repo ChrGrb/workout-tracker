@@ -44,7 +44,7 @@
   import ExerciseTimer from "./components/ExerciseTimer.svelte";
   import addExerciseSetAction from "./actions/addExerciseSetAction";
   import * as Drawer from "$lib/components/ui/drawer";
-  import AddExerciseDrawer from "./components/AddExerciseDrawer.svelte";
+  import AddExerciseDrawer from "./components/AddExerciseDrawer/AddExerciseDrawer.svelte";
   import Badge from "$lib/components/ui/badge/badge.svelte";
   import { Plus } from "lucide-svelte";
   import LiquidGlass from "$lib/base/LiquidGlass.svelte";
