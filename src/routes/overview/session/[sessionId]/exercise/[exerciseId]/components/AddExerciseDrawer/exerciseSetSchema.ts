@@ -36,9 +36,17 @@ export const getExerciseSetSchema = (
       notes: z.string().default(""),
       exerciseSetType: z
         .enum(ExerciseSetTypeEnum)
+        .meta({
+          labels: {
+            WARMUP: "Warmup",
+            WORKOUT: "Workout",
+            COOLDOWN: "Cooldown",
+          },
+        })
         .default(ExerciseSetTypeEnum.WORKOUT),
       weightType: z
         .enum(WeightTypeEnum)
+        .meta({ labels: { UNIFIED: "Unified", BILATERAL: "Bilateral" } })
         .default(defaultExerciseWeightType ?? WeightTypeEnum.UNIFIED),
     })
     .superRefine((val, ctx) => {

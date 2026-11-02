@@ -1,6 +1,5 @@
 <script lang="ts">
   import Button from "$lib/base/Button.svelte";
-  import RadioSelect from "$lib/base/input/RadioSelect.svelte";
   import TextArea from "$lib/base/input/TextArea.svelte";
   import { useAddExerciseSetSettings } from "$lib/stores/stores";
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
@@ -11,6 +10,7 @@
   import { zod4 } from "sveltekit-superforms/adapters";
   import { getExerciseSetSchema, WeightTypeEnum } from "./exerciseSetSchema";
   import SuperTextInput from "$lib/base/input/SuperTextInput.svelte";
+  import SuperRadioSelect from "$lib/base/input/SuperRadioSelect.svelte";
 
   const exerciseSetSettings = useAddExerciseSetSettings();
   const defaultExerciseWeightType = $derived(
@@ -85,10 +85,15 @@
         exerciseSetType,
       });
       hasTimer = true;
+
+      // superforms resets to the initial data after a successful submit; keep
+      // the chosen weight type so the reset doesn't overwrite the preference.
+      reset({ newState: { weightType: form.data.weightType } });
     },
   });
 
-  const { form, enhance, allErrors, validateForm, validate } = superform;
+  const { form, enhance, allErrors, validateForm, validate, reset } =
+    superform;
 
   $effect(() => {
     updateDefaultExerciseSetType(
@@ -109,16 +114,7 @@
     <form method="POST" use:enhance>
       <div class="flex flex-col gap-12">
         <div class="flex flex-col gap-4">
-          <RadioSelect
-            items={[
-              { name: "Warmup", value: "WARMUP" },
-              { name: "Workout", value: "WORKOUT" },
-              { name: "Cooldown", value: "COOLDOWN" },
-            ]}
-            name="exerciseSetType"
-            label="Type"
-            bind:group={$form.exerciseSetType}
-          />
+          <SuperRadioSelect {superform} field="exerciseSetType" label="Type" />
           <SuperTextInput
             name="reps"
             id="reps"
@@ -131,14 +127,7 @@
           <div class="flex flex-col">
             <p>Weight</p>
             <div class="flex flex-col gap-2">
-              <RadioSelect
-                items={[
-                  { name: "Unified", value: "UNIFIED" },
-                  { name: "Bilateral", value: "BILATERAL" },
-                ]}
-                name="weightType"
-                bind:group={$form.weightType}
-              />
+              <SuperRadioSelect {superform} field="weightType" />
 
               <div
                 class="flex flex-row justify-between gap-4"
