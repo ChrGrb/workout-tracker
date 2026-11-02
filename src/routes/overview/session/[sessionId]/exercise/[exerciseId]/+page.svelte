@@ -44,7 +44,8 @@
   import ExerciseTimer from "./components/ExerciseTimer.svelte";
   import addExerciseSetAction from "./actions/addExerciseSetAction";
   import * as Drawer from "$lib/components/ui/drawer";
-  import AddExerciseDrawer from "./components/AddExerciseDrawer/AddExerciseDrawer.svelte";
+  import ExerciseSetDrawer from "./components/ExerciseSetDrawer/ExerciseSetDrawer.svelte";
+  import type { ExerciseSet } from "@prisma/client";
   import Badge from "$lib/components/ui/badge/badge.svelte";
   import { Plus } from "lucide-svelte";
   import LiquidGlass from "$lib/base/LiquidGlass.svelte";
@@ -137,6 +138,9 @@
   );
 
   let isAddSetDrawerOpen = $state(false);
+
+  let isEditSetDrawerOpen = $state(false);
+  let editingSet: ExerciseSet | undefined = $state();
 </script>
 
 <Drawer.Root
@@ -268,6 +272,10 @@
                           $state.snapshot(set),
                         );
                     }}
+                    editAction={() => {
+                      editingSet = $state.snapshot(set);
+                      isEditSetDrawerOpen = true;
+                    }}
                   />
                 </div>
               {/each}
@@ -275,7 +283,7 @@
           </div>
         </div>
 
-        {#if isActive && !isAddSetDrawerOpen}
+        {#if isActive && !isAddSetDrawerOpen && !isEditSetDrawerOpen}
           <FloatBottomWrapper>
             <div
               in:fade|global={{
@@ -422,7 +430,27 @@
       <Drawer.Content
         class="bg-white flex flex-col fixed bottom-0 left-0 right-0 rounded-t-[10px] max-h-[100dvh] overscroll-contain"
       >
-        <AddExerciseDrawer {exercise} bind:hasTimer />
+        <ExerciseSetDrawer {exercise} bind:hasTimer />
+      </Drawer.Content>
+    </Drawer.Portal>
+  {/if}
+</Drawer.Root>
+
+<Drawer.Root
+  bind:open={isEditSetDrawerOpen}
+  handleOnly
+  disablePreventScroll
+  noBodyStyles
+>
+  {#if exercise && editingSet}
+    <Drawer.Portal>
+      <Drawer.Overlay class="fixed inset-0 bg-black/40" />
+      <Drawer.Content
+        class="bg-white flex flex-col fixed bottom-0 left-0 right-0 rounded-t-[10px] max-h-[100dvh] overscroll-contain"
+      >
+        {#key editingSet}
+          <ExerciseSetDrawer {exercise} exerciseSet={editingSet} />
+        {/key}
       </Drawer.Content>
     </Drawer.Portal>
   {/if}

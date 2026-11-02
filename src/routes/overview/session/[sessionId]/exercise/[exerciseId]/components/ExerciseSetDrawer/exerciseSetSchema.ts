@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { EXERCISE_SET_LIMITS } from "$lib/zero/mutators/exerciseSet/validation";
 
 export enum WeightTypeEnum {
   UNIFIED = "UNIFIED",
@@ -13,8 +14,16 @@ export enum ExerciseSetTypeEnum {
 
 // Number inputs bind to `null` when cleared (Svelte 5), so fields are nullish
 // and "required" is enforced by a refine instead of the base type.
-const numberSchema = (min = 0, optional?: boolean) => {
-  let schema = z.number().min(min).nullish();
+// Limits mirror the server-side check in the exerciseSet mutators.
+const numberSchema = (
+  min = 0,
+  max: number = EXERCISE_SET_LIMITS.maxWeight,
+  { optional = false, integer = false } = {},
+) => {
+  let schema = (integer ? z.number().int() : z.number())
+    .min(min)
+    .max(max)
+    .nullish();
 
   if (!optional) {
     schema = schema.refine((value) => value != null, {
@@ -30,10 +39,10 @@ export const getExerciseSetSchema = (
 ) =>
   z
     .object({
-      reps: numberSchema(1),
+      reps: numberSchema(1, EXERCISE_SET_LIMITS.maxReps, { integer: true }),
       weight: numberSchema(),
-      additionalWeight: numberSchema(undefined, true),
-      notes: z.string().default(""),
+      additionalWeight: numberSchema(undefined, undefined, { optional: true }),
+      notes: z.string().max(EXERCISE_SET_LIMITS.maxNotes).default(""),
       exerciseSetType: z
         .enum(ExerciseSetTypeEnum)
         .meta({

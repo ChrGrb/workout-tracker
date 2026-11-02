@@ -5,10 +5,16 @@
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
   import { fade } from "svelte/transition";
   import addExerciseSetAction from "../../actions/addExerciseSetAction";
+  import updateExerciseSetAction from "../../actions/updateExerciseSetAction";
+  import type { ExerciseSet } from "@prisma/client";
   import * as Drawer from "$lib/components/ui/drawer";
   import { superForm, defaults } from "sveltekit-superforms";
   import { zod4 } from "sveltekit-superforms/adapters";
-  import { getExerciseSetSchema, WeightTypeEnum } from "./exerciseSetSchema";
+  import {
+    ExerciseSetTypeEnum,
+    getExerciseSetSchema,
+    WeightTypeEnum,
+  } from "./exerciseSetSchema";
   import SuperTextInput from "$lib/base/input/SuperTextInput.svelte";
   import SuperRadioSelect from "$lib/base/input/SuperRadioSelect.svelte";
 
@@ -25,11 +31,29 @@
 
   interface Props {
     exercise: ExerciseFull | undefined;
-    hasTimer: boolean;
+    hasTimer?: boolean;
+    // When given, the drawer edits this set instead of adding a new one.
+    exerciseSet?: ExerciseSet;
   }
 
-  let { exercise, hasTimer = $bindable() }: Props = $props();
+  let { exercise, hasTimer = $bindable(), exerciseSet }: Props = $props();
+  const isEdit = !!exerciseSet;
 
+  // Prefill from the set being edited; a second weight means it was bilateral.
+  const initialData = exerciseSet
+    ? {
+        exerciseSetType: exerciseSet.exerciseSetType as ExerciseSetTypeEnum,
+        reps: exerciseSet.reps,
+        weight: exerciseSet.weight,
+        additionalWeight:
+          exerciseSet.additionalWeight > 0 ? exerciseSet.additionalWeight : null,
+        notes: exerciseSet.notes,
+        weightType:
+          exerciseSet.additionalWeight > 0
+            ? WeightTypeEnum.BILATERAL
+            : WeightTypeEnum.UNIFIED,
+      }
+    : {};
 
   const updateDefaultExerciseSetType = (
     exerciseTypeId: string,
@@ -60,11 +84,13 @@
     });
   };
 
-  const superform = superForm(defaults({}, zod4(schema)), {
+  const superform = superForm(defaults(initialData, zod4(schema)), {
     SPA: true,
     validators: zod4(schema),
     validationMethod: "auto",
     customValidity: true,
+    // An edited set keeps its saved values; only the add form clears.
+    resetForm: !isEdit,
     onChange(event) {
       if (event.paths.includes("weightType")) validate("additionalWeight");
     },
@@ -73,6 +99,18 @@
 
       const { reps, weight, additionalWeight, notes, exerciseSetType } =
         form.data;
+
+      if (exerciseSet) {
+        await updateExerciseSetAction($state.snapshot(exerciseSet), {
+          exerciseSetType,
+          reps: reps!,
+          weight: weight!,
+          additionalWeight,
+          notes,
+          weightType: form.data.weightType,
+        });
+        return;
+      }
 
       await addExerciseSetAction($state.snapshot(exercise), {
         reps: reps ?? undefined,
@@ -95,7 +133,9 @@
   const { form, enhance, allErrors, validateForm, validate, reset } =
     superform;
 
+  // Only adding a set records the weight-type preference.
   $effect(() => {
+    if (isEdit) return;
     updateDefaultExerciseSetType(
       exercise?.typeId ?? "",
       $form.weightType as WeightTypeEnum,
@@ -107,7 +147,7 @@
 
 <div>
   <Drawer.Header>
-    <Drawer.Title>Add Set</Drawer.Title>
+    <Drawer.Title>{isEdit ? "Edit Set" : "Add Set"}</Drawer.Title>
   </Drawer.Header>
 
   <div class="max-w-md w-full mx-auto flex flex-col p-4 rounded-t-[10px] z-50">
@@ -175,7 +215,7 @@
               type="submit"
               highlight={true}
               classes="w-full"
-              disabled={!!$allErrors.length}>Add</Button
+              disabled={!!$allErrors.length}>{isEdit ? "Save" : "Add"}</Button
             >
           </Drawer.Close>
         </Drawer.Footer>

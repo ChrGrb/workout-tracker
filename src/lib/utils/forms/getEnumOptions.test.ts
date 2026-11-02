@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { z } from "zod";
 import { zod4 } from "sveltekit-superforms/adapters";
 import { getEnumOptions } from "./getEnumOptions";
-import { getExerciseSetSchema } from "../../../routes/overview/session/[sessionId]/exercise/[exerciseId]/components/AddExerciseDrawer/exerciseSetSchema";
+import { getExerciseSetSchema } from "../../../routes/overview/session/[sessionId]/exercise/[exerciseId]/components/ExerciseSetDrawer/exerciseSetSchema";
 
 const jsonSchemaOf = (schema: z.ZodObject) => zod4(schema).jsonSchema;
 

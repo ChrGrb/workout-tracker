@@ -6,6 +6,7 @@ import { createExercise } from "./exercise/create";
 import { updateExercise } from "./exercise/update";
 import { deleteExercise } from "./exercise/delete";
 import { createExerciseSet } from "./exerciseSet/create";
+import { updateExerciseSet } from "./exerciseSet/update";
 import { deleteExerciseSet } from "./exerciseSet/delete";
 import { updateSettings } from "./settings/update";
 import { createExerciseType } from "./exerciseType/create";
@@ -34,6 +35,7 @@ export const mutators = defineMutators({
   },
   exerciseSet: {
     create: createExerciseSet,
+    update: updateExerciseSet,
     delete: deleteExerciseSet,
   },
   settings: {
@@ -64,6 +66,7 @@ export type { UpdateSessionArgs } from "./session/update";
 export type { CreateExerciseArgs } from "./exercise/create";
 export type { UpdateExerciseArgs } from "./exercise/update";
 export type { CreateExerciseSetArgs } from "./exerciseSet/create";
+export type { UpdateExerciseSetArgs } from "./exerciseSet/update";
 export type { UpdateSettingsArgs } from "./settings/update";
 export type { CreateExerciseTypeArgs } from "./exerciseType/create";
 export type { UpdateExerciseTypeArgs } from "./exerciseType/update";
