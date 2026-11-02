@@ -84,7 +84,7 @@
     if (!searchOpen) searchTerm = "";
   }
 
-  let filterOpen = $state(false);
+  let filterOpen = $state(true);
 
   function toggleFilter() {
     filterOpen = !filterOpen;
@@ -131,7 +131,9 @@
       .map((group) => ({
         ...group,
         items: exerciseTypes
-          .filter((exerciseType) => (exerciseType.area ?? OTHER) === group.value)
+          .filter(
+            (exerciseType) => (exerciseType.area ?? OTHER) === group.value,
+          )
           .filter(
             (exerciseType) =>
               search.length === 0 ||
