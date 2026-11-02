@@ -7,13 +7,16 @@
   import { getExerciseSetWeight } from "$lib/utils/data/getExerciseSetWeight";
   import SwipeToAction from "$lib/base/SwipeToAction.svelte";
   import { getModalStore } from "@skeletonlabs/skeleton";
+  import { Pencil } from "lucide-svelte";
+  import { buttonVariants } from "$lib/components/ui/button";
 
   interface Props {
     exerciseSet: ExerciseSet;
     deleteAction: () => void;
+    editAction?: () => void;
   }
 
-  let { exerciseSet, deleteAction }: Props = $props();
+  let { exerciseSet, deleteAction, editAction }: Props = $props();
 
   let exerciseSetTypeString =
     $derived(exerciseSet.exerciseSetType.charAt(0).toUpperCase() +
@@ -38,19 +41,34 @@
       <Headline style="small">
         {exerciseSetTypeString}
       </Headline>
-      {#if exerciseSet.time > 0.0}
-        <div class="flex flex-row justify-between">
-          <div
-            class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
-              "bg-white text-primary-900":
-                exerciseSet.exerciseSetType == "WORKOUT",
-            })}
-          >
-            <p class="font-medium">{(exerciseSet.time / 1000).toFixed(0)}</p>
-            <p>s</p>
+      <div class="flex flex-row items-center gap-2">
+        {#if exerciseSet.time > 0.0}
+          <div class="flex flex-row justify-between">
+            <div
+              class={clsx("flex flex-row gap-1 px-4 py-2 rounded-full ", {
+                "bg-white text-primary-900":
+                  exerciseSet.exerciseSetType == "WORKOUT",
+              })}
+            >
+              <p class="font-medium">{(exerciseSet.time / 1000).toFixed(0)}</p>
+              <p>s</p>
+            </div>
           </div>
-        </div>
-      {/if}
+        {/if}
+        {#if editAction}
+          <button
+            type="button"
+            class={clsx(
+              buttonVariants({ variant: "ghost", size: "icon" }),
+              "-my-2 -mr-2 text-inherit",
+            )}
+            aria-label="Edit set"
+            onclick={editAction}
+          >
+            <Pencil />
+          </button>
+        {/if}
+      </div>
     </div>
     {#if exerciseSet.weight > 0.0}
       <div class="flex flex-row justify-between">

@@ -11,7 +11,8 @@ const addExerciseSetAction = async (
   await zmutate.exerciseSet.create({
     id: generateId(),
     exerciseId: exercise.id,
-    exerciseSetType: (exerciseSet.exerciseSetType ?? "WORKOUT") as ExerciseSetType,
+    exerciseSetType: (exerciseSet.exerciseSetType ??
+      "WORKOUT") as ExerciseSetType,
     reps: exerciseSet.reps ?? 1,
     weight: exerciseSet.weight ?? 0,
     additionalWeight: exerciseSet.additionalWeight ?? 0,

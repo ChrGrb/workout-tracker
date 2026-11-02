@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/svelte";
+import { render, screen, fireEvent } from "@testing-library/svelte";
 import { makeExerciseSet } from "$lib/testing/fixtures";
 
 vi.mock("@skeletonlabs/skeleton", () => ({ getModalStore: () => ({}) }));
@@ -34,5 +34,21 @@ describe("ExerciseSetCard", () => {
       },
     });
     expect(screen.getByText("Warmup")).toBeInTheDocument();
+  });
+
+  it("only shows the edit button when editAction is given", () => {
+    render(ExerciseSetCard, {
+      props: { exerciseSet: makeExerciseSet(), deleteAction: () => {} },
+    });
+    expect(screen.queryByRole("button", { name: "Edit set" })).toBeNull();
+  });
+
+  it("calls editAction when the edit button is clicked", async () => {
+    const editAction = vi.fn();
+    render(ExerciseSetCard, {
+      props: { exerciseSet: makeExerciseSet(), deleteAction: () => {}, editAction },
+    });
+    await fireEvent.click(screen.getByRole("button", { name: "Edit set" }));
+    expect(editAction).toHaveBeenCalledOnce();
   });
 });

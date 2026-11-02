@@ -3,9 +3,13 @@
   import TextArea from "$lib/base/input/TextArea.svelte";
   import * as Drawer from "$lib/components/ui/drawer";
   import type { ExerciseFull } from "$lib/utils/prismaTypes";
-  import { Edit } from "lucide-svelte";
-  import { InfoIcon } from "svelte-feather-icons";
+  import { buttonVariants } from "$lib/components/ui/button";
+  import { Info, Pencil, Plus } from "lucide-svelte";
+  import { z } from "zod";
+  import { superForm, defaults } from "sveltekit-superforms";
+  import { zod4 } from "sveltekit-superforms/adapters";
   import updateExerciseNotesAction from "../actions/updateExerciseNotesAction";
+  import clsx from "clsx";
 
   interface Props {
     exercise: ExerciseFull;
@@ -17,45 +21,61 @@
   let { exercise, canEditTypeNotes }: Props = $props();
 
   let open = $state(false);
-  let notes = $state("");
-  let typeNotes = $state("");
 
-  const exerciseNotes = $derived(exercise.notes?.trim() ?? "");
-  const exerciseTypeNotes = $derived(exercise.type.description?.trim() ?? "");
+  const typeNotesText = $derived(exercise.type.description?.trim() ?? "");
 
-  // Pre-fill the inputs with the current notes each time the drawer opens.
+  const schema = z.object({ typeNotes: z.string().default("") });
+
+  const superform = superForm(defaults(zod4(schema)), {
+    SPA: true,
+    validators: zod4(schema),
+    resetForm: false,
+    onUpdate({ form }) {
+      if (!form.valid) return;
+      updateExerciseNotesAction(exercise, { typeNotes: form.data.typeNotes });
+    },
+  });
+
+  const { form, enhance, reset } = superform;
+
+  // Pre-fill with the current note each time the drawer opens.
   $effect(() => {
     if (open) {
-      notes = exercise.notes ?? "";
-      typeNotes = exercise.type.description ?? "";
+      reset({ newState: { typeNotes: exercise.type.description ?? "" } });
     }
   });
 </script>
 
-{#snippet note(label: string, text: string)}
-  <div class="flex flex-col gap-2">
-    <div class="flex flex-row justify-start items-center gap-2">
-      <InfoIcon size="18" />
-      <p class="font-semibold">{label}</p>
-    </div>
-    <p class="break-all whitespace-pre-line">{text}</p>
-  </div>
-{/snippet}
-
 <Drawer.Root bind:open>
-  <div class="flex flex-col gap-4 w-full">
-    {#if exerciseTypeNotes}
-      {@render note(`Every ${exercise.type.name}`, exerciseTypeNotes)}
-    {/if}
-    {#if exerciseNotes}
-      {@render note("This workout", exerciseNotes)}
-    {/if}
-
-    <Drawer.Trigger class="self-start flex flex-row items-center gap-2 text-sm">
-      <Edit size="16" />
-      {exerciseNotes || exerciseTypeNotes ? "Edit notes" : "Add note"}
+  {#if typeNotesText}
+    <div class="card p-4 w-full flex flex-col gap-2">
+      <div class="flex flex-row items-center justify-between gap-2">
+        <div class="flex flex-row items-center gap-1">
+          <Info size="18" />
+          <p class="font-semibold">Notes</p>
+        </div>
+        {#if canEditTypeNotes}
+          <Drawer.Trigger
+            class={clsx(
+              buttonVariants({ variant: "ghost", size: "icon" }),
+              "h-5 w-5",
+            )}
+            aria-label="Edit note"
+          >
+            <Pencil />
+          </Drawer.Trigger>
+        {/if}
+      </div>
+      <p class="break-all whitespace-pre-line">{typeNotesText}</p>
+    </div>
+  {:else if canEditTypeNotes}
+    <Drawer.Trigger
+      class={buttonVariants({ variant: "secondary", size: "sm" })}
+    >
+      <Plus />
+      Add note
     </Drawer.Trigger>
-  </div>
+  {/if}
 
   <Drawer.Portal>
     <Drawer.Overlay class="fixed inset-0 bg-black/40" />
@@ -66,42 +86,28 @@
         <Drawer.Title>Notes</Drawer.Title>
       </Drawer.Header>
 
-      <div class="max-w-md w-full mx-auto flex flex-col gap-4 p-4">
+      <form
+        method="POST"
+        use:enhance
+        class="max-w-md w-full mx-auto flex flex-col gap-4 p-4"
+      >
         <TextArea
-          name="exerciseNotes"
-          id="exerciseNotes"
+          name="typeNotes"
+          id="typeNotes"
           rows={3}
-          label="This workout"
-          placeholder="e.g. good form today"
-          bind:input={notes}
+          label={`Every ${exercise.type.name}`}
+          placeholder="e.g. machine height 4"
+          bind:input={$form.typeNotes}
         />
-        {#if canEditTypeNotes}
-          <TextArea
-            name="typeNotes"
-            id="typeNotes"
-            rows={3}
-            label={`Every ${exercise.type.name}`}
-            placeholder="e.g. machine height 4"
-            bind:input={typeNotes}
-          />
-        {/if}
 
         <Drawer.Footer class="px-0">
           <Drawer.Close class="w-full">
-            <Button
-              action={() =>
-                updateExerciseNotesAction(exercise, {
-                  notes,
-                  typeNotes: canEditTypeNotes ? typeNotes : undefined,
-                })}
-              highlight={true}
-              classes="w-full"
-            >
+            <Button type="submit" highlight={true} classes="w-full">
               Save
             </Button>
           </Drawer.Close>
         </Drawer.Footer>
-      </div>
+      </form>
     </Drawer.Content>
   </Drawer.Portal>
 </Drawer.Root>

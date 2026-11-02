@@ -11,6 +11,7 @@ import type {
   CreateExerciseArgs,
   UpdateExerciseArgs,
   CreateExerciseSetArgs,
+  UpdateExerciseSetArgs,
   UpdateSettingsArgs,
   CreateExerciseTypeArgs,
   UpdateExerciseTypeArgs,
@@ -151,6 +152,7 @@ export const zmutate = {
   },
   exerciseSet: {
     create: (a: CreateExerciseSetArgs) => enqueueOrRun("exerciseSet.create", a),
+    update: (a: UpdateExerciseSetArgs) => enqueueOrRun("exerciseSet.update", a),
     delete: (a: { id: string }) => enqueueOrRun("exerciseSet.delete", a),
   },
   settings: {
